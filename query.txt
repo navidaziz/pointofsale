@@ -1,0 +1,1 @@
+ALTER TABLE `suppliers` ADD `status` INT NOT NULL DEFAULT '1' AFTER `account_number`, ADD `order` INT NULL DEFAULT NULL AFTER `status`, ADD `created_by` INT NULL DEFAULT NULL AFTER `order`, ADD `created_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created_by`, ADD `last_updated` DATETIME NULL DEFAULT NULL AFTER `created_date`;
