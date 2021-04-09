@@ -212,7 +212,7 @@
                                 <tr>
                                     <td><?php echo $count++; ?></td>
                                     <td><?php echo date('d M, Y', strtotime($inventory->date)); ?></td>
-                                    <td><?php echo $suppliers[$inventory->supplier_id]; ?></td>
+                                    <td><?php echo @$suppliers[$inventory->supplier_id]; ?></td>
                                     <td><?php echo $inventory->item_cost_price; ?></td>
                                     <td><?php echo $inventory->item_unit_price; ?></td>
                                     <td><strong><?php echo $inventory->transaction_type; ?></strong></td>

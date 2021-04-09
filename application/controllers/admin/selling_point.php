@@ -28,6 +28,8 @@ class Selling_point extends Admin_Controller
         //var_dump($this->data['sale_items']);
         $this->data["view"] = ADMIN_DIR . "selling_point/home";
         $this->data["user_items_list"] = $this->get_user_items_list();
+        $this->data["items_sale_summary"] = $this->items_sale_summary();
+
         $this->load->view(ADMIN_DIR . "layout", $this->data);
     }
 
@@ -101,7 +103,7 @@ class Selling_point extends Admin_Controller
                     <td>' . $sales_items_user_list->unit_price . '</td>
                     <td>' . $sales_items_user_list->discount . '</td>
                     <td>' . $sales_items_user_list->sale_price . '</td>
-                    <td><input id="user_item_'.$sales_items_user_list->id.'" onkeydown="update_user_item_quantity(\''.$sales_items_user_list->id.'\')" type="number" name="quantity" value="' . $sales_items_user_list->quantity . '" style="width:50px" /></td>
+                    <td><input id="user_item_' . $sales_items_user_list->id . '" onkeydown="update_user_item_quantity(\'' . $sales_items_user_list->id . '\')" type="number" name="quantity" value="' . $sales_items_user_list->quantity . '" style="width:50px" /></td>
                     <td>' . $sales_items_user_list->total_price . '</td>
 
                   </tr>';
@@ -109,14 +111,86 @@ class Selling_point extends Admin_Controller
         return $user_item_list .= '</table>';
     }
 
-    public function update_user_item_quantity(){
-        $id = (int) $this->input->post("user_item_id");
-        $quantity = $this->input->post("item_quantity");
-        $query="UPDATE `sales_item_users` SET `quantity`='".$quantity."'
-                WHERE id='".$id."' ";
-                $this->db->query($query);
-                echo $this->get_user_items_list();
+    public function items_sale_summary()
+    {
+        $user_id = $this->session->userdata("user_id");
+        $query = "SELECT * FROM `user_sale_summary`
+                  WHERE `user_sale_summary`.`user_id` = '" . $user_id . "'";
+
+        if ($this->db->query($query)->result()) {
+            $sales_items_summary = $this->db->query($query)->result()[0];
+        } else {
+            $sales_items_summary = (object) array();
+            $sales_items_summary->items_total = "0.00";
+            $sales_items_summary->total_discount = "0.00";
+            $sales_items_summary->total_price = "0.00";
+            $sales_items_summary->total_tax_pay_able = "0.00";
+            $sales_items_summary->pay_able = "0.00";
+        }
+        $sale_summary = "";
+
+        $sale_summary .= '
+        
+        <table class="table">
+        <tr>
+        <td style="margin:0px !important; padding:1px !important"><div class="well">
+        <h5>Items Total: Rs ' . $sales_items_summary->items_total . '</h5>
+        <h5 >Items Discount: Rs ' . $sales_items_summary->total_discount . '</h5>
+           <h4 >Total Price: Rs ' . $sales_items_summary->total_price . '</h4>
+           </div>
+           </td>
+        <td style="width:60%; margin:0px !important; padding:1px !important">
+        <div class="font-400 font-14">
+        <div style="border:1px dashed gray; padding:5px; border-radius:5px;"> 
+        ';
+
+        $query = "SELECT * FROM `taxes` WHERE `status`=1";
+        $taxes = $this->db->query($query)->result();
+        foreach ($taxes as $taxe) {
+            $sale_summary .= '<h5 >' . $taxe->name . ' - ' . $taxe->tax_percentage . '%</h5>';
+        }
+
+        $sale_summary .= '<h4 >Tax: Rs ' . $sales_items_summary->total_tax_pay_able . '</h4>
+        <style>
+        .amount {
+            margin-right: 30px;
+            color: #d9534f;
+            font-weight: 600;
+            line-height: 0.6;
+        }
+        </style>
+        
+            <h3 class="amount" style="color:green" >Total: Rs <span id="pay_able">' . $sales_items_summary->pay_able . '</span></h3>
+            <h3 class="amount" style="color:#70AFC4">Discount: Rs <span id="payment_discount"> 0.00</span></h3>
+            <h3 class="amount">Payable: Rs <span id="pay_able_total">' . $sales_items_summary->pay_able . '</span></h3>
+        </div>    
+            </div>
+        </td>
+        </tr>
+        </table>';
+
+        return $sale_summary;
     }
 
-    
+    function user_items_sale_summary()
+    {
+        echo $this->items_sale_summary();
+    }
+
+    public function update_user_item_quantity()
+    {
+        $id = (int) $this->input->post("user_item_id");
+        $quantity = $this->input->post("item_quantity");
+        if ($quantity == 0) {
+            $query = "DELETE FROM `sales_item_users` 
+            WHERE id='" . $id . "'";
+            $this->db->query($query);
+        } else {
+            $query = "UPDATE `sales_item_users` SET `quantity`='" . $quantity . "'
+            WHERE id='" . $id . "' ";
+            $this->db->query($query);
+        }
+
+        echo $this->get_user_items_list();
+    }
 }
