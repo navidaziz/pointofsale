@@ -74,4 +74,25 @@
 		}
 
 	});
+
+	function update_user_item_quantity(user_item_id){
+		if(event.key === 'Enter') {
+		var item_quantity = $('#user_item_'+user_item_id).val();
+					$('#item_list').html('<p style="text-align:center"><strong>Please Wait...... Loading</strong></p>');
+					$.ajax({
+						type: "POST",
+						url: "<?php echo site_url(ADMIN_DIR . "selling_point/update_user_item_quantity") ?>",
+						data: {
+							user_item_id: user_item_id, 
+							item_quantity: item_quantity.replace(/[^a-zA-Z0-9]/g, ''),
+						}
+					}).done(function(data) {
+						$('#item_list').html(data);
+					});
+		}
+					
+	}
+
+
+
 </script>

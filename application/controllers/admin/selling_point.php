@@ -65,7 +65,7 @@ class Selling_point extends Admin_Controller
     function get_user_items_list()
     {
         $user_id = $this->session->userdata("user_id");
-        $query = "SELECT 
+        $query = "SELECT `id`,
             LOWER(`all_items`.`name`) AS `name`,
             LOWER(`all_items`.`category`) AS `category`,
             `all_items`.`unit_price`,
@@ -101,11 +101,22 @@ class Selling_point extends Admin_Controller
                     <td>' . $sales_items_user_list->unit_price . '</td>
                     <td>' . $sales_items_user_list->discount . '</td>
                     <td>' . $sales_items_user_list->sale_price . '</td>
-                    <td><input type="number" name="quantity" value="' . $sales_items_user_list->quantity . '" style="width:50px" /></td>
+                    <td><input id="user_item_'.$sales_items_user_list->id.'" onkeydown="update_user_item_quantity(\''.$sales_items_user_list->id.'\')" type="number" name="quantity" value="' . $sales_items_user_list->quantity . '" style="width:50px" /></td>
                     <td>' . $sales_items_user_list->total_price . '</td>
 
                   </tr>';
         }
         return $user_item_list .= '</table>';
     }
+
+    public function update_user_item_quantity(){
+        $id = (int) $this->input->post("user_item_id");
+        $quantity = $this->input->post("item_quantity");
+        $query="UPDATE `sales_item_users` SET `quantity`='".$quantity."'
+                WHERE id='".$id."' ";
+                $this->db->query($query);
+                echo $this->get_user_items_list();
+    }
+
+    
 }
