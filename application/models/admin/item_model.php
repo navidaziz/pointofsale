@@ -13,9 +13,8 @@ class Item_model extends MY_Model
         $this->order = "order";
     }
 
-    public function validate_form_data($peration = false)
+    public function validate_form_data($operation = false)
     {
-        //var_dump($peration);
         $validation_config = array(
 
             array(
@@ -27,12 +26,6 @@ class Item_model extends MY_Model
             array(
                 "field"  =>  "category",
                 "label"  =>  "Category",
-                "rules"  =>  "required"
-            ),
-
-            array(
-                "field"  =>  "supplier_id",
-                "label"  =>  "Supplier Id",
                 "rules"  =>  "required"
             ),
 
@@ -49,29 +42,35 @@ class Item_model extends MY_Model
             ),
 
             array(
-                "field"  =>  "quantity",
-                "label"  =>  "Quantity",
-                "rules"  =>  "required"
-            ),
-
-            array(
                 "field"  =>  "reorder_level",
                 "label"  =>  "Reorder Level",
                 "rules"  =>  "required"
             ),
-
+            array(
+                "field"  =>  "description",
+                "label"  =>  "Discription",
+                "rules"  =>  ""
+            ),
+            array(
+                "field"  =>  "unit",
+                "label"  =>  "Unit",
+                "rules"  =>  ""
+            ),
+            array(
+                "field"  =>  "location",
+                "label"  =>  "Location",
+                "rules"  =>  ""
+            ),
 
 
         );
-
-        if ($peration) {
+        if ($operation) {
             $validation_config[] = array(
                 "field"  =>  "item_code_no",
                 "label"  =>  "Reorder Level",
                 "rules"  =>  "is_unique[items.item_code_no]"
             );
         }
-
         //set and run the validation
         $this->form_validation->set_rules($validation_config);
         return $this->form_validation->run();
@@ -85,8 +84,6 @@ class Item_model extends MY_Model
 
         $inputs["category"]  =  $this->input->post("category");
 
-        $inputs["supplier_id"]  =  $this->input->post("supplier_id");
-
         $inputs["item_code_no"]  =  $this->input->post("item_code_no");
 
         $inputs["description"]  =  $this->input->post("description");
@@ -96,8 +93,6 @@ class Item_model extends MY_Model
         $inputs["unit_price"]  =  $this->input->post("unit_price");
 
         $inputs["unit"]  =  $this->input->post("unit");
-
-        $inputs["quantity"]  =  $this->input->post("quantity");
 
         $inputs["reorder_level"]  =  $this->input->post("reorder_level");
 
@@ -114,8 +109,6 @@ class Item_model extends MY_Model
 
         $inputs["category"]  =  $this->input->post("category");
 
-        $inputs["supplier_id"]  =  $this->input->post("supplier_id");
-
         //$inputs["item_code_no"]  =  $this->input->post("item_code_no");
 
         $inputs["description"]  =  $this->input->post("description");
@@ -125,8 +118,6 @@ class Item_model extends MY_Model
         $inputs["unit_price"]  =  $this->input->post("unit_price");
 
         $inputs["unit"]  =  $this->input->post("unit");
-
-        //$inputs["quantity"]  =  $this->input->post("quantity");
 
         $inputs["reorder_level"]  =  $this->input->post("reorder_level");
 
@@ -139,12 +130,8 @@ class Item_model extends MY_Model
     public function get_item_list($where_condition = NULL, $pagination = TRUE, $public = FALSE)
     {
         $data = (object) array();
-        $fields = array(
-            "items.*", "suppliers.supplier_name"
-        );
-        $join_table = array(
-            "suppliers" => "suppliers.supplier_id = items.supplier_id",
-        );
+        $fields = array("items.*");
+        $join_table = array();
         if (!is_null($where_condition)) {
             $where = $where_condition;
         } else {
@@ -177,12 +164,8 @@ class Item_model extends MY_Model
     public function get_item($item_id)
     {
 
-        $fields = array(
-            "items.*", "suppliers.supplier_name"
-        );
-        $join_table = array(
-            "suppliers" => "suppliers.supplier_id = items.supplier_id",
-        );
+        $fields = array("items.*");
+        $join_table = array();
         $where = "items.item_id = $item_id";
 
         return $this->item_model->joinGet($fields, "items", $join_table, $where, FALSE, TRUE);

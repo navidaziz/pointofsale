@@ -113,9 +113,9 @@
                 </td>
             </tr>
             <tr>
-                <th><?php echo $this->lang->line('quantity'); ?></th>
+                <th><?php echo $this->lang->line('unit'); ?></th>
                 <td>
-                    <?php echo $item->quantity; ?>
+                    <?php echo $item->unit; ?>
                 </td>
             </tr>
             <tr>
@@ -128,12 +128,6 @@
                 <th><?php echo $this->lang->line('location'); ?></th>
                 <td>
                     <?php echo $item->location; ?>
-                </td>
-            </tr>
-            <tr>
-                <th><?php echo $this->lang->line('supplier_name'); ?></th>
-                <td>
-                    <?php echo $item->supplier_name; ?>
                 </td>
             </tr>
                             <tr>

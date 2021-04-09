@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 07, 2021 at 06:55 AM
+-- Generation Time: Apr 09, 2021 at 06:54 AM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.4
 
@@ -20,6 +20,33 @@ SET time_zone = "+00:00";
 --
 -- Database: `pointofsale`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `all_items`
+-- (See below for the actual view)
+--
+CREATE TABLE `all_items` (
+`item_id` int(10)
+,`name` varchar(255)
+,`category` varchar(255)
+,`item_code_no` varchar(255)
+,`description` varchar(255)
+,`cost_price` double(15,2)
+,`unit_price` double(15,2)
+,`discount` int(11)
+,`sale_price` double(19,2)
+,`unit` varchar(255)
+,`reorder_level` double(15,2)
+,`location` varchar(255)
+,`status` int(11)
+,`order` int(11)
+,`created_by` int(11)
+,`created_date` datetime
+,`last_updated` datetime
+,`total_quantity` decimal(32,0)
+);
 
 -- --------------------------------------------------------
 
@@ -520,18 +547,35 @@ INSERT INTO `icons` (`icon_id`, `icon_title`, `icon_category`) VALUES
 CREATE TABLE `inventory` (
   `inventory_id` int(11) NOT NULL,
   `item_id` int(11) NOT NULL DEFAULT 0,
+  `supplier_id` int(11) DEFAULT NULL,
   `item_cost_price` double DEFAULT NULL,
   `item_unit_price` double DEFAULT NULL,
   `sale_id` int(11) DEFAULT NULL,
   `receiving_id` int(11) DEFAULT NULL,
   `transaction_type` text DEFAULT NULL,
   `inventory_transaction` int(11) NOT NULL DEFAULT 0,
+  `date` date DEFAULT NULL,
+  `remarks` varchar(255) DEFAULT NULL,
   `status` int(11) NOT NULL DEFAULT 1,
   `order` int(11) DEFAULT NULL,
   `created_by` int(11) DEFAULT NULL,
   `created_date` datetime NOT NULL DEFAULT current_timestamp(),
   `last_updated` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `inventory`
+--
+
+INSERT INTO `inventory` (`inventory_id`, `item_id`, `supplier_id`, `item_cost_price`, `item_unit_price`, `sale_id`, `receiving_id`, `transaction_type`, `inventory_transaction`, `date`, `remarks`, `status`, `order`, `created_by`, `created_date`, `last_updated`) VALUES
+(4, 15, 1, 100, 120, NULL, NULL, 'First Time Item Add', 100, NULL, NULL, 1, NULL, 1, '2021-04-07 19:08:15', NULL),
+(6, 15, 1, 100, 120, NULL, NULL, 'Stock In', 50, '2021-04-05', NULL, 1, NULL, 1, '2021-04-08 09:32:48', NULL),
+(7, 15, 1, 0, 0, NULL, NULL, 'Stock Return', -80, '2021-04-08', 'return due to faulty ', 1, NULL, 1, '2021-04-08 09:37:54', NULL),
+(8, 15, 1, 100, 100, NULL, NULL, 'Stock In', 25, '2021-04-08', NULL, 1, NULL, 1, '2021-04-08 18:52:59', NULL),
+(9, 16, 0, 100, 120, NULL, NULL, 'First Time Item Added', 0, '0000-00-00', NULL, 1, NULL, 1, '2021-04-08 19:26:26', NULL),
+(10, 17, 0, 23, 23, NULL, NULL, 'First Time Item Added', 0, '0000-00-00', NULL, 1, NULL, 1, '2021-04-08 19:31:41', NULL),
+(11, 18, 0, 100, 150, NULL, NULL, 'First Time Item Added', 0, '2021-04-08', NULL, 1, NULL, 1, '2021-04-08 20:06:52', NULL),
+(12, 18, 1, 100, 120, NULL, NULL, 'Stock In', 100, '2021-04-07', NULL, 1, NULL, 1, '2021-04-08 20:08:19', NULL);
 
 -- --------------------------------------------------------
 
@@ -543,13 +587,12 @@ CREATE TABLE `items` (
   `item_id` int(10) NOT NULL,
   `name` varchar(255) NOT NULL,
   `category` varchar(255) NOT NULL,
-  `supplier_id` int(11) DEFAULT NULL,
   `item_code_no` varchar(255) DEFAULT NULL,
   `description` varchar(255) DEFAULT NULL,
   `cost_price` double(15,2) NOT NULL,
   `unit_price` double(15,2) NOT NULL,
+  `discount` int(11) NOT NULL DEFAULT 0,
   `unit` varchar(255) DEFAULT NULL,
-  `quantity` double(15,2) NOT NULL DEFAULT 0.00,
   `reorder_level` double(15,2) NOT NULL DEFAULT 0.00,
   `location` varchar(255) NOT NULL,
   `status` int(11) NOT NULL DEFAULT 1,
@@ -563,9 +606,11 @@ CREATE TABLE `items` (
 -- Dumping data for table `items`
 --
 
-INSERT INTO `items` (`item_id`, `name`, `category`, `supplier_id`, `item_code_no`, `description`, `cost_price`, `unit_price`, `unit`, `quantity`, `reorder_level`, `location`, `status`, `order`, `created_by`, `created_date`, `last_updated`) VALUES
-(10, 'Navid Aziz', 'Category', 1, '123456', 'asdfa', 100.00, 120.00, '/ Kg', 500.00, 200.00, 'Some Where', 1, 10, NULL, '2021-04-06 23:49:29', NULL),
-(12, 'item 2', 'dfasdfa', 1, '123455', '', 100.00, 250.00, '/ Kg', 10.00, 5.00, 'sfdfsdf', 1, 12, NULL, '2021-04-06 23:54:13', NULL);
+INSERT INTO `items` (`item_id`, `name`, `category`, `item_code_no`, `description`, `cost_price`, `unit_price`, `discount`, `unit`, `reorder_level`, `location`, `status`, `order`, `created_by`, `created_date`, `last_updated`) VALUES
+(15, 'Chambor', 'Dry Fruits', '123456', 'some detail here', 100.00, 120.00, 10, '/ Kg', 10.00, 'Row 3 line 1', 1, 15, NULL, '2021-04-07 19:08:15', NULL),
+(16, 'Birmogh', 'Dry Fruits', '1234567', '', 100.00, 120.00, 20, '', 10.00, '', 1, 16, NULL, '2021-04-08 19:26:26', NULL),
+(17, 'dsfasdf', 'dsfasdf', '2342342342', 'asdfasdf', 23.00, 23.00, 0, '23', 23.00, 'sdfasdfa', 1, 17, NULL, '2021-04-08 19:31:41', NULL),
+(18, 'item 2', 'Dry Fruits', '1234563333', 'vzxcvz', 100.00, 150.00, 0, '/ Kg', 5.00, 'vczcxvz', 1, 18, NULL, '2021-04-08 20:06:52', NULL);
 
 -- --------------------------------------------------------
 
@@ -982,7 +1027,9 @@ INSERT INTO `modules` (`module_id`, `parent_id`, `module_type`, `module_title`, 
 (1715, 1705, 'action', 'Publish Item', NULL, 'publish', 0, NULL, 1, 0, 0, NULL, NULL, '2014-01-01 12:00:00', NULL),
 (1716, 1705, 'action', 'Draft Item', NULL, 'draft', 0, NULL, 1, 0, 0, NULL, NULL, '2014-01-01 12:00:00', NULL),
 (1717, 1705, 'action', 'Move Up', NULL, 'up', 0, NULL, 1, 0, 0, NULL, NULL, '2014-01-01 12:00:00', NULL),
-(1718, 1705, 'action', 'Move Down', NULL, 'down', 0, NULL, 1, 0, 0, NULL, NULL, '2014-01-01 12:00:00', NULL);
+(1718, 1705, 'action', 'Move Down', NULL, 'down', 0, NULL, 1, 0, 0, NULL, NULL, '2014-01-01 12:00:00', NULL),
+(1719, 0, 'controller', 'Sell Point', 'Selling Point', 'selling_point', 1, 'fa-turkish-lira', 1, 1719, 0, NULL, NULL, '2014-01-01 12:00:00', NULL),
+(1720, 1719, 'action', 'Sell Point', 'Selling Point', 'selling_point', 1, 'fa-rub', 1, 1720, 0, NULL, NULL, '2014-01-01 12:00:00', NULL);
 
 -- --------------------------------------------------------
 
@@ -1342,82 +1389,84 @@ INSERT INTO `module_rights` (`module_right_id`, `role_id`, `module_id`, `status`
 (28783, 19, 1673, 1, 1, NULL, NULL),
 (28784, 19, 1675, 1, 1, NULL, NULL),
 (28785, 19, 1676, 1, 1, NULL, NULL),
-(28910, 1, 16, 1, 1, NULL, NULL),
-(28911, 1, 2, 1, 1, NULL, NULL),
-(28912, 1, 17, 1, 1, NULL, NULL),
-(28913, 1, 18, 1, 1, NULL, NULL),
-(28914, 1, 19, 1, 1, NULL, NULL),
-(28915, 1, 20, 1, 1, NULL, NULL),
-(28916, 1, 21, 1, 1, NULL, NULL),
-(28917, 1, 22, 1, 1, NULL, NULL),
-(28918, 1, 23, 1, 1, NULL, NULL),
-(28919, 1, 24, 1, 1, NULL, NULL),
-(28920, 1, 25, 1, 1, NULL, NULL),
-(28921, 1, 26, 1, 1, NULL, NULL),
-(28922, 1, 27, 1, 1, NULL, NULL),
-(28923, 1, 28, 1, 1, NULL, NULL),
-(28924, 1, 29, 1, 1, NULL, NULL),
-(28925, 1, 30, 1, 1, NULL, NULL),
-(28926, 1, 32, 1, 1, NULL, NULL),
-(28927, 1, 31, 1, 1, NULL, NULL),
-(28928, 1, 33, 1, 1, NULL, NULL),
-(28929, 1, 44, 1, 1, NULL, NULL),
-(28930, 1, 45, 1, 1, NULL, NULL),
-(28931, 1, 46, 1, 1, NULL, NULL),
-(28932, 1, 47, 1, 1, NULL, NULL),
-(28933, 1, 48, 1, 1, NULL, NULL),
-(28934, 1, 49, 1, 1, NULL, NULL),
-(28935, 1, 36, 1, 1, NULL, NULL),
-(28936, 1, 35, 1, 1, NULL, NULL),
-(28937, 1, 37, 1, 1, NULL, NULL),
-(28938, 1, 38, 1, 1, NULL, NULL),
-(28939, 1, 39, 1, 1, NULL, NULL),
-(28940, 1, 40, 1, 1, NULL, NULL),
-(28941, 1, 41, 1, 1, NULL, NULL),
-(28942, 1, 42, 1, 1, NULL, NULL),
-(28943, 1, 43, 1, 1, NULL, NULL),
-(28944, 1, 818, 1, 1, NULL, NULL),
-(28945, 1, 817, 1, 1, NULL, NULL),
-(28946, 1, 819, 1, 1, NULL, NULL),
-(28947, 1, 820, 1, 1, NULL, NULL),
-(28948, 1, 821, 1, 1, NULL, NULL),
-(28949, 1, 822, 1, 1, NULL, NULL),
-(28950, 1, 823, 1, 1, NULL, NULL),
-(28951, 1, 824, 1, 1, NULL, NULL),
-(28952, 1, 825, 1, 1, NULL, NULL),
-(28953, 1, 826, 1, 1, NULL, NULL),
-(28954, 1, 827, 1, 1, NULL, NULL),
-(28955, 1, 828, 1, 1, NULL, NULL),
-(28956, 1, 829, 1, 1, NULL, NULL),
-(28957, 1, 830, 1, 1, NULL, NULL),
-(28958, 1, 1692, 1, 1, NULL, NULL),
-(28959, 1, 1691, 1, 1, NULL, NULL),
-(28960, 1, 1693, 1, 1, NULL, NULL),
-(28961, 1, 1694, 1, 1, NULL, NULL),
-(28962, 1, 1695, 1, 1, NULL, NULL),
-(28963, 1, 1696, 1, 1, NULL, NULL),
-(28964, 1, 1697, 1, 1, NULL, NULL),
-(28965, 1, 1698, 1, 1, NULL, NULL),
-(28966, 1, 1699, 1, 1, NULL, NULL),
-(28967, 1, 1700, 1, 1, NULL, NULL),
-(28968, 1, 1701, 1, 1, NULL, NULL),
-(28969, 1, 1702, 1, 1, NULL, NULL),
-(28970, 1, 1703, 1, 1, NULL, NULL),
-(28971, 1, 1704, 1, 1, NULL, NULL),
-(28972, 1, 1705, 1, 1, NULL, NULL),
-(28973, 1, 1706, 1, 1, NULL, NULL),
-(28974, 1, 1707, 1, 1, NULL, NULL),
-(28975, 1, 1708, 1, 1, NULL, NULL),
-(28976, 1, 1709, 1, 1, NULL, NULL),
-(28977, 1, 1710, 1, 1, NULL, NULL),
-(28978, 1, 1711, 1, 1, NULL, NULL),
-(28979, 1, 1712, 1, 1, NULL, NULL),
-(28980, 1, 1713, 1, 1, NULL, NULL),
-(28981, 1, 1714, 1, 1, NULL, NULL),
-(28982, 1, 1715, 1, 1, NULL, NULL),
-(28983, 1, 1716, 1, 1, NULL, NULL),
-(28984, 1, 1717, 1, 1, NULL, NULL),
-(28985, 1, 1718, 1, 1, NULL, NULL);
+(28986, 1, 16, 1, 1, NULL, NULL),
+(28987, 1, 2, 1, 1, NULL, NULL),
+(28988, 1, 17, 1, 1, NULL, NULL),
+(28989, 1, 18, 1, 1, NULL, NULL),
+(28990, 1, 19, 1, 1, NULL, NULL),
+(28991, 1, 20, 1, 1, NULL, NULL),
+(28992, 1, 21, 1, 1, NULL, NULL),
+(28993, 1, 22, 1, 1, NULL, NULL),
+(28994, 1, 23, 1, 1, NULL, NULL),
+(28995, 1, 24, 1, 1, NULL, NULL),
+(28996, 1, 25, 1, 1, NULL, NULL),
+(28997, 1, 26, 1, 1, NULL, NULL),
+(28998, 1, 27, 1, 1, NULL, NULL),
+(28999, 1, 28, 1, 1, NULL, NULL),
+(29000, 1, 29, 1, 1, NULL, NULL),
+(29001, 1, 30, 1, 1, NULL, NULL),
+(29002, 1, 32, 1, 1, NULL, NULL),
+(29003, 1, 31, 1, 1, NULL, NULL),
+(29004, 1, 33, 1, 1, NULL, NULL),
+(29005, 1, 44, 1, 1, NULL, NULL),
+(29006, 1, 45, 1, 1, NULL, NULL),
+(29007, 1, 46, 1, 1, NULL, NULL),
+(29008, 1, 47, 1, 1, NULL, NULL),
+(29009, 1, 48, 1, 1, NULL, NULL),
+(29010, 1, 49, 1, 1, NULL, NULL),
+(29011, 1, 36, 1, 1, NULL, NULL),
+(29012, 1, 35, 1, 1, NULL, NULL),
+(29013, 1, 37, 1, 1, NULL, NULL),
+(29014, 1, 38, 1, 1, NULL, NULL),
+(29015, 1, 39, 1, 1, NULL, NULL),
+(29016, 1, 40, 1, 1, NULL, NULL),
+(29017, 1, 41, 1, 1, NULL, NULL),
+(29018, 1, 42, 1, 1, NULL, NULL),
+(29019, 1, 43, 1, 1, NULL, NULL),
+(29020, 1, 818, 1, 1, NULL, NULL),
+(29021, 1, 817, 1, 1, NULL, NULL),
+(29022, 1, 819, 1, 1, NULL, NULL),
+(29023, 1, 820, 1, 1, NULL, NULL),
+(29024, 1, 821, 1, 1, NULL, NULL),
+(29025, 1, 822, 1, 1, NULL, NULL),
+(29026, 1, 823, 1, 1, NULL, NULL),
+(29027, 1, 824, 1, 1, NULL, NULL),
+(29028, 1, 825, 1, 1, NULL, NULL),
+(29029, 1, 826, 1, 1, NULL, NULL),
+(29030, 1, 827, 1, 1, NULL, NULL),
+(29031, 1, 828, 1, 1, NULL, NULL),
+(29032, 1, 829, 1, 1, NULL, NULL),
+(29033, 1, 830, 1, 1, NULL, NULL),
+(29034, 1, 1692, 1, 1, NULL, NULL),
+(29035, 1, 1691, 1, 1, NULL, NULL),
+(29036, 1, 1693, 1, 1, NULL, NULL),
+(29037, 1, 1694, 1, 1, NULL, NULL),
+(29038, 1, 1695, 1, 1, NULL, NULL),
+(29039, 1, 1696, 1, 1, NULL, NULL),
+(29040, 1, 1697, 1, 1, NULL, NULL),
+(29041, 1, 1698, 1, 1, NULL, NULL),
+(29042, 1, 1699, 1, 1, NULL, NULL),
+(29043, 1, 1700, 1, 1, NULL, NULL),
+(29044, 1, 1701, 1, 1, NULL, NULL),
+(29045, 1, 1702, 1, 1, NULL, NULL),
+(29046, 1, 1703, 1, 1, NULL, NULL),
+(29047, 1, 1704, 1, 1, NULL, NULL),
+(29048, 1, 1706, 1, 1, NULL, NULL),
+(29049, 1, 1705, 1, 1, NULL, NULL),
+(29050, 1, 1707, 1, 1, NULL, NULL),
+(29051, 1, 1708, 1, 1, NULL, NULL),
+(29052, 1, 1709, 1, 1, NULL, NULL),
+(29053, 1, 1710, 1, 1, NULL, NULL),
+(29054, 1, 1711, 1, 1, NULL, NULL),
+(29055, 1, 1712, 1, 1, NULL, NULL),
+(29056, 1, 1713, 1, 1, NULL, NULL),
+(29057, 1, 1714, 1, 1, NULL, NULL),
+(29058, 1, 1715, 1, 1, NULL, NULL),
+(29059, 1, 1716, 1, 1, NULL, NULL),
+(29060, 1, 1717, 1, 1, NULL, NULL),
+(29061, 1, 1718, 1, 1, NULL, NULL),
+(29062, 1, 1719, 1, 1, NULL, NULL),
+(29063, 1, 1720, 1, 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1456,24 +1505,22 @@ INSERT INTO `roles` (`role_id`, `role_homepage`, `department_id`, `role_title`, 
 --
 
 CREATE TABLE `sales` (
-  `sale_time` timestamp NOT NULL DEFAULT current_timestamp(),
-  `customer_id` int(10) DEFAULT NULL,
-  `employee_id` int(10) NOT NULL DEFAULT 0,
-  `comment` text NOT NULL,
-  `sale_id` int(10) NOT NULL,
-  `payment_type` varchar(512) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `sales`
---
-
-INSERT INTO `sales` (`sale_time`, `customer_id`, `employee_id`, `comment`, `sale_id`, `payment_type`) VALUES
-('2020-08-21 08:31:20', NULL, 1, '0', 1, 'Cash: Rs: 1000.00<br />'),
-('2020-09-02 08:50:07', NULL, 1, '0', 2, 'Cash: Rs: 1000.00<br />Debit Card: Rs: 160.00<br />Credit Card: -Rs: 80.00<br />'),
-('2020-09-10 09:06:03', NULL, 1, '0', 3, 'Cash: Rs: 760.00<br />'),
-('2020-11-14 21:36:30', NULL, 1, '0', 4, 'Cash: Rs: 1440.00<br />'),
-('2020-11-14 21:47:44', NULL, 1, '0', 5, 'Cash: -Rs: 180.00<br />');
+  `sale_id` int(11) NOT NULL,
+  `customer_id` int(11) NOT NULL,
+  `discount` float NOT NULL,
+  `price` float NOT NULL,
+  `sale_tax` float NOT NULL,
+  `total_price` float NOT NULL,
+  `payment_type` varchar(50) COLLATE utf16_persian_ci NOT NULL,
+  `remarks` text COLLATE utf16_persian_ci DEFAULT NULL,
+  `status` int(11) NOT NULL DEFAULT 1,
+  `order` int(11) DEFAULT NULL,
+  `created_by` int(11) DEFAULT NULL,
+  `created_date` timestamp NOT NULL DEFAULT current_timestamp(),
+  `last_updated` datetime DEFAULT NULL,
+  `test_token_id` varchar(255) COLLATE utf16_persian_ci DEFAULT NULL,
+  `test_report_by` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_persian_ci;
 
 -- --------------------------------------------------------
 
@@ -1506,6 +1553,30 @@ INSERT INTO `sales_items` (`sale_id`, `item_id`, `description`, `serialnumber`, 
 (4, 1, '', '', 1, 1.00, '100.00', 150.00, 0),
 (4, 2, '', '', 2, 1.00, '100.00', 150.00, 0),
 (5, 1, '', '', 1, -1.00, '100.00', 150.00, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sales_item_users`
+--
+
+CREATE TABLE `sales_item_users` (
+  `id` int(11) NOT NULL,
+  `item_id` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `dated` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `sales_item_users`
+--
+
+INSERT INTO `sales_item_users` (`id`, `item_id`, `quantity`, `user_id`, `dated`) VALUES
+(1, 17, 14, 1, '2021-04-08 23:32:33'),
+(2, 15, 8, 1, '2021-04-08 23:34:02'),
+(3, 18, 5, 1, '2021-04-08 23:59:48'),
+(4, 16, 5, 1, '2021-04-09 00:02:00');
 
 -- --------------------------------------------------------
 
@@ -1634,6 +1705,15 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`user_id`, `role_id`, `directorate_id`, `district_id`, `hospital_id`, `user_title`, `user_email`, `user_mobile_number`, `user_name`, `user_password`, `user_image`, `user_password_reset_code`, `mobile_token`, `profile_complete`, `status`, `order`, `created_by`, `created_date`, `last_updated`) VALUES
 (1, 1, 0, NULL, '0', 'Admin', 'navidaziz98@gmail.com', '03244424414', 'admin', 'admin', 'users/c88e4c3fddc3ad91320cb351134c4191.png', NULL, NULL, 1, 1, 1, 1, '2015-02-06 00:00:00', '2015-02-06 00:00:00');
 
+-- --------------------------------------------------------
+
+--
+-- Structure for view `all_items`
+--
+DROP TABLE IF EXISTS `all_items`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `all_items`  AS  select `items`.`item_id` AS `item_id`,`items`.`name` AS `name`,`items`.`category` AS `category`,`items`.`item_code_no` AS `item_code_no`,`items`.`description` AS `description`,`items`.`cost_price` AS `cost_price`,`items`.`unit_price` AS `unit_price`,`items`.`discount` AS `discount`,`items`.`unit_price` - `items`.`discount` AS `sale_price`,`items`.`unit` AS `unit`,`items`.`reorder_level` AS `reorder_level`,`items`.`location` AS `location`,`items`.`status` AS `status`,`items`.`order` AS `order`,`items`.`created_by` AS `created_by`,`items`.`created_date` AS `created_date`,`items`.`last_updated` AS `last_updated`,(select sum(`i`.`inventory_transaction`) from `inventory` `i` where `i`.`item_id` = `items`.`item_id`) AS `total_quantity` from `items` ;
+
 --
 -- Indexes for dumped tables
 --
@@ -1663,8 +1743,7 @@ ALTER TABLE `inventory`
 --
 ALTER TABLE `items`
   ADD PRIMARY KEY (`item_id`),
-  ADD UNIQUE KEY `item_number` (`item_code_no`),
-  ADD KEY `ospos_items_ibfk_1` (`supplier_id`);
+  ADD UNIQUE KEY `item_number` (`item_code_no`);
 
 --
 -- Indexes for table `modules`
@@ -1690,9 +1769,7 @@ ALTER TABLE `roles`
 -- Indexes for table `sales`
 --
 ALTER TABLE `sales`
-  ADD PRIMARY KEY (`sale_id`),
-  ADD KEY `customer_id` (`customer_id`),
-  ADD KEY `employee_id` (`employee_id`);
+  ADD PRIMARY KEY (`sale_id`);
 
 --
 -- Indexes for table `sales_items`
@@ -1700,6 +1777,12 @@ ALTER TABLE `sales`
 ALTER TABLE `sales_items`
   ADD PRIMARY KEY (`sale_id`,`item_id`,`line`),
   ADD KEY `item_id` (`item_id`);
+
+--
+-- Indexes for table `sales_item_users`
+--
+ALTER TABLE `sales_item_users`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `social_media_icons`
@@ -1742,25 +1825,25 @@ ALTER TABLE `icons`
 -- AUTO_INCREMENT for table `inventory`
 --
 ALTER TABLE `inventory`
-  MODIFY `inventory_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `inventory_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `items`
 --
 ALTER TABLE `items`
-  MODIFY `item_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `item_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `modules`
 --
 ALTER TABLE `modules`
-  MODIFY `module_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1719;
+  MODIFY `module_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1721;
 
 --
 -- AUTO_INCREMENT for table `module_rights`
 --
 ALTER TABLE `module_rights`
-  MODIFY `module_right_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28986;
+  MODIFY `module_right_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29064;
 
 --
 -- AUTO_INCREMENT for table `roles`
@@ -1772,7 +1855,13 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `sales`
 --
 ALTER TABLE `sales`
-  MODIFY `sale_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `sale_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `sales_item_users`
+--
+ALTER TABLE `sales_item_users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `social_media_icons`

@@ -36,10 +36,12 @@ class Items extends Admin_Controller
     public function view()
     {
 
-        $where = "`items`.`status` IN (0, 1) ";
-        $data = $this->item_model->get_item_list($where);
-        $this->data["items"] = $data->items;
-        $this->data["pagination"] = $data->pagination;
+        //$where = "`items`.`status` IN (0, 1) ";
+        //$data = $this->item_model->get_item_list($where);
+        //$this->data["items"] = $data->items;
+        //$this->data["pagination"] = $data->pagination;
+        $query = "SELECT * FROM all_items WHERE `status` IN (0, 1)";
+        $this->data["items"] = $this->db->query($query)->result();
         $this->data["title"] = $this->lang->line('Items');
         $this->data["view"] = ADMIN_DIR . "items/items";
         $this->load->view(ADMIN_DIR . "layout", $this->data);
@@ -163,8 +165,6 @@ class Items extends Admin_Controller
     public function add()
     {
 
-        $this->data["suppliers"] = $this->item_model->getList("suppliers", "supplier_id", "supplier_name", $where = "`suppliers`.`status` IN (1) ");
-
         $this->data["title"] = $this->lang->line('Add New Item');
         $this->data["view"] = ADMIN_DIR . "items/add_item";
         $this->load->view(ADMIN_DIR . "layout", $this->data);
@@ -172,19 +172,21 @@ class Items extends Admin_Controller
     //--------------------------------------------------------------------
     public function save_data()
     {
+
         if ($this->item_model->validate_form_data(true) === TRUE) {
-
-
 
             $item_id = $this->item_model->save_data();
             if ($item_id) {
                 $cost_price = $this->input->post("cost_price");
-                $quantity = $this->input->post("quantity");
+                $unit_price = $this->input->post("unit_price");
+                $supplier_id = $this->input->post("supplier_id");
                 $created_by = $this->session->userdata("user_id");
+                $date = date('Y-m-d', time());
+
 
                 //update item enventory after first time add 
-                $query = "INSERT INTO `inventory`(`item_id`, `item_cost_price`,  `transaction_type`, `inventory_transaction`,`created_by`) 
-                            VALUES ('" . $item_id . "','" . $cost_price . "', 'First Time Item Add','" . $quantity . "','" . $created_by . "')";
+                $query = "INSERT INTO `inventory`(`item_id`, `supplier_id`, `item_cost_price`, `item_unit_price`, `transaction_type`, `inventory_transaction`,`created_by`, `date`) 
+                            VALUES ('" . $item_id . "', '" . $supplier_id . "', '" . $cost_price . "', '" . $unit_price . "', 'Item Created','0','" . $created_by . "', '" . $date . "')";
                 $this->db->query($query);
                 $this->session->set_flashdata("msg_success", $this->lang->line("add_msg_success"));
                 redirect(ADMIN_DIR . "items/edit/$item_id");
@@ -207,8 +209,6 @@ class Items extends Admin_Controller
         $item_id = (int) $item_id;
         $this->data["item"] = $this->item_model->get($item_id);
 
-        $this->data["suppliers"] = $this->item_model->getList("suppliers", "supplier_id", "supplier_name", $where = "`suppliers`.`status` IN (1) ");
-
         $this->data["title"] = $this->lang->line('Edit Item');
         $this->data["view"] = ADMIN_DIR . "items/edit_item";
         $this->load->view(ADMIN_DIR . "layout", $this->data);
@@ -220,7 +220,7 @@ class Items extends Admin_Controller
 
         $item_id = (int) $item_id;
 
-        if ($this->item_model->validate_form_data(false) === TRUE) {
+        if ($this->item_model->validate_form_data() === TRUE) {
 
             $item_id = $this->item_model->update_data($item_id);
             if ($item_id) {
@@ -237,21 +237,54 @@ class Items extends Admin_Controller
         }
     }
 
-
-    /**
-     * get data as a json array 
-     */
-    public function get_json()
+    function get_item_detail()
     {
-        $where = array("status" => 1);
-        $where[$this->uri->segment(3)] = $this->uri->segment(4);
-        $data["items"] = $this->item_model->getBy($where, false, "item_id");
-        $j_array[] = array("id" => "", "value" => "item");
-        foreach ($data["items"] as $item) {
-            $j_array[] = array("id" => $item->item_id, "value" => "");
-        }
-        echo json_encode($j_array);
+        $item_id = (int) $this->input->post("item_id");
+        $query = "SELECT * FROM all_items WHERE item_id = '" . $item_id . "'";
+        $this->data["items"] = $this->db->query($query)->result();
+        $this->data["suppliers"] = $this->item_model->getList("suppliers", "supplier_id", "supplier_name", "`suppliers`.`status` IN (1)");
+        $query = "SELECT * FROM inventory WHERE item_id ='" . $item_id . "'";
+        $this->data['inventories'] = $this->db->query($query)->result();
+        $this->data["title"] = $this->lang->line('Item Details');
+        $this->load->view(ADMIN_DIR . "items/item_detail", $this->data);
     }
-    //-----------------------------------------------------
 
+    function add_item_stocks()
+    {
+        $item_id = (int) $this->input->post("item_id");
+
+        $cost_price = $this->input->post("cost_price");
+        $unit_price = $this->input->post("unit_price");
+        $supplier_id = $this->input->post("supplier_id");
+        $transaction = $this->input->post("transaction");
+        $date = $this->input->post("date");
+        $created_by = $this->session->userdata("user_id");
+
+        //update item enventory after first time add 
+        $query = "INSERT INTO `inventory`(`item_id`, `supplier_id`, `item_cost_price`, `item_unit_price`, `transaction_type`, `inventory_transaction`,`date`,`created_by`) 
+                            VALUES ('" . $item_id . "', '" . $supplier_id . "', '" . $cost_price . "', '" . $unit_price . "', 'Stock In','" . $transaction . "','" . $date . "','" . $created_by . "')";
+        $this->db->query($query);
+        $this->session->set_flashdata("msg_success", $this->lang->line("add_msg_success"));
+        redirect(ADMIN_DIR . "items/view");
+    }
+
+    function return_item_stocks()
+    {
+        $item_id = (int) $this->input->post("item_id");
+
+        $cost_price = '';
+        $unit_price = '';
+        $supplier_id = $this->input->post("supplier_id");
+        $transaction = $this->input->post("transaction");
+        $date = $this->input->post("date");
+        $remarks = $this->input->post("remarks");
+        $created_by = $this->session->userdata("user_id");
+
+        //update item enventory after first time add 
+        $query = "INSERT INTO `inventory`(`item_id`, `supplier_id`, `item_cost_price`, `item_unit_price`, `transaction_type`, `inventory_transaction`,`date`, `remarks`, `created_by`) 
+                            VALUES ('" . $item_id . "', '" . $supplier_id . "', '" . $cost_price . "', '" . $unit_price . "', 'Stock Return','-" . $transaction . "','" . $date . "', '" . $remarks . "', '" . $created_by . "')";
+        $this->db->query($query);
+        $this->session->set_flashdata("msg_success", $this->lang->line("add_msg_success"));
+        redirect(ADMIN_DIR . "items/view");
+    }
 }

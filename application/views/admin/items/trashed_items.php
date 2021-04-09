@@ -77,10 +77,9 @@
 <th><?php echo $this->lang->line('description'); ?></th>
 <th><?php echo $this->lang->line('cost_price'); ?></th>
 <th><?php echo $this->lang->line('unit_price'); ?></th>
-<th><?php echo $this->lang->line('quantity'); ?></th>
+<th><?php echo $this->lang->line('unit'); ?></th>
 <th><?php echo $this->lang->line('reorder_level'); ?></th>
 <th><?php echo $this->lang->line('location'); ?></th>
-<th><?php echo $this->lang->line('supplier_name'); ?></th>
                             <th><?php echo $this->lang->line('Action'); ?></th>
 						  </tr>
 						</thead>
@@ -108,16 +107,13 @@
                 <?php echo $item->unit_price; ?>
             </td>
             <td>
-                <?php echo $item->quantity; ?>
+                <?php echo $item->unit; ?>
             </td>
             <td>
                 <?php echo $item->reorder_level; ?>
             </td>
             <td>
                 <?php echo $item->location; ?>
-            </td>
-            <td>
-                <?php echo $item->supplier_name; ?>
             </td>
                             
                             <td>

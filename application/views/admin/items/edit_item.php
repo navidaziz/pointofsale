@@ -136,24 +136,6 @@
                 </div>
 
                 <div class="form-group">
-                    <?php
-                    $label = array(
-                        "class" => "col-md-2 control-label",
-                        "style" => "",
-                    );
-                    echo form_label($this->lang->line('supplier_name'), "Supplier Id", $label);
-                    ?>
-
-                    <div class="col-md-8">
-                        <?php
-                        echo form_dropdown("supplier_id", $suppliers, $item->supplier_id, "class=\"form-control\" required style=\"\"");
-                        ?>
-                    </div>
-                    <?php echo form_error("supplier_id", "<p class=\"text-danger\">", "</p>"); ?>
-                </div>
-
-
-                <div class="form-group">
 
                     <?php
                     $label = array(
@@ -163,7 +145,20 @@
                     echo form_label($this->lang->line('item_code_no'), "item_code_no", $label);      ?>
 
                     <div class="col-md-8">
-                        <h5><?php echo $item->item_code_no; ?></h5>
+                        <?php
+
+                        $number = array(
+                            "type"          =>  "number",
+                            "name"          =>  "item_code_no",
+                            "id"            =>  "item_code_no",
+                            "class"         =>  "form-control",
+                            "style"         =>  "", "title"         =>  $this->lang->line('item_code_no'),
+                            "value"         =>  set_value("item_code_no", $item->item_code_no),
+                            "placeholder"   =>  $this->lang->line('item_code_no')
+                        );
+                        echo  form_input($number);
+                        ?>
+                        <?php echo form_error("item_code_no", "<p class=\"text-danger\">", "</p>"); ?>
                     </div>
 
 
@@ -243,8 +238,8 @@
                     <div class="col-md-8">
                         <?php
 
-                        $text = array(
-                            "type"          =>  "text",
+                        $number = array(
+                            "type"          =>  "number",
                             "name"          =>  "unit_price",
                             "id"            =>  "unit_price",
                             "class"         =>  "form-control",
@@ -252,7 +247,7 @@
                             "value"         =>  set_value("unit_price", $item->unit_price),
                             "placeholder"   =>  $this->lang->line('unit_price')
                         );
-                        echo  form_input($text);
+                        echo  form_input($number);
                         ?>
                         <?php echo form_error("unit_price", "<p class=\"text-danger\">", "</p>"); ?>
                     </div>
@@ -269,24 +264,25 @@
                         "class" => "col-md-2 control-label",
                         "style" => "",
                     );
-                    echo form_label('Unit', "unit", $label);      ?>
+                    echo form_label("Discount", "Discount", $label);      ?>
 
                     <div class="col-md-8">
                         <?php
 
-                        $text = array(
-                            "type"          =>  "text",
-                            "name"          =>  "unit",
-                            "id"            =>  "unit",
+                        $number = array(
+                            "type"          =>  "number",
+                            "name"          =>  "discount",
+                            "id"            =>  "discount",
                             "class"         =>  "form-control",
                             "style"         =>  "",
-                            "title"         =>  "Unit",
-                            "value"         =>  set_value("unit", $item->unit),
-                            "placeholder"   =>  "Unit"
+                            "required"      => "required",
+                            "title"         =>  "Discount",
+                            "value"         =>  set_value("discount", $item->discount),
+                            "placeholder"   =>  "Discount"
                         );
-                        echo  form_input($text);
+                        echo  form_input($number);
                         ?>
-                        <?php echo form_error("unit", "<p class=\"text-danger\">", "</p>"); ?>
+                        <?php echo form_error("discount", "<p class=\"text-danger\">", "</p>"); ?>
                     </div>
 
 
@@ -300,10 +296,23 @@
                         "class" => "col-md-2 control-label",
                         "style" => "",
                     );
-                    echo form_label($this->lang->line('quantity'), "quantity", $label);      ?>
+                    echo form_label($this->lang->line('unit'), "unit", $label);      ?>
 
                     <div class="col-md-8">
-                        <h5><?php echo  $item->quantity;  ?></h5>
+                        <?php
+
+                        $text = array(
+                            "type"          =>  "text",
+                            "name"          =>  "unit",
+                            "id"            =>  "unit",
+                            "class"         =>  "form-control",
+                            "style"         =>  "", "title"         =>  $this->lang->line('unit'),
+                            "value"         =>  set_value("unit", $item->unit),
+                            "placeholder"   =>  $this->lang->line('unit')
+                        );
+                        echo  form_input($text);
+                        ?>
+                        <?php echo form_error("unit", "<p class=\"text-danger\">", "</p>"); ?>
                     </div>
 
 
@@ -322,8 +331,8 @@
                     <div class="col-md-8">
                         <?php
 
-                        $number = array(
-                            "type"          =>  "number",
+                        $text = array(
+                            "type"          =>  "text",
                             "name"          =>  "reorder_level",
                             "id"            =>  "reorder_level",
                             "class"         =>  "form-control",
@@ -331,7 +340,7 @@
                             "value"         =>  set_value("reorder_level", $item->reorder_level),
                             "placeholder"   =>  $this->lang->line('reorder_level')
                         );
-                        echo  form_input($number);
+                        echo  form_input($text);
                         ?>
                         <?php echo form_error("reorder_level", "<p class=\"text-danger\">", "</p>"); ?>
                     </div>
@@ -347,26 +356,27 @@
                         "class" => "col-md-2 control-label",
                         "style" => "",
                     );
-                    echo form_label($this->lang->line('location'), "location", $label);      ?>
+                    echo form_label($this->lang->line('location'), "location", $label);
+                    ?>
 
                     <div class="col-md-8">
                         <?php
 
-                        $text = array(
-                            "type"          =>  "text",
+                        $textarea = array(
                             "name"          =>  "location",
                             "id"            =>  "location",
                             "class"         =>  "form-control",
-                            "style"         =>  "", "title"         =>  $this->lang->line('location'),
-                            "value"         =>  set_value("location", $item->location),
+                            "style"         =>  "",
+                            "title"         =>  $this->lang->line('location'),
+                            "rows"          =>  "",
+                            "cols"          =>  "",
+                            "value"         => set_value("location", $item->location),
                             "placeholder"   =>  $this->lang->line('location')
                         );
-                        echo  form_input($text);
+                        echo form_textarea($textarea);
                         ?>
                         <?php echo form_error("location", "<p class=\"text-danger\">", "</p>"); ?>
                     </div>
-
-
 
                 </div>
 

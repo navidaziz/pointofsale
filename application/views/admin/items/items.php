@@ -1,4 +1,39 @@
-<!-- PAGE HEADER-->
+<!-- Modal -->
+<script>
+    function get_item_detail(item_id) {
+        $('#inventory_model_body').html('<p style="text-align:center"><strong>Please Wait...... Loading</strong></p>');
+        $.ajax({
+            type: "POST",
+            url: "<?php echo site_url(ADMIN_DIR . "items/get_item_detail") ?>",
+            data: {
+                item_id: item_id
+            }
+        }).done(function(data) {
+            $('#inventory_model_body').html(data);
+        });
+
+
+    }
+</script>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="inventory_model" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width: 90%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel" style="display: inline;">Item Inventory</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="inventory_model_body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+            </div>
+        </div>
+    </div>
+</div>
 <div class="row">
     <div class="col-sm-12">
         <div class="page-header">
@@ -77,12 +112,15 @@
                                 <!-- <th><?php echo $this->lang->line('description'); ?></th> -->
                                 <th><?php echo $this->lang->line('cost_price'); ?></th>
                                 <th><?php echo $this->lang->line('unit_price'); ?></th>
-                                <th><?php echo $this->lang->line('quantity'); ?></th>
+                                <th>Discount</th>
+                                <th>Sale Price</th>
+                                <th>Quantity</th>
+                                <th><?php echo $this->lang->line('unit'); ?></th>
                                 <th><?php echo $this->lang->line('reorder_level'); ?></th>
-                                <th><?php echo $this->lang->line('location'); ?></th>
-                                <!-- <th><?php echo $this->lang->line('supplier_name'); ?></th> -->
+                                <!-- <th><?php echo $this->lang->line('location'); ?></th> -->
                                 <th><?php echo $this->lang->line('Status'); ?></th>
                                 <th><?php echo $this->lang->line('Action'); ?></th>
+                                <th>Inventory</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -110,16 +148,20 @@
                                         <?php echo $item->unit_price; ?>
                                     </td>
                                     <td>
-                                        <?php echo $item->quantity; ?>
+                                        <?php echo $item->discount; ?>
+                                    </td>
+                                    <td>
+                                        <?php echo $item->sale_price; ?>
+                                    </td>
+                                    <td><?php echo $item->total_quantity ?></td>
+                                    <td>
+                                        <?php echo $item->unit; ?>
                                     </td>
                                     <td>
                                         <?php echo $item->reorder_level; ?>
                                     </td>
-                                    <td>
-                                        <?php echo $item->location; ?>
-                                    </td>
                                     <!-- <td>
-                                        <?php echo $item->supplier_name; ?>
+                                        <?php echo $item->location; ?>
                                     </td> -->
                                     <td>
                                         <?php echo status($item->status,  $this->lang); ?>
@@ -144,12 +186,13 @@
                                         <a class="llink llink-edit" href="<?php echo site_url(ADMIN_DIR . "items/edit/" . $item->item_id . "/" . $this->uri->segment(4)); ?>"><i class="fa fa-pencil-square-o"></i></a>
                                         <a class="llink llink-trash" href="<?php echo site_url(ADMIN_DIR . "items/trash/" . $item->item_id . "/" . $this->uri->segment(4)); ?>"><i class="fa fa-trash-o"></i></a>
                                     </td>
+                                    <td><a onclick="get_item_detail('<?php echo $item->item_id; ?>')" href="#" data-toggle="modal" data-target="#exampleModal">
+                                            Inventory
+                                        </a></td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
                     </table>
-
-                    <?php echo $pagination; ?>
 
 
                 </div>
