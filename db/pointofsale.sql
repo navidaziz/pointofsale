@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 09, 2021 at 06:54 AM
+-- Generation Time: Apr 10, 2021 at 07:14 AM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.4
 
@@ -575,7 +575,9 @@ INSERT INTO `inventory` (`inventory_id`, `item_id`, `supplier_id`, `item_cost_pr
 (9, 16, 0, 100, 120, NULL, NULL, 'First Time Item Added', 0, '0000-00-00', NULL, 1, NULL, 1, '2021-04-08 19:26:26', NULL),
 (10, 17, 0, 23, 23, NULL, NULL, 'First Time Item Added', 0, '0000-00-00', NULL, 1, NULL, 1, '2021-04-08 19:31:41', NULL),
 (11, 18, 0, 100, 150, NULL, NULL, 'First Time Item Added', 0, '2021-04-08', NULL, 1, NULL, 1, '2021-04-08 20:06:52', NULL),
-(12, 18, 1, 100, 120, NULL, NULL, 'Stock In', 100, '2021-04-07', NULL, 1, NULL, 1, '2021-04-08 20:08:19', NULL);
+(12, 18, 1, 100, 120, NULL, NULL, 'Stock In', 100, '2021-04-07', NULL, 1, NULL, 1, '2021-04-08 20:08:19', NULL),
+(13, 19, 0, 1000, 1500, NULL, NULL, 'Item Created', 0, '2021-04-09', NULL, 1, NULL, 1, '2021-04-09 17:47:34', NULL),
+(14, 19, 1, 1000, 1500, NULL, NULL, 'Stock In', 10, '2021-04-09', NULL, 1, NULL, 1, '2021-04-09 17:48:02', NULL);
 
 -- --------------------------------------------------------
 
@@ -610,7 +612,8 @@ INSERT INTO `items` (`item_id`, `name`, `category`, `item_code_no`, `description
 (15, 'Chambor', 'Dry Fruits', '123456', 'some detail here', 100.00, 120.00, 10, '/ Kg', 10.00, 'Row 3 line 1', 1, 15, NULL, '2021-04-07 19:08:15', NULL),
 (16, 'Birmogh', 'Dry Fruits', '1234567', '', 100.00, 120.00, 20, '', 10.00, '', 1, 16, NULL, '2021-04-08 19:26:26', NULL),
 (17, 'dsfasdf', 'dsfasdf', '2342342342', 'asdfasdf', 23.00, 23.00, 0, '23', 23.00, 'sdfasdfa', 1, 17, NULL, '2021-04-08 19:31:41', NULL),
-(18, 'item 2', 'Dry Fruits', '1234563333', 'vzxcvz', 100.00, 150.00, 0, '/ Kg', 5.00, 'vczcxvz', 1, 18, NULL, '2021-04-08 20:06:52', NULL);
+(18, 'item 2', 'Dry Fruits', '1234563333', 'vzxcvz', 100.00, 150.00, 0, '/ Kg', 5.00, 'vczcxvz', 1, 18, NULL, '2021-04-08 20:06:52', NULL),
+(19, 'Nokia', 'Mobile', '123456789', 'asdfas', 1000.00, 1500.00, 0, '/ Mobile', 10.00, 'some where ', 1, 19, NULL, '2021-04-09 17:47:34', NULL);
 
 -- --------------------------------------------------------
 
@@ -1573,10 +1576,8 @@ CREATE TABLE `sales_item_users` (
 --
 
 INSERT INTO `sales_item_users` (`id`, `item_id`, `quantity`, `user_id`, `dated`) VALUES
-(1, 17, 14, 1, '2021-04-08 23:32:33'),
-(2, 15, 8, 1, '2021-04-08 23:34:02'),
-(3, 18, 5, 1, '2021-04-08 23:59:48'),
-(4, 16, 5, 1, '2021-04-09 00:02:00');
+(19, 15, 10, 1, '2021-04-09 22:29:11'),
+(20, 18, 10, 1, '2021-04-09 22:47:40');
 
 -- --------------------------------------------------------
 
@@ -1673,6 +1674,31 @@ INSERT INTO `system_global_settings` (`system_global_setting_id`, `system_title`
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `taxes`
+--
+
+CREATE TABLE `taxes` (
+  `tax_id` int(10) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `tax_percentage` double(15,3) NOT NULL,
+  `status` int(11) NOT NULL DEFAULT 1,
+  `order` int(11) DEFAULT NULL,
+  `created_by` int(11) DEFAULT NULL,
+  `created_date` datetime NOT NULL DEFAULT current_timestamp(),
+  `last_updated` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `taxes`
+--
+
+INSERT INTO `taxes` (`tax_id`, `name`, `tax_percentage`, `status`, `order`, `created_by`, `created_date`, `last_updated`) VALUES
+(1, 'Sales Tax', 0.000, 1, NULL, NULL, '2021-04-09 20:20:14', NULL),
+(2, 'Area Tax', 0.000, 0, NULL, NULL, '2021-04-09 20:21:59', NULL);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
@@ -1708,11 +1734,36 @@ INSERT INTO `users` (`user_id`, `role_id`, `directorate_id`, `district_id`, `hos
 -- --------------------------------------------------------
 
 --
+-- Stand-in structure for view `user_sale_summary`
+-- (See below for the actual view)
+--
+CREATE TABLE `user_sale_summary` (
+`user_id` int(11)
+,`items_total` double(19,2)
+,`total_discount` double(19,2)
+,`total_price` double(19,2)
+,`tax_total_percentage` double(20,3)
+,`total_tax_pay_able` double(19,2)
+,`pay_able` double(19,2)
+);
+
+-- --------------------------------------------------------
+
+--
 -- Structure for view `all_items`
 --
 DROP TABLE IF EXISTS `all_items`;
 
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `all_items`  AS  select `items`.`item_id` AS `item_id`,`items`.`name` AS `name`,`items`.`category` AS `category`,`items`.`item_code_no` AS `item_code_no`,`items`.`description` AS `description`,`items`.`cost_price` AS `cost_price`,`items`.`unit_price` AS `unit_price`,`items`.`discount` AS `discount`,`items`.`unit_price` - `items`.`discount` AS `sale_price`,`items`.`unit` AS `unit`,`items`.`reorder_level` AS `reorder_level`,`items`.`location` AS `location`,`items`.`status` AS `status`,`items`.`order` AS `order`,`items`.`created_by` AS `created_by`,`items`.`created_date` AS `created_date`,`items`.`last_updated` AS `last_updated`,(select sum(`i`.`inventory_transaction`) from `inventory` `i` where `i`.`item_id` = `items`.`item_id`) AS `total_quantity` from `items` ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `user_sale_summary`
+--
+DROP TABLE IF EXISTS `user_sale_summary`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `user_sale_summary`  AS  select `sales_item_users`.`user_id` AS `user_id`,sum(`all_items`.`unit_price` * `sales_item_users`.`quantity`) AS `items_total`,sum(`all_items`.`unit_price` * `sales_item_users`.`quantity`) - sum(`all_items`.`sale_price` * `sales_item_users`.`quantity`) AS `total_discount`,sum(`all_items`.`sale_price` * `sales_item_users`.`quantity`) AS `total_price`,if((select sum(`taxes`.`tax_percentage`) from `taxes` where `taxes`.`status` = 1) is null,0,(select sum(`taxes`.`tax_percentage`) from `taxes` where `taxes`.`status` = 1)) AS `tax_total_percentage`,round(if((select sum(`taxes`.`tax_percentage`) from `taxes` where `taxes`.`status` = 1) is null,0,(select sum(`taxes`.`tax_percentage`) from `taxes` where `taxes`.`status` = 1)) * sum(`all_items`.`sale_price` * `sales_item_users`.`quantity`) / 100,2) AS `total_tax_pay_able`,round(if((select sum(`taxes`.`tax_percentage`) from `taxes` where `taxes`.`status` = 1) is null,0,(select sum(`taxes`.`tax_percentage`) from `taxes` where `taxes`.`status` = 1)) * sum(`all_items`.`sale_price` * `sales_item_users`.`quantity`) / 100,2) + sum(`all_items`.`sale_price` * `sales_item_users`.`quantity`) AS `pay_able` from (`all_items` join `sales_item_users`) where `all_items`.`item_id` = `sales_item_users`.`item_id` group by `sales_item_users`.`user_id` ;
 
 --
 -- Indexes for dumped tables
@@ -1805,6 +1856,12 @@ ALTER TABLE `system_global_settings`
   ADD PRIMARY KEY (`system_global_setting_id`);
 
 --
+-- Indexes for table `taxes`
+--
+ALTER TABLE `taxes`
+  ADD PRIMARY KEY (`tax_id`,`name`,`tax_percentage`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -1825,13 +1882,13 @@ ALTER TABLE `icons`
 -- AUTO_INCREMENT for table `inventory`
 --
 ALTER TABLE `inventory`
-  MODIFY `inventory_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `inventory_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `items`
 --
 ALTER TABLE `items`
-  MODIFY `item_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `item_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `modules`
@@ -1861,7 +1918,7 @@ ALTER TABLE `sales`
 -- AUTO_INCREMENT for table `sales_item_users`
 --
 ALTER TABLE `sales_item_users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `social_media_icons`
@@ -1880,6 +1937,12 @@ ALTER TABLE `suppliers`
 --
 ALTER TABLE `system_global_settings`
   MODIFY `system_global_setting_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `taxes`
+--
+ALTER TABLE `taxes`
+  MODIFY `tax_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `users`

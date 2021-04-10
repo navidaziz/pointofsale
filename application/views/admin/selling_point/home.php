@@ -119,6 +119,29 @@
 			alert("Cash Amout is less the Payable total amount");
 			return false;
 		}
+
+		$.ajax({
+			type: "POST",
+			url: "<?php echo site_url(ADMIN_DIR . "selling_point/add_sale_data") ?>",
+			data: {
+				payment_type: payment_type,
+				remarks: remarks,
+				discount: discount,
+				cash_amount: cash_amount,
+				customer_name: customer_name,
+				customer_mobile_no: customer_mobile_no,
+				pay_able_total: pay_able_total,
+				cash_back: cash_back,
+			}
+		}).done(function(data) {
+			printWindow = window.open('');
+			printWindow.document.write(data);
+			printWindow.print();
+
+		});
+
+
+
 	}
 
 	function add_discount() {

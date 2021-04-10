@@ -193,4 +193,9 @@ class Selling_point extends Admin_Controller
 
         echo $this->get_user_items_list();
     }
+
+    public function add_sale_data()
+    {
+        echo "we are here";
+    }
 }
