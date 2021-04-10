@@ -15,7 +15,7 @@
 
 
 
-<div class="row">
+<div class="row" id="sale_summary_div">
 	<div class="col-md-7">
 		<div class="box border blue" id="messenger">
 			<div class="box-title">
@@ -95,6 +95,8 @@
 	</div>
 
 </div>
+
+
 <script>
 	function save_data() {
 
@@ -134,15 +136,40 @@
 				cash_back: cash_back,
 			}
 		}).done(function(data) {
-			window.print()
-			printWindow.document.write(data);
-			printWindow.print();
-            printWindow.document.close();
-
+			$('#print_area').html(data);
+			//Print2(data);
+			window.print();
 		});
 
 
 
+	}
+
+	function printContent(printDoc) {
+		//console.log("Printing object is :"+el);
+		var restorepage = document.body.innerHTML;
+		var printcontent = printDoc;
+		document.body.innerHTML = printcontent;
+		window.print();
+		//document.body.innerHTML = restorepage;
+	}
+
+	function Print2(data) {
+		var myWindow = window.open('', 'Receipt', 'height=400,width=600');
+		myWindow.document.write('<html><head><title>Receipt</title>');
+		/*optional stylesheet*/ //myWindow.document.write('<link rel="stylesheet" href="main.css" type="text/css" />');
+		myWindow.document.write('<style type="text/css"> *, html {margin:0;padding:0;} </style>');
+		myWindow.document.write('</head><body>');
+		myWindow.document.write(data);
+		myWindow.document.write('</body></html>');
+		myWindow.document.close(); // necessary for IE >= 10
+
+		myWindow.onload = function() { // necessary if the div contain images
+
+			myWindow.focus(); // necessary for IE >= 10
+			myWindow.print();
+			//myWindow.close();
+		};
 	}
 
 	function add_discount() {
