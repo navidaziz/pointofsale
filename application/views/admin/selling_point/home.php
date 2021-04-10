@@ -134,9 +134,10 @@
 				cash_back: cash_back,
 			}
 		}).done(function(data) {
-			printWindow = window.open('');
+			window.print()
 			printWindow.document.write(data);
 			printWindow.print();
+            printWindow.document.close();
 
 		});
 
