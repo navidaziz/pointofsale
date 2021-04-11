@@ -64,8 +64,7 @@ class Selling_point extends Admin_Controller
     echo $this->get_user_items_list();
   }
 
-  function get_user_items_list()
-  {
+  function get_user_items(){
     $user_id = $this->session->userdata("user_id");
     $query = "SELECT `id`,
             LOWER(`all_items`.`name`) AS `name`,
@@ -82,7 +81,12 @@ class Selling_point extends Admin_Controller
             `sales_item_users` 
           WHERE `all_items`.`item_id` = `sales_item_users`.`item_id`
           AND  `sales_item_users`.`user_id` = '" . $user_id . "'";
-    $sales_items_user_lists = $this->db->query($query)->result();
+    return $this->db->query($query)->result();
+
+  }
+  function get_user_items_list()
+  {
+    $sales_items_user_lists = $this->get_user_items();
     $user_item_list = '<table class="table table-bordered">';
     $user_item_list .= '<tr>
                 <th>#</th>
@@ -196,6 +200,63 @@ class Selling_point extends Admin_Controller
 
   public function add_sale_data()
   {
+
+    
+
+        $payment_type = $this->input->post('payment_type');
+				$remarks = $this->input->post('remarks');
+				$discount = $this->input->post('discount');
+				$cash_amount = $this->input->post('cash_amount');
+				$customer_name = $this->input->post('customer_name');
+				$customer_mobile_no = $this->input->post('customer_mobile_no');
+				$pay_able_total = $this->input->post('pay_able_total');
+				$cash_back = $this->input->post('cash_back');
+        
+        $user_id = $this->session->userdata("user_id");
+        $query = "SELECT * FROM `user_sale_summary` as `uss`
+                  WHERE `uss`.`user_id` = '" . $user_id . "'";
+
+        if ($this->db->query($query)->result()) {
+          $sales_items_summary = $this->db->query($query)->result()[0];
+          $query="INSERT INTO `sales`(`customer_mobile_no`, 
+                                      `customer_name`, 
+                                      `items_price`, 
+                                      `items_discounts`, 
+                                      `items_total_price`, 
+                                      `total_tax_pay_able`, 
+                                      `items_total_price_including_tax`, 
+                                      `discount`, 
+                                      `total_payable`, 
+                                      `cash_amount`,
+                                      `cash_back`,
+                                      `payment_type`, 
+                                      `remarks`,
+                                      `created_by`) 
+                             VALUES ('".$customer_mobile_no."',
+                                     '".$customer_name."',
+                                     '".$sales_items_summary->items_total."',
+                                     '".$sales_items_summary->total_discount."',
+                                     '".$sales_items_summary->total_price."',
+                                     '".$sales_items_summary->tax_total_percentage."',
+                                     '".$sales_items_summary->pay_able."',
+                                     '".$discount."',
+                                     '".$pay_able_total."',
+                                     '".$cash_amount."',
+                                     '".$cash_back."',
+                                     '".$payment_type."',
+                                     '".$remarks."',
+                                     '".$user_id."'
+                                            )";
+          $this->db->query($query);                                  
+          $sale_id = $this->db->insert_id(); 
+          if($sale_id){
+            $sales_items_user_lists = $this->get_user_items();
+
+
+          }                                 
+          }
+
+
 
     echo '
     <div id="receipt_header">

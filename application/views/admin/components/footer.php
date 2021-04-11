@@ -17,6 +17,7 @@
 			display: block;
 		}
 	}
+	</style>
 
 	</div><script type="text/javascript"src="<?php echo site_url("assets/" . ADMIN_DIR); ?>/js/magic-suggest/magicsuggest-1.3.1-min.js"></script><script src="<?php echo site_url("assets/" . ADMIN_DIR . "js/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js"); ?>"></script><script src="<?php echo site_url("assets/" . ADMIN_DIR . "js/scr ipt.js"); ?>"></script><script type="text/javascript">jQuery(document).ready(function() {
 			App.setPage("widgets_box");
