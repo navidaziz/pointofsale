@@ -36,3 +36,11 @@
     margin-left: 0px !important;
     border: none;
 }
+
+.separator {
+    display: none;
+}
+
+#page {
+    display: none;
+}

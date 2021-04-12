@@ -64,12 +64,14 @@ class Selling_point extends Admin_Controller
     echo $this->get_user_items_list();
   }
 
-  function get_user_items(){
+  function get_user_items()
+  {
     $user_id = $this->session->userdata("user_id");
     $query = "SELECT `id`,
             LOWER(`all_items`.`name`) AS `name`,
             LOWER(`all_items`.`category`) AS `category`,
             `all_items`.`unit_price`,
+            `all_items`.`cost_price`,
             `all_items`.`discount`,
             `all_items`.`sale_price`,
             `sales_item_users`.`quantity`, 
@@ -82,7 +84,6 @@ class Selling_point extends Admin_Controller
           WHERE `all_items`.`item_id` = `sales_item_users`.`item_id`
           AND  `sales_item_users`.`user_id` = '" . $user_id . "'";
     return $this->db->query($query)->result();
-
   }
   function get_user_items_list()
   {
@@ -150,11 +151,14 @@ class Selling_point extends Admin_Controller
 
     $query = "SELECT * FROM `taxes` WHERE `status`=1";
     $taxes = $this->db->query($query)->result();
-    foreach ($taxes as $taxe) {
-      $sale_summary .= '<h5 >' . $taxe->name . ' - ' . $taxe->tax_percentage . '%</h5>';
+    $tax_ids = '';
+    foreach ($taxes as $tax) {
+      $sale_summary .= '<h5 >' . $tax->name . ' - ' . $tax->tax_percentage . '%</h5>';
+      $tax_ids .= $tax->tax_id . ',';
     }
 
     $sale_summary .= '<h4 >Tax: Rs ' . $sales_items_summary->total_tax_pay_able . '</h4>
+    <input type="hidden" value="' . $tax_ids . '" name="tax_ids" id="tax_ids" />
         <style>
         .amount {
             margin-right: 30px;
@@ -201,24 +205,26 @@ class Selling_point extends Admin_Controller
   public function add_sale_data()
   {
 
-    
 
-        $payment_type = $this->input->post('payment_type');
-				$remarks = $this->input->post('remarks');
-				$discount = $this->input->post('discount');
-				$cash_amount = $this->input->post('cash_amount');
-				$customer_name = $this->input->post('customer_name');
-				$customer_mobile_no = $this->input->post('customer_mobile_no');
-				$pay_able_total = $this->input->post('pay_able_total');
-				$cash_back = $this->input->post('cash_back');
-        
-        $user_id = $this->session->userdata("user_id");
-        $query = "SELECT * FROM `user_sale_summary` as `uss`
+
+    $payment_type = $this->input->post('payment_type');
+    $remarks = $this->input->post('remarks');
+    $discount = $this->input->post('discount');
+    $cash_amount = $this->input->post('cash_amount');
+    $customer_name = $this->input->post('customer_name');
+    $customer_mobile_no = $this->input->post('customer_mobile_no');
+    $pay_able_total = $this->input->post('pay_able_total');
+    $cash_back = $this->input->post('cash_back');
+    $tax_ids = $this->input->post('tax_ids');
+
+
+    $user_id = $this->session->userdata("user_id");
+    $query = "SELECT * FROM `user_sale_summary` as `uss`
                   WHERE `uss`.`user_id` = '" . $user_id . "'";
 
-        if ($this->db->query($query)->result()) {
-          $sales_items_summary = $this->db->query($query)->result()[0];
-          $query="INSERT INTO `sales`(`customer_mobile_no`, 
+    if ($this->db->query($query)->result()) {
+      $sales_items_summary = $this->db->query($query)->result()[0];
+      $query = "INSERT INTO `sales`(`customer_mobile_no`, 
                                       `customer_name`, 
                                       `items_price`, 
                                       `items_discounts`, 
@@ -232,101 +238,75 @@ class Selling_point extends Admin_Controller
                                       `payment_type`, 
                                       `remarks`,
                                       `created_by`) 
-                             VALUES ('".$customer_mobile_no."',
-                                     '".$customer_name."',
-                                     '".$sales_items_summary->items_total."',
-                                     '".$sales_items_summary->total_discount."',
-                                     '".$sales_items_summary->total_price."',
-                                     '".$sales_items_summary->tax_total_percentage."',
-                                     '".$sales_items_summary->pay_able."',
-                                     '".$discount."',
-                                     '".$pay_able_total."',
-                                     '".$cash_amount."',
-                                     '".$cash_back."',
-                                     '".$payment_type."',
-                                     '".$remarks."',
-                                     '".$user_id."'
+                             VALUES ('" . $customer_mobile_no . "',
+                                     '" . $customer_name . "',
+                                     '" . $sales_items_summary->items_total . "',
+                                     '" . $sales_items_summary->total_discount . "',
+                                     '" . $sales_items_summary->total_price . "',
+                                     '" . $sales_items_summary->tax_total_percentage . "',
+                                     '" . $sales_items_summary->pay_able . "',
+                                     '" . $discount . "',
+                                     '" . $pay_able_total . "',
+                                     '" . $cash_amount . "',
+                                     '" . $cash_back . "',
+                                     '" . $payment_type . "',
+                                     '" . $remarks . "',
+                                     '" . $user_id . "'
                                             )";
-          $this->db->query($query);                                  
-          $sale_id = $this->db->insert_id(); 
-          if($sale_id){
-            $sales_items_user_lists = $this->get_user_items();
+      $this->db->query($query);
+      $sale_id = $this->db->insert_id();
+      if ($sale_id) {
+        $sales_items_user_lists = $this->get_user_items();
+        foreach ($sales_items_user_lists as $sales_items_user_list) {
+          $query = "INSERT INTO `sales_items`(`sale_id`, 
+                                              `item_id`, 
+                                              `item_name`, 
+                                              `cost_price`, 
+                                              `unit_price`, 
+                                              `item_discount`, 
+                                              `quantity`, 
+                                              `sale_price`, 
+                                              `total_price`, 
+                                              `created_by`
+                                              ) 
+                                     VALUES ('" . $sale_id . "',
+                                             '" . $sales_items_user_list->item_id . "',
+                                             '" . $sales_items_user_list->name . "',
+                                             '" . $sales_items_user_list->cost_price . "',
+                                             '" . $sales_items_user_list->unit_price . "',
+                                             '" . $sales_items_user_list->discount . "',
+                                             '" . $sales_items_user_list->quantity . "',
+                                             '" . $sales_items_user_list->sale_price . "',
+                                             '" . $sales_items_user_list->total_price . "',
+                                             '" . $user_id . "' 
+                                              )";
+          $this->db->query($query);
+        }
 
-
-          }                                 
-          }
-
-
-
-    echo '
-    <div id="receipt_header">
-      <h5>AL KHIDMAT DIAGNOSTIC CENTER</h5>
-    </div>
-    <div id="receipt_general_info">
-          <div id="sale_id">Sale ID: Rec No 9</div>
-      <div id="employee">Employee: John Doe</div>
-    </div>
-<style>
-    .table1>thead>tr>th,
-    .table1>tbody>tr>th,
-    .table1>tfoot>tr>th,
-    .table1>thead>tr>td,
-    .table1>tbody>tr>td,
-    .table1>tfoot>tr>td {
-      padding: 3px;
-      vertical-align: top;
-      border-top: 1px solid #ddd;
-      font-size: 12px !important;
-      font-family: Calibri, sans-serif !important;
+        $query = "SELECT * FROM taxes WHERE `status`=1 AND tax_id IN(" . $this->db->escape($tax_ids) . ")";
+        $taxes = $this->db->query($query)->result();
+        foreach ($taxes as $tax) {
+          $query = "INSERT INTO `sale_taxes` (`sale_id`, `tax_id`, `tax_name`, `tax_percentage`)
+                              VALUES ('" . $sale_id . "', 
+                                      '" . $tax->tax_id . "',
+                                      '" . $tax->name . "',
+                                      '" . $tax->tax_percentage . "' )";
+          $this->db->query($query);
+        }
+      }
     }
-    </style>
-  
-    <table class="table table1 table-bordered">
-    <tbody>
-    
-    <tr>
-    
-    <th style="width:200px" >Item</th>
-    <th >Price</th>
-    <th >Qty.</th>
-    <th >Dis</th>
-    <th >Total</th>
-    </tr>
-        <tr>
-     
-      <td >itemName</td>
-      <td>150</td>
-      <td>1</td>
-      <td>0</td>
-      <td>150</td>
-      </tr>
-  
-      <td >itemName</td>
-      <td>150</td>
-      <td>1</td>
-      <td>0</td>
-      <td>150</td>
-      </tr>
-      <td >itemName</td>
-      <td>150</td>
-      <td>1</td>
-      <td>0</td>
-      <td>150</td>
-      </tr>
-       
-      <tr>
-    <td colspan="5"  align="right">
-    <span style="font-size:15px">
-    Total: Rs 2600.00<br />
-    Discount: Rs 0.00<br />
-    Payable: Rs 2600.00<br />
-    </span>
-    </td>
-    </tr>
-  
-    </tbody></table>
-  
-    <div id="sale_return_policy">Return Policy	</div>
-    ';
+    $query = "DELETE FROM `sales_item_users` WHERE `user_id` = '" . $user_id . "'";
+    $this->db->query($query);
+    $this->print_receipt($sale_id);
+  }
+
+  function print_receipt($sale_id)
+  {
+
+    $sale_id = (int) $sale_id;
+    $query = "SELECT * FROM `sales_items` 
+              WHERE `sale_id` = '" . $sale_id . "'";
+    $this->data['sale_items'] = $this->db->query($query)->result();
+    $this->load->view(ADMIN_DIR . "selling_point/print_recepit", $this->data);
   }
 }

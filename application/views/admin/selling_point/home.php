@@ -100,6 +100,7 @@
 <script>
 	function save_data() {
 
+		var tax_ids = $("#tax_ids").val();
 		var payment_type = $("input[name='payment_type']:checked").val();
 		remarks = $('#remarks').val();
 		discount = parseFloat($('#discount').val());
@@ -134,8 +135,19 @@
 				customer_mobile_no: customer_mobile_no,
 				pay_able_total: pay_able_total,
 				cash_back: cash_back,
+				tax_ids: tax_ids
 			}
 		}).done(function(data) {
+
+			$('#print_area').html(data);
+			get_user_sale_summary();
+			$('#cash_amount').val(0);
+			$('#customer_name').val("");
+			$('#customer_mobile_no').val("");
+			$('#pay_able_total').html("0.00");
+			$('#cash_back').html("0.00");
+			$('#discount').val(0);
+			$('#item_list').html('');
 			$('#print_area').html(data);
 			//Print2(data);
 			window.print();
@@ -145,7 +157,7 @@
 
 	}
 
-	
+
 
 	function add_discount() {
 		discount = parseFloat($('#discount').val());

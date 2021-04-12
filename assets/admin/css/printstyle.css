@@ -3,21 +3,24 @@ table {
     border-collapse: collapse !important;
     width: 100%;
 }
-table td, table th{
-    border:1px solid #ccc;
+
+table td,
+table th {
+    border: 1px solid #ccc;
     border-collapse: collapse !important;
-    padding:3px !important;
+    padding: 3px !important;
     margin: 0px !important;
     font-size: 11px !important;
 }
-.hide_in_print{
+
+.hide_in_print {
     display: none;
 }
 
-.show_in_print{
-    display:block;
+.show_in_print {
+    display: block;
 }
 
-#meritlist_info{
-    font-size:10px !important
+.separator {
+    display: none;
 }
