@@ -33,6 +33,20 @@
 							</tr>
 						</table>
 
+						<style>
+							.table2>thead>tr>th,
+							.table2>tbody>tr>th,
+							.table2>tfoot>tr>th,
+							.table2>thead>tr>td,
+							.table2>tbody>tr>td,
+							.table2>tfoot>tr>td {
+								padding: 3px;
+								line-height: 1;
+								vertical-align: top;
+								border-top: 1px solid #ddd;
+								font-size: 14px !important;
+						</style>
+
 						<div id="item_list">
 							<?php echo $user_items_list; ?>
 

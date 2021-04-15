@@ -74,6 +74,7 @@ class Selling_point extends Admin_Controller
             `all_items`.`cost_price`,
             `all_items`.`discount`,
             `all_items`.`sale_price`,
+            `all_items`.`total_quantity`,
             `sales_item_users`.`quantity`, 
             `sales_item_users`.`item_id`,
             `sales_item_users`.`user_id`,
@@ -88,11 +89,12 @@ class Selling_point extends Admin_Controller
   function get_user_items_list()
   {
     $sales_items_user_lists = $this->get_user_items();
-    $user_item_list = '<table class="table table-bordered">';
+    $user_item_list = '<table class="table table2 table-bordered">';
     $user_item_list .= '<tr>
                 <th>#</th>
-                <th>Item Name</th>
-                <th>Item Category</th>
+                <th>in Stock</th>
+                <th>Name</th>
+                <th>Category</th>
                 <th>Unit Price</th>
                 <th>Discount</th>
                 <th>Sale Price</th>
@@ -103,6 +105,7 @@ class Selling_point extends Admin_Controller
     foreach ($sales_items_user_lists as $sales_items_user_list) {
       $user_item_list .= '<tr>
                     <td>' . $count++ . '</td>
+                    <td>' . $sales_items_user_list->total_quantity . '</td>
                     <td>' . ucwords($sales_items_user_list->name) . '</td>
                     <td>' . ucwords($sales_items_user_list->category) . '</td>
                     <td>' . $sales_items_user_list->unit_price . '</td>
@@ -136,24 +139,23 @@ class Selling_point extends Admin_Controller
 
     $sale_summary .= '
         
-        <table class="table">
+        <table class="ta ble" width="100%" style="margin:2px; margin-bottom:10px;">
         <tr>
-        <td style="margin:0px !important; padding:1px !important"><div class="well">
-        <h5>Items Total: Rs ' . $sales_items_summary->items_total . '</h5>
-        <h5 >Items Discount: Rs ' . $sales_items_summary->total_discount . '</h5>
-           <h4 >Total Price: Rs ' . $sales_items_summary->total_price . '</h4>
-           </div>
-           </td>
-        <td style="width:60%; margin:0px !important; padding:1px !important">
-        <div class="font-400 font-14">
-        <div style="border:1px dashed gray; padding:5px; border-radius:5px;"> 
+        <td style="margin:0px !important; padding:1px !important">
+        <div style="margin-top:5px">
+        <!--<h5>Items Total: Rs ' . $sales_items_summary->items_total . '</h5>
+        <h5 >Items Discount: Rs ' . $sales_items_summary->total_discount . '</h5>-->
+           <h4 >Total : Rs ' . $sales_items_summary->total_price . '</h4>
+           
+           
+         
         ';
 
     $query = "SELECT * FROM `taxes` WHERE `status`=1";
     $taxes = $this->db->query($query)->result();
     $tax_ids = '';
     foreach ($taxes as $tax) {
-      $sale_summary .= '<h5 >' . $tax->name . ' - ' . $tax->tax_percentage . '%</h5>';
+      $sale_summary .= '<small>' . $tax->name . ' - ' . $tax->tax_percentage . '%</small><br />';
       $tax_ids .= $tax->tax_id . ',';
     }
 
@@ -167,7 +169,10 @@ class Selling_point extends Admin_Controller
             line-height: 0.6;
         }
         </style>
-        
+        </td>
+        <td style="wid th:60%; margin:5px !important; padding:1px !important">
+        <div class="font-400 font-14">
+        <div style="border:1px dashed gray; padding:5px; border-radius:5px;">
             <h3 class="amount" style="color:green" >Total: Rs <span id="pay_able">' . $sales_items_summary->pay_able . '</span></h3>
             <h3 class="amount" style="color:#70AFC4">Discount: Rs <span id="payment_discount"> 0.00</span></h3>
             <h3 class="amount">Payable: Rs <span id="pay_able_total">' . $sales_items_summary->pay_able . '</span></h3>
