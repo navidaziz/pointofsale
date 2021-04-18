@@ -1,6 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class Selling_point extends Admin_Controller
+class Sale_point extends Admin_Controller
 {
 
   /**
@@ -26,7 +26,7 @@ class Selling_point extends Admin_Controller
     $query = "SELECT `name`, `item_code_no` FROM all_items WHERE `status` IN (1)";
     $this->data['sale_items'] = $this->db->query($query)->result();
     //var_dump($this->data['sale_items']);
-    $this->data["view"] = ADMIN_DIR . "selling_point/home";
+    $this->data["view"] = ADMIN_DIR . "sale_point/home";
     $this->data["user_items_list"] = $this->get_user_items_list();
     $this->data["items_sale_summary"] = $this->items_sale_summary();
 
@@ -103,10 +103,14 @@ class Selling_point extends Admin_Controller
               </tr>';
     $count = 1;
     foreach ($sales_items_user_lists as $sales_items_user_list) {
-      $user_item_list .= '<tr>
-                    <td>' . $count++ . '</td>
-                    <td>' . $sales_items_user_list->total_quantity . '</td>
-                    <td>' . ucwords($sales_items_user_list->name) . '</td>
+      $user_item_list .= '<tr><td>' . $count++ . '</td>';
+      if ($sales_items_user_list->total_quantity >= 0) {
+        $user_item_list .= '<td>' . $sales_items_user_list->total_quantity . '</td>';
+      } else {
+        $user_item_list .= '<td style="color:red">' . $sales_items_user_list->total_quantity . ' Out of Stock</td>';
+      }
+
+      $user_item_list .= '<td>' . ucwords($sales_items_user_list->name) . '</td>
                     <td>' . ucwords($sales_items_user_list->category) . '</td>
                     <td>' . $sales_items_user_list->unit_price . '</td>
                     <td>' . $sales_items_user_list->discount . '</td>
@@ -212,6 +216,8 @@ class Selling_point extends Admin_Controller
 
 
 
+
+
     $payment_type = $this->input->post('payment_type');
     $remarks = $this->input->post('remarks');
     $discount = $this->input->post('discount');
@@ -221,7 +227,6 @@ class Selling_point extends Admin_Controller
     $pay_able_total = $this->input->post('pay_able_total');
     $cash_back = $this->input->post('cash_back');
     $tax_ids = $this->input->post('tax_ids');
-
 
     $user_id = $this->session->userdata("user_id");
     $query = "SELECT * FROM `user_sale_summary` as `uss`
@@ -288,15 +293,17 @@ class Selling_point extends Admin_Controller
           $this->db->query($query);
         }
 
-        $query = "SELECT * FROM taxes WHERE `status`=1 AND tax_id IN(" . $this->db->escape($tax_ids) . ")";
-        $taxes = $this->db->query($query)->result();
-        foreach ($taxes as $tax) {
-          $query = "INSERT INTO `sale_taxes` (`sale_id`, `tax_id`, `tax_name`, `tax_percentage`)
+        if ($tax_ids) {
+          $query = "SELECT * FROM taxes WHERE `status`=1 AND tax_id IN(" . trim($tax_ids, ',') . ")";
+          $taxes = $this->db->query($query)->result();
+          foreach ($taxes as $tax) {
+            $query = "INSERT INTO `sale_taxes` (`sale_id`, `tax_id`, `tax_name`, `tax_percentage`)
                               VALUES ('" . $sale_id . "', 
                                       '" . $tax->tax_id . "',
                                       '" . $tax->name . "',
                                       '" . $tax->tax_percentage . "' )";
-          $this->db->query($query);
+            $this->db->query($query);
+          }
         }
       }
     }
@@ -309,9 +316,35 @@ class Selling_point extends Admin_Controller
   {
 
     $sale_id = (int) $sale_id;
+
+    $query = "SELECT `sales`.*, `users`.`user_title` FROM `sales`,`users`  
+              WHERE `sales`.`created_by` = `users`.`user_id`
+              AND `sale_id` = '" . $sale_id . "'";
+    $this->data['sale'] = $this->db->query($query)->result();
+    if (!$this->data['sale']) {
+      echo "Receipt ID Not Found.";
+      exit();
+    } else {
+      $this->data['sale'] = $this->db->query($query)->result()[0];
+    }
     $query = "SELECT * FROM `sales_items` 
               WHERE `sale_id` = '" . $sale_id . "'";
     $this->data['sale_items'] = $this->db->query($query)->result();
-    $this->load->view(ADMIN_DIR . "selling_point/print_recepit", $this->data);
+    $query = "SELECT * FROM `sale_taxes` 
+              WHERE `sale_id` = '" . $sale_id . "'";
+    $this->data['sale_taxes'] = $this->db->query($query)->result();
+    $this->load->view(ADMIN_DIR . "sale_point/print_recepit", $this->data);
+  }
+
+  public function get_return_item_page()
+  {
+    $this->data['tital'] = 'Return Item Form';
+    $this->load->view(ADMIN_DIR . "sale_point/return_item_form", $this->data);
+  }
+
+  public function search_by_receiot_no()
+  {
+    $receipt_no = (int) $this->input->post('receipt_no');
+    $this->print_receipt($receipt_no);
   }
 }

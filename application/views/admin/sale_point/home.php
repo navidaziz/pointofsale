@@ -100,6 +100,17 @@
 								</th>
 
 							</tr>
+
+							<tr>
+								<th></th>
+								<th>
+									<button onclick="get_return_item_page()" data-toggle="modal" data-target="#item_return_modal" class="btn btn-warning" style="margin-top: 10px; width:100%">Reprint<br /> Receipt</button>
+
+								</th>
+								<th><button onclick="get_return_item_page()" data-toggle="modal" data-target="#item_return_modal" class="btn btn-danger" style="margin-top: 10px; width:100%">Return <br /> Item</button>
+								</th>
+
+							</tr>
 						</table>
 
 					</div>
@@ -110,8 +121,40 @@
 
 </div>
 
+<div class="modal fade" id="item_return_modal" tabindex="-1" role="dialog" aria-labelledby="inventory_model" aria-hidden="true">
+	<div class="modal-dialog" role="document" style="width: 90%;">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel" style="display: inline;">Item Return</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body" id="item_return_body">
+
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+			</div>
+		</div>
+	</div>
+</div>
+
 
 <script>
+	function get_return_item_page() {
+		$.ajax({
+			type: "POST",
+			url: "<?php echo site_url(ADMIN_DIR . "sale_point/get_return_item_page") ?>",
+			data: {}
+		}).done(function(data) {
+			$('#item_return_body').html(data);
+
+		});
+
+	}
+
 	function save_data() {
 
 		var tax_ids = $("#tax_ids").val();
@@ -139,7 +182,7 @@
 
 		$.ajax({
 			type: "POST",
-			url: "<?php echo site_url(ADMIN_DIR . "selling_point/add_sale_data") ?>",
+			url: "<?php echo site_url(ADMIN_DIR . "sale_point/add_sale_data") ?>",
 			data: {
 				payment_type: payment_type,
 				remarks: remarks,
@@ -208,7 +251,7 @@
 			$('#item_list').html('<p style="text-align:center"><strong>Please Wait...... Loading</strong></p>');
 			$.ajax({
 				type: "POST",
-				url: "<?php echo site_url(ADMIN_DIR . "selling_point/get_search_item") ?>",
+				url: "<?php echo site_url(ADMIN_DIR . "sale_point/get_search_item") ?>",
 				data: {
 					search_item: search_item
 				}
@@ -226,7 +269,7 @@
 			$('#item_list').html('<p style="text-align:center"><strong>Please Wait...... Loading</strong></p>');
 			$.ajax({
 				type: "POST",
-				url: "<?php echo site_url(ADMIN_DIR . "selling_point/update_user_item_quantity") ?>",
+				url: "<?php echo site_url(ADMIN_DIR . "sale_point/update_user_item_quantity") ?>",
 				data: {
 					user_item_id: user_item_id,
 					item_quantity: item_quantity.replace(/[^a-zA-Z0-9]/g, ''),
@@ -245,7 +288,7 @@
 		//$('#item_sale_summary').html('<p style="text-align:center"><strong>Please Wait...... Loading</strong></p>');
 		$.ajax({
 			type: "POST",
-			url: "<?php echo site_url(ADMIN_DIR . "selling_point/user_items_sale_summary") ?>",
+			url: "<?php echo site_url(ADMIN_DIR . "sale_point/user_items_sale_summary") ?>",
 			data: {}
 		}).done(function(data) {
 			$('#item_sale_summary').html(data);

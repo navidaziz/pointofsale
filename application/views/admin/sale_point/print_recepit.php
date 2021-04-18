@@ -26,12 +26,12 @@
     </tr>
     <tr>
         <td>
-            <div id="sale_id">Sale ID: Rec No 9</div>
-            <div id="employee">Employee: John Doe</div>
+            <div id="sale_id">Receipt No: <strong><?php echo $sale->sale_id; ?></strong></div>
+            <div id="employee">Customer: <?php echo $sale->customer_name; ?> <?php echo "- " . $sale->customer_mobile_no; ?></strong> </div>
         </td>
         <td>
-            <div id="sale_id">Sale ID: Rec No 9</div>
-            <div id="employee">Employee: John Doe</div>
+            <div id="sale_id">Date: <?php echo date('d M, y - h:i A', strtotime($sale->created_date)); ?></div>
+            <div id="employee">Employee: <?php echo $sale->user_title; ?></div>
         </td>
     </tr>
 </table>
@@ -61,9 +61,17 @@
         <tr>
             <td colspan="5" align="right">
                 <span style="font-size:15px">
-                    Total: Rs 2600.00<br />
-                    Discount: Rs 0.00<br />
-                    Payable: Rs 2600.00<br />
+                    <?php if ($sale_taxes) { ?>
+                        Total: Rs <?php echo $sale->items_total_price; ?><br />
+                        <?php foreach ($sale_taxes as  $sale_taxe) {
+                            echo $sale_taxe->tax_name . " - " . $sale_taxe->tax_percentage . " % <br />";
+                        } ?>
+
+                        Taxes <?php echo $sale->items_total_price_including_tax - $sale->items_total_price; ?> %<br />
+                    <?php } ?>
+                    Total <?php echo $sale->items_total_price_including_tax; ?><br />
+                    Discount: Rs <?php echo $sale->discount; ?><br />
+                    Paid: Rs <?php echo $sale->total_payable; ?><br />
                 </span>
             </td>
         </tr>
