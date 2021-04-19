@@ -273,7 +273,8 @@ class Sale_point extends Admin_Controller
                                               `item_name`, 
                                               `cost_price`, 
                                               `unit_price`, 
-                                              `item_discount`, 
+                                              `item_discount`,
+                                              `sale_items`,  
                                               `quantity`, 
                                               `sale_price`, 
                                               `total_price`, 
@@ -285,6 +286,7 @@ class Sale_point extends Admin_Controller
                                              '" . $sales_items_user_list->cost_price . "',
                                              '" . $sales_items_user_list->unit_price . "',
                                              '" . $sales_items_user_list->discount . "',
+                                             '" . $sales_items_user_list->quantity . "',
                                              '" . $sales_items_user_list->quantity . "',
                                              '" . $sales_items_user_list->sale_price . "',
                                              '" . $sales_items_user_list->total_price . "',
@@ -342,9 +344,63 @@ class Sale_point extends Admin_Controller
     $this->load->view(ADMIN_DIR . "sale_point/return_item_form", $this->data);
   }
 
-  public function search_by_receiot_no()
+  public function search_by_receipt_no()
   {
-    $receipt_no = (int) $this->input->post('receipt_no');
-    $this->print_receipt($receipt_no);
+    $sale_id  = (int) $this->input->post('receipt_no');
+    
+    $query = "SELECT `sales`.*, `users`.`user_title` FROM `sales`,`users`  
+              WHERE `sales`.`created_by` = `users`.`user_id`
+              AND `sale_id` = '" . $sale_id . "'";
+    $this->data['sale'] = $this->db->query($query)->result();
+    if (!$this->data['sale']) {
+      echo "Receipt ID Not Found.";
+      exit();
+    } else {
+      $this->data['sale'] = $this->db->query($query)->result()[0];
+    }
+    $query = "SELECT * FROM `sales_items` 
+              WHERE `sale_id` = '" . $sale_id . "'";
+    $this->data['sale_items'] = $this->db->query($query)->result();
+    $query = "SELECT * FROM `sale_taxes` 
+              WHERE `sale_id` = '" . $sale_id . "'";
+    $this->data['sale_taxes'] = $this->db->query($query)->result();
+    $this->load->view(ADMIN_DIR . "sale_point/return_items", $this->data);
+  }
+
+  public function return_sale_item(){
+
+    $sale_item_id  = (int) $this->input->post('sale_item_id');
+    $total_items_returns  = (int) $this->input->post('total_items_returns');
+
+    $query = "SELECT * FROM `sales_items` 
+              WHERE `sale_item_id` = '" . $sale_item_id . "'";
+              if($this->db->query($query)->result()){
+                $sale_item = $this->db->query($query)->result()[0];
+
+                if($total_items_returns<=$sale_item->sale_items){
+                  $total_sale_items = $sale_item->sale_items-$total_items_returns;
+                  $quantity = $total_sale_items;
+                  $total_price = $quantity*$sale_item->sale_price;
+                  $query="UPDATE `sales_items` 
+                          SET `return_items` = '".$total_items_returns."',
+                          `sale_items` = '".$total_sale_items."',
+                          `quantity` = '".$quantity."',
+                          `total_price` = '".$total_price."'
+                          WHERE `sale_item_id` = '" . $sale_item_id . "'";
+                  if($this->db->query($query)){
+                   
+                    $this->search_by_receipt_no();
+                  }        
+
+                }else{
+                  echo "Sale Items are less than return items.";
+                }
+              }else{
+                echo "Sale Item not found.";
+              }
+   
+
+
+    
   }
 }
