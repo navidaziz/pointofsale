@@ -347,7 +347,7 @@ class Sale_point extends Admin_Controller
   public function search_by_receipt_no()
   {
     $sale_id  = (int) $this->input->post('receipt_no');
-    
+
     $query = "SELECT `sales`.*, `users`.`user_title` FROM `sales`,`users`  
               WHERE `sales`.`created_by` = `users`.`user_id`
               AND `sale_id` = '" . $sale_id . "'";
@@ -367,40 +367,37 @@ class Sale_point extends Admin_Controller
     $this->load->view(ADMIN_DIR . "sale_point/return_items", $this->data);
   }
 
-  public function return_sale_item(){
+  public function return_sale_item()
+  {
 
     $sale_item_id  = (int) $this->input->post('sale_item_id');
     $total_items_returns  = (int) $this->input->post('total_items_returns');
 
     $query = "SELECT * FROM `sales_items` 
               WHERE `sale_item_id` = '" . $sale_item_id . "'";
-              if($this->db->query($query)->result()){
-                $sale_item = $this->db->query($query)->result()[0];
+    if ($this->db->query($query)->result()) {
+      $sale_item = $this->db->query($query)->result()[0];
+      $return_items = $sale_item->return_items + $total_items_returns;
+      if ($return_items <= $sale_item->sale_items) {
 
-                if($total_items_returns<=$sale_item->sale_items){
-                  $total_sale_items = $sale_item->sale_items-$total_items_returns;
-                  $quantity = $total_sale_items;
-                  $total_price = $quantity*$sale_item->sale_price;
-                  $query="UPDATE `sales_items` 
-                          SET `return_items` = '".$total_items_returns."',
-                          `sale_items` = '".$total_sale_items."',
-                          `quantity` = '".$quantity."',
-                          `total_price` = '".$total_price."'
+        $quantity = $sale_item->sale_items - $return_items;
+        $total_price = $quantity * $sale_item->sale_price;
+        $query = "UPDATE `sales_items` 
+                          SET `return_items` = '" . $return_items . "',
+                          `quantity` = '" . $quantity . "',
+                          `total_price` = '" . $total_price . "'
                           WHERE `sale_item_id` = '" . $sale_item_id . "'";
-                  if($this->db->query($query)){
-                   
-                    $this->search_by_receipt_no();
-                  }        
+        if ($this->db->query($query)) {
 
-                }else{
-                  echo "Sale Items are less than return items.";
-                }
-              }else{
-                echo "Sale Item not found.";
-              }
-   
+          $_POST['receipt_no'] = $sale_item->sale_id;
 
-
-    
+          $this->search_by_receipt_no();
+        }
+      } else {
+        echo "Sale Items are less than return items.";
+      }
+    } else {
+      echo "Sale Item not found.";
+    }
   }
 }
