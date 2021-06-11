@@ -377,17 +377,112 @@ class Sale_point extends Admin_Controller
               WHERE `sale_item_id` = '" . $sale_item_id . "'";
     if ($this->db->query($query)->result()) {
       $sale_item = $this->db->query($query)->result()[0];
-      $return_items = $sale_item->return_items + $total_items_returns;
-      if ($return_items <= $sale_item->sale_items) {
+      if ($total_items_returns <= $sale_item->sale_items) {
 
-        $quantity = $sale_item->sale_items - $return_items;
+        $quantity = $sale_item->sale_items - $total_items_returns;
         $total_price = $quantity * $sale_item->sale_price;
         $query = "UPDATE `sales_items` 
-                          SET `return_items` = '" . $return_items . "',
+                          SET `return_items` = '" . $total_items_returns . "',
                           `quantity` = '" . $quantity . "',
                           `total_price` = '" . $total_price . "'
                           WHERE `sale_item_id` = '" . $sale_item_id . "'";
         if ($this->db->query($query)) {
+
+          $query = "SELECT 
+          `sales_items`.`sale_id` AS `sale_id`,
+          SUM(
+            `all_items`.`unit_price` * `sales_items`.`quantity`
+          ) AS `items_total`,
+          SUM(
+            `all_items`.`unit_price` * `sales_items`.`quantity`
+          ) - SUM(
+            `all_items`.`sale_price` * `sales_items`.`quantity`
+          ) AS `total_discount`,
+          SUM(
+            `all_items`.`sale_price` * `sales_items`.`quantity`
+          ) AS `total_price`,
+          IF(
+            (SELECT 
+              SUM(
+                `taxes`.`tax_percentage`
+              ) 
+            FROM
+              `taxes` 
+            WHERE `taxes`.`status` = 1) IS NULL,
+            0,
+            (SELECT 
+              SUM(
+                `taxes`.`tax_percentage`
+              ) 
+            FROM
+              `taxes` 
+            WHERE `taxes`.`status` = 1)
+          ) AS `tax_total_percentage`,
+          ROUND(
+            IF(
+              (SELECT 
+                SUM(
+                  `taxes`.`tax_percentage`
+                ) 
+              FROM
+                `taxes` 
+              WHERE `taxes`.`status` = 1) IS NULL,
+              0,
+              (SELECT 
+                SUM(
+                  `taxes`.`tax_percentage`
+                ) 
+              FROM
+                `taxes` 
+              WHERE `taxes`.`status` = 1)
+            ) * SUM(
+              `all_items`.`sale_price` * `sales_items`.`quantity`
+            ) / 100,
+            2
+          ) AS `total_tax_pay_able`,
+          ROUND(
+            IF(
+              (SELECT 
+                SUM(
+                  `taxes`.`tax_percentage`
+                ) 
+              FROM
+                `taxes` 
+              WHERE `taxes`.`status` = 1) IS NULL,
+              0,
+              (SELECT 
+                SUM(
+                  `taxes`.`tax_percentage`
+                ) 
+              FROM
+                `taxes` 
+              WHERE `taxes`.`status` = 1)
+            ) * SUM(
+              `all_items`.`sale_price` * `sales_items`.`quantity`
+            ) / 100,
+            2
+          ) + SUM(
+            `all_items`.`sale_price` * `sales_items`.`quantity`
+          ) AS `pay_able` 
+        FROM
+          (
+            `all_items` 
+            JOIN `sales_items`
+          ) 
+        WHERE `all_items`.`item_id` = `sales_items`.`item_id` 
+        AND `sales_items`.`sale_id` = '" . $sale_item->sale_id . "'";
+          $sales_items_summary = $this->db->query($query)->result()[0];
+
+
+          $query = "UPDATE `sales` SET  `items_price` = '" . $sales_items_summary->items_total . "',
+                                      `items_discounts` = '" . $sales_items_summary->total_discount . "',
+                                      `items_total_price` = '" . $sales_items_summary->total_price . "',
+                                      `total_tax_pay_able` =  '" . $sales_items_summary->tax_total_percentage . "',
+                                      `items_total_price_including_tax` = '" . $sales_items_summary->pay_able . "'
+                                      WHERE `sales`.`sale_id` = '" . $sale_item->sale_id . "'";
+          $this->db->query($query);
+
+
 
           $_POST['receipt_no'] = $sale_item->sale_id;
 

@@ -41,7 +41,8 @@
             <th style="width:200px">Item</th>
             <th>Price</th>
             <th>Dis</th>
-            <th>Qty.</th>
+            <th>Saled Items</th>
+            <th>Returned Items</th>
             <th>Return items</th>
             <th>Total</th>
         </tr>
@@ -54,7 +55,14 @@
                 <td><?php echo $item->unit_price;  ?></td>
                 <td><?php echo $item->item_discount;  ?></td>
                 <td><?php echo $item->quantity;  ?></td>
-                <td><input type="text" onkeydown = "return_sale_item('<?php echo $item->sale_item_id;  ?>')" name="return_item_<?php echo $item->sale_item_id;  ?>" id="return_item_<?php echo $item->sale_item_id;  ?>" value="<?php echo $item->return_items;  ?>" /></td>
+                <td><?php echo $item->return_items;  ?></td>
+                <td>
+                    <?php //if ($item->quantity != 0) { 
+                    ?>
+                    <input type="text" onkeydown="return_sale_item('<?php echo $item->sale_item_id;  ?>')" name="return_item_<?php echo $item->sale_item_id;  ?>" id="return_item_<?php echo $item->sale_item_id;  ?>" value="" />
+                </td>
+                <?php //} 
+                ?>
                 <td><?php echo $item->total_price;  ?></td>
             </tr>
         <?php } ?>

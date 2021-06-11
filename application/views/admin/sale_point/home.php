@@ -264,6 +264,7 @@
 	});
 
 	function update_user_item_quantity(user_item_id) {
+		//item_quantity: item_quantity.replace(/[^a-zA-Z0-9]/g, ''),
 		if (event.key === 'Enter') {
 			var item_quantity = $('#user_item_' + user_item_id).val();
 			$('#item_list').html('<p style="text-align:center"><strong>Please Wait...... Loading</strong></p>');
@@ -272,7 +273,7 @@
 				url: "<?php echo site_url(ADMIN_DIR . "sale_point/update_user_item_quantity") ?>",
 				data: {
 					user_item_id: user_item_id,
-					item_quantity: item_quantity.replace(/[^a-zA-Z0-9]/g, ''),
+					item_quantity: item_quantity,
 				}
 			}).done(function(data) {
 				$('#item_list').html(data);
