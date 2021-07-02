@@ -149,9 +149,9 @@ class Items extends Admin_Controller
     {
 
         $item_id = (int) $item_id;
-        //$this->item_model->changeStatus($item_id, "3");
+        $this->item_model->changeStatus($item_id, "3");
 
-        $this->item_model->delete(array('item_id' => $item_id));
+        //$this->item_model->delete(array('item_id' => $item_id));
         $this->session->set_flashdata("msg_success", $this->lang->line("delete_msg_success"));
         redirect(ADMIN_DIR . "items/trashed/" . $page_id);
     }

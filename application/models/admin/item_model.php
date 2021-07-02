@@ -122,6 +122,7 @@ class Item_model extends MY_Model
         $inputs["reorder_level"]  =  $this->input->post("reorder_level");
 
         $inputs["location"]  =  $this->input->post("location");
+        $inputs["discount"]  =  $this->input->post("discount");
 
         return $this->item_model->save($inputs, $item_id);
     }

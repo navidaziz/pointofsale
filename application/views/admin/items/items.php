@@ -102,7 +102,7 @@
 
                 <div class="table-responsive">
 
-                    <table class="table table-bordered">
+                    <table class="table table-bordered" style="font-size: 11px;">
                         <thead>
                             <tr>
 
