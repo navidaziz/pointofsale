@@ -19,7 +19,7 @@
 	<div class="col-md-7">
 		<div class="box border blue" id="messenger">
 			<div class="box-title">
-				<h4><i class="fa fa-bell"></i>Sale Item List</h4>
+				<h4><i class="fa fa-shopping-cart"></i>Sale Item List</h4>
 			</div>
 			<div class="box-body">
 				<div class="table-responsive">
@@ -59,7 +59,7 @@
 	<div class="col-md-5">
 		<div class="box border blue" id="messenger">
 			<div class="box-title">
-				<h4><i class="fa fa-bell"></i>Sale Summary</h4>
+				<h4><i class="fa fa-shopping-cart"></i>Sale Summary</h4>
 			</div>
 			<div class="box-body">
 				<div class="table-responsive">

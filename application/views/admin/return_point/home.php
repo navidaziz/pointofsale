@@ -7,7 +7,7 @@
 					<a href="<?php echo site_url(ADMIN_DIR . $this->session->userdata("role_homepage_uri")); ?>"><?php echo $this->lang->line('Home'); ?></a>
 				</li>
 
-				<li>Sale Point</li>
+				<li>Return Point</li>
 			</ul>
 		</div>
 	</div>
@@ -17,9 +17,9 @@
 
 <div class="row" id="sale_summary_div">
 	<div class="col-md-7">
-		<div class="box border blue" id="messenger">
+		<div class="box border red" id="messenger">
 			<div class="box-title">
-				<h4><i class="fa fa-bell"></i>Sale Item List</h4>
+				<h4><i class="fa fa-undo"></i>Return Item List</h4>
 			</div>
 			<div class="box-body">
 				<div class="table-responsive">
@@ -29,7 +29,7 @@
 								<td style="width: 100px;">
 									<h5>Search Item</h5>
 								</td>
-								<td><input id="tags" name="search_sale_item" value="" placeholder="Search Sale Item" class="form-control" /></td>
+								<td><input id="tags" name="search_sale_item" value="" placeholder="Search return Item" class="form-control" /></td>
 							</tr>
 						</table>
 
@@ -57,9 +57,9 @@
 		</div>
 	</div>
 	<div class="col-md-5">
-		<div class="box border blue" id="messenger">
+		<div class="box border red" id="messenger">
 			<div class="box-title">
-				<h4><i class="fa fa-bell"></i>Sale Summary</h4>
+				<h4><i class="fa fa-undo"></i>Return Summary</h4>
 			</div>
 			<div class="box-body">
 				<div class="table-responsive">

@@ -69,7 +69,7 @@ $menu_list .= "</ul>";
 
 
 
-<div id="sidebar" <?php if ($this->router->fetch_class() == 'sessions' or $this->router->fetch_class() == 'selling_point' or $this->router->fetch_class() == 'reports') { ?> class="sidebar mini-menu" <?php } else { ?>class="sidebar" <?php } ?>>
+<div id="sidebar" <?php if ($this->router->fetch_class() == 'return_point' or $this->router->fetch_class() == 'sale_point' or $this->router->fetch_class() == 'items') { ?> class="sidebar mini-menu" <?php } else { ?>class="sidebar" <?php } ?>>
 
     <?php if ($this->session->userdata('role_id') == 14) {
 
@@ -115,7 +115,7 @@ AND  `groups`.`group_id` = " . $this->session->userdata('group_id');
 			<?php //if($this->router->fetch_class()=='dashboard'){ 
             ?>  <?php //}else{ 
                 ?>  <?php //} 
-                                                                            ?> >
+                    ?> >
             <button type="submit" class="fa fa-search search-icon" style="background:none !important; border:none !important;"></button>
             </form>
 		</div>-->
