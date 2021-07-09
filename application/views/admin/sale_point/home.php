@@ -107,8 +107,7 @@
 									<button onclick="get_return_item_page()" data-toggle="modal" data-target="#item_return_modal" class="btn btn-warning" style="margin-top: 10px; width:100%">Reprint<br /> Receipt</button>
 
 								</th>
-								<th><button onclick="get_return_item_page()" data-toggle="modal" data-target="#item_return_modal" class="btn btn-danger" style="margin-top: 10px; width:100%">Return <br /> Item</button>
-								</th>
+								<th><a class="btn btn-danger" style="margin-top: 10px; width:100%" href="<?php echo site_url(ADMIN_DIR . "return_point") ?>">Return <br /> Items</a></th>
 
 							</tr>
 						</table>
@@ -205,7 +204,7 @@
 			$('#cash_back').html("0.00");
 			$('#discount').val(0);
 			$('#item_list').html('');
-			$('#print_area').html(data);
+			//$('#print_area').html(data);
 			//Print2(data);
 			window.print();
 		});
@@ -248,6 +247,9 @@
 	$('#tags').on('keydown', function(e) {
 		if (e.keyCode == 13) {
 			var search_item = $('#tags').val();
+			if (search_item == "") {
+				return false;
+			}
 			$('#item_list').html('<p style="text-align:center"><strong>Please Wait...... Loading</strong></p>');
 			$.ajax({
 				type: "POST",
@@ -258,6 +260,7 @@
 			}).done(function(data) {
 				$('#item_list').html(data);
 				get_user_sale_summary();
+				$('#error_message_sale').delay(5000).fadeOut('slow');
 			});
 		}
 

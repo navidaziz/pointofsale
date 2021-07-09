@@ -28,7 +28,7 @@ class Return_point extends Admin_Controller
     //var_dump($this->data['sale_items']);
     $this->data["view"] = ADMIN_DIR . "return_point/home";
     $this->data["user_items_list"] = $this->get_user_items_list();
-    $this->data["items_sale_summary"] = $this->items_sale_summary();
+    $this->data["items_return_summary"] = $this->items_return_summary();
 
     $this->load->view(ADMIN_DIR . "layout", $this->data);
   }
@@ -123,37 +123,25 @@ class Return_point extends Admin_Controller
     return $user_item_list .= '</table>';
   }
 
-  public function items_sale_summary()
+  public function items_return_summary()
   {
     $user_id = $this->session->userdata("user_id");
     $query = "SELECT * FROM `user_sale_summary`
                   WHERE `user_sale_summary`.`user_id` = '" . $user_id . "'";
 
     if ($this->db->query($query)->result()) {
-      $sales_items_summary = $this->db->query($query)->result()[0];
+      $return_items_summary = $this->db->query($query)->result()[0];
     } else {
-      $sales_items_summary = (object) array();
-      $sales_items_summary->items_total = "0.00";
-      $sales_items_summary->total_discount = "0.00";
-      $sales_items_summary->total_price = "0.00";
-      $sales_items_summary->total_tax_pay_able = "0.00";
-      $sales_items_summary->pay_able = "0.00";
+      $return_items_summary = (object) array();
+      $return_items_summary->items_total = "0.00";
+      $return_items_summary->total_discount = "0.00";
+      $return_items_summary->total_price = "0.00";
+      $return_items_summary->total_tax_pay_able = "0.00";
+      $return_items_summary->pay_able = "0.00";
     }
     $sale_summary = "";
 
-    $sale_summary .= '
-        
-        <table class="ta ble" width="100%" style="margin:2px; margin-bottom:10px;">
-        <tr>
-        <td style="margin:0px !important; padding:1px !important">
-        <div style="margin-top:5px">
-        <!--<h5>Items Total: Rs ' . $sales_items_summary->items_total . '</h5>
-        <h5 >Items Discount: Rs ' . $sales_items_summary->total_discount . '</h5>-->
-           <h4 >Total : Rs ' . $sales_items_summary->total_price . '</h4>
-           
-           
-         
-        ';
+    $sale_summary .= '<table><tr>';
 
     $query = "SELECT * FROM `taxes` WHERE `status`=1";
     $taxes = $this->db->query($query)->result();
@@ -163,23 +151,12 @@ class Return_point extends Admin_Controller
       $tax_ids .= $tax->tax_id . ',';
     }
 
-    $sale_summary .= '<h4 >Tax: Rs ' . $sales_items_summary->total_tax_pay_able . '</h4>
-    <input type="hidden" value="' . $tax_ids . '" name="tax_ids" id="tax_ids" />
-        <style>
-        .amount {
-            margin-right: 30px;
-            color: #d9534f;
-            font-weight: 600;
-            line-height: 0.6;
-        }
-        </style>
-        </td>
+    $sale_summary .= '
         <td style="wid th:60%; margin:5px !important; padding:1px !important">
         <div class="font-400 font-14">
         <div style="border:1px dashed gray; padding:5px; border-radius:5px;">
-            <h3 class="amount" style="color:green" >Total: Rs <span id="pay_able">' . $sales_items_summary->pay_able . '</span></h3>
-            <h3 class="amount" style="color:#70AFC4">Discount: Rs <span id="payment_discount"> 0.00</span></h3>
-            <h3 class="amount">Payable: Rs <span id="pay_able_total">' . $sales_items_summary->pay_able . '</span></h3>
+            <h3 class="amount" style="color:green" >Total: Rs <span id="pay_able">' . $return_items_summary->pay_able . '</span></h3>
+            <h3 class="amount">Returnable: Rs <span id="pay_able_total">' . $return_items_summary->pay_able . '</span></h3>
         </div>    
             </div>
         </td>
@@ -189,9 +166,9 @@ class Return_point extends Admin_Controller
     return $sale_summary;
   }
 
-  function user_items_sale_summary()
+  function user_items_return_summary()
   {
-    echo $this->items_sale_summary();
+    echo $this->items_return_summary();
   }
 
   public function update_user_item_quantity()
@@ -216,7 +193,7 @@ class Return_point extends Admin_Controller
     echo $this->get_user_items_list();
   }
 
-  public function add_sale_data()
+  public function add_return_data()
   {
 
 
@@ -238,7 +215,7 @@ class Return_point extends Admin_Controller
                   WHERE `uss`.`user_id` = '" . $user_id . "'";
 
     if ($this->db->query($query)->result()) {
-      $sales_items_summary = $this->db->query($query)->result()[0];
+      $return_items_summary = $this->db->query($query)->result()[0];
       $query = "INSERT INTO `sales`(`customer_mobile_no`, 
                                       `customer_name`, 
                                       `items_price`, 
@@ -252,20 +229,22 @@ class Return_point extends Admin_Controller
                                       `cash_back`,
                                       `payment_type`, 
                                       `remarks`,
+                                      `return`,
                                       `created_by`) 
                              VALUES ('" . $customer_mobile_no . "',
                                      '" . $customer_name . "',
-                                     '" . $sales_items_summary->items_total . "',
-                                     '" . $sales_items_summary->total_discount . "',
-                                     '" . $sales_items_summary->total_price . "',
-                                     '" . $sales_items_summary->tax_total_percentage . "',
-                                     '" . $sales_items_summary->pay_able . "',
+                                     '" . $return_items_summary->items_total . "',
+                                     '" . $return_items_summary->total_discount . "',
+                                     '" . $return_items_summary->total_price . "',
+                                     '" . $return_items_summary->tax_total_percentage . "',
+                                     '" . $return_items_summary->pay_able . "',
                                      '" . $discount . "',
                                      '" . $pay_able_total . "',
                                      '" . $cash_amount . "',
                                      '" . $cash_back . "',
                                      '" . $payment_type . "',
                                      '" . $remarks . "',
+                                     '1',
                                      '" . $user_id . "'
                                             )";
       $this->db->query($query);
@@ -283,7 +262,8 @@ class Return_point extends Admin_Controller
                                               `quantity`, 
                                               `sale_price`, 
                                               `total_price`, 
-                                              `created_by`
+                                              `created_by`,
+                                              `returned`
                                               ) 
                                      VALUES ('" . $sale_id . "',
                                              '" . $sales_items_user_list->item_id . "',
@@ -295,7 +275,8 @@ class Return_point extends Admin_Controller
                                              '" . $sales_items_user_list->quantity . "',
                                              '" . $sales_items_user_list->sale_price . "',
                                              '" . $sales_items_user_list->total_price . "',
-                                             '" . $user_id . "' 
+                                             '" . $user_id . "',
+                                             '1' 
                                               )";
           $this->db->query($query);
         }
@@ -476,14 +457,14 @@ class Return_point extends Admin_Controller
           ) 
         WHERE `all_items`.`item_id` = `sales_items`.`item_id` 
         AND `sales_items`.`sale_id` = '" . $sale_item->sale_id . "'";
-          $sales_items_summary = $this->db->query($query)->result()[0];
+          $return_items_summary = $this->db->query($query)->result()[0];
 
 
-          $query = "UPDATE `sales` SET  `items_price` = '" . $sales_items_summary->items_total . "',
-                                      `items_discounts` = '" . $sales_items_summary->total_discount . "',
-                                      `items_total_price` = '" . $sales_items_summary->total_price . "',
-                                      `total_tax_pay_able` =  '" . $sales_items_summary->tax_total_percentage . "',
-                                      `items_total_price_including_tax` = '" . $sales_items_summary->pay_able . "'
+          $query = "UPDATE `sales` SET  `items_price` = '" . $return_items_summary->items_total . "',
+                                      `items_discounts` = '" . $return_items_summary->total_discount . "',
+                                      `items_total_price` = '" . $return_items_summary->total_price . "',
+                                      `total_tax_pay_able` =  '" . $return_items_summary->tax_total_percentage . "',
+                                      `items_total_price_including_tax` = '" . $return_items_summary->pay_able . "'
                                       WHERE `sales`.`sale_id` = '" . $sale_item->sale_id . "'";
           $this->db->query($query);
 

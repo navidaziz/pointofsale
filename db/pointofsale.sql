@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 02, 2021 at 08:07 PM
+-- Generation Time: Jul 09, 2021 at 09:20 PM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.4
 
@@ -572,7 +572,8 @@ CREATE TABLE `inventory` (
 INSERT INTO `inventory` (`inventory_id`, `item_id`, `supplier_id`, `item_cost_price`, `item_unit_price`, `sale_id`, `receiving_id`, `transaction_type`, `inventory_transaction`, `date`, `remarks`, `status`, `order`, `created_by`, `created_date`, `last_updated`) VALUES
 (18, 1, 1, 500, 550, NULL, NULL, 'Stock In', 50, '2021-07-02', NULL, 1, NULL, 1, '2021-07-02 18:05:33', NULL),
 (19, 1, 1, 0, 0, NULL, NULL, 'Stock Return', -25, '2021-07-02', 'due to expired', 1, NULL, 1, '2021-07-02 18:49:22', NULL),
-(20, 1232, 0, 100, 200, NULL, NULL, 'Item Created', 0, '2021-07-02', NULL, 1, NULL, 1, '2021-07-02 19:08:10', NULL);
+(20, 1232, 0, 100, 200, NULL, NULL, 'Item Created', 0, '2021-07-02', NULL, 1, NULL, 1, '2021-07-02 19:08:10', NULL),
+(21, 2, 1, 500, 600, NULL, NULL, 'Stock In', 50, '2021-07-10', NULL, 1, NULL, 1, '2021-07-10 00:16:50', NULL);
 
 -- --------------------------------------------------------
 
@@ -604,8 +605,8 @@ CREATE TABLE `items` (
 --
 
 INSERT INTO `items` (`item_id`, `name`, `category`, `item_code_no`, `description`, `cost_price`, `unit_price`, `discount`, `unit`, `reorder_level`, `location`, `status`, `order`, `created_by`, `created_date`, `last_updated`) VALUES
-(1, 'surbex Tab', 'Tab', '1', '', 100.00, 120.00, 20, '', 0, '', 1, 1227, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(2, 'A2a 25mg', '', '2', '', 0.00, 0.00, 0, '', 0, '', 1, 1001, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(1, 'surbex Tab', 'Tab', '1', '', 100.00, 150.00, 20, '', 0, '', 1, 1227, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(2, 'A2a 25mg', 'Tab', '2', '', 500.00, 600.00, 0, '', 0, '', 1, 1001, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
 (3, 'A2a50mg', '', '3', '', 0.00, 0.00, 0, '', 0, '', 1, 1002, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
 (4, 'Acry-gel', '', '4', '', 0.00, 0.00, 0, '', 0, '', 1, 1463, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
 (5, 'Actidil 60ml Syp', '', '5', '', 0.00, 0.00, 0, '', 0, '', 1, 1319, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
@@ -1008,9 +1009,9 @@ INSERT INTO `items` (`item_id`, `name`, `category`, `item_code_no`, `description
 (402, 'Ophth-lubric Eye Drop', '', '402', '', 0.00, 0.00, 0, '', 0, '', 1, 1407, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
 (403, 'Ophth-pred Eye Drop', '', '403', '', 0.00, 0.00, 0, '', 0, '', 1, 1410, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
 (404, 'Ophth-s-pred Eye Drop', '', '404', '', 0.00, 0.00, 0, '', 0, '', 1, 1408, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(405, 'Ophth-tobra Eye Drop', '', '405', '', 0.00, 0.00, 0, '', 0, '', 1, 1415, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(406, 'Ophth-vit Oinmnt', '', '406', '', 0.00, 0.00, 0, '', 0, '', 1, 1454, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00');
+(405, 'Ophth-tobra Eye Drop', '', '405', '', 0.00, 0.00, 0, '', 0, '', 1, 1415, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00');
 INSERT INTO `items` (`item_id`, `name`, `category`, `item_code_no`, `description`, `cost_price`, `unit_price`, `discount`, `unit`, `reorder_level`, `location`, `status`, `order`, `created_by`, `created_date`, `last_updated`) VALUES
+(406, 'Ophth-vit Oinmnt', '', '406', '', 0.00, 0.00, 0, '', 0, '', 1, 1454, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
 (407, 'Opmox Eye Drop', '', '407', '', 0.00, 0.00, 0, '', 0, '', 1, 1409, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
 (408, 'Opth-cyclovir Eye Oinmt', '', '408', '', 0.00, 0.00, 0, '', 0, '', 1, 1391, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
 (409, 'Optik 125mg Syp', '', '409', '', 0.00, 0.00, 0, '', 0, '', 1, 1295, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
@@ -1195,6 +1196,24 @@ INSERT INTO `items` (`item_id`, `name`, `category`, `item_code_no`, `description
 (588, 'Zume 40mg Cap', '', '588', '', 0.00, 0.00, 0, '', 0, '', 1, 1651, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
 (1231, 'name', 'category', 'item_code_no', 'description', 0.00, 0.00, 0, 'unit', 0, 'location', 1, 0, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
 (1232, 'test', 'test', '4324234243242342', 'FASDFA', 100.00, 200.00, 0, 'MG', 10, '3R', 1, 1232, NULL, '2021-07-02 19:08:10', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `items_sales`
+-- (See below for the actual view)
+--
+CREATE TABLE `items_sales` (
+`name` varchar(255)
+,`category` varchar(255)
+,`cost_price` float
+,`sale_price` float
+,`sale` decimal(32,0)
+,`return` decimal(32,0)
+,`total_price` double
+,`profit` double
+,`created_date` date
+);
 
 -- --------------------------------------------------------
 
@@ -1613,7 +1632,9 @@ INSERT INTO `modules` (`module_id`, `parent_id`, `module_type`, `module_title`, 
 (1717, 1705, 'action', 'Move Up', NULL, 'up', 0, NULL, 1, 0, 0, NULL, NULL, '2014-01-01 12:00:00', NULL),
 (1718, 1705, 'action', 'Move Down', NULL, 'down', 0, NULL, 1, 0, 0, NULL, NULL, '2014-01-01 12:00:00', NULL),
 (1719, 0, 'controller', 'Sale Point', 'Sale Point', 'sale_point', 1, 'fa-turkish-lira', 1, 1719, 0, NULL, NULL, '2014-01-01 12:00:00', NULL),
-(1720, 1719, 'action', 'Sale Point', 'Sale Point', 'sale_point', 1, 'fa-rub', 1, 1720, 0, NULL, NULL, '2014-01-01 12:00:00', NULL);
+(1720, 1719, 'action', 'Sale Point', 'Sale Point', 'sale_point', 1, 'fa-rub', 1, 1720, 0, NULL, NULL, '2014-01-01 12:00:00', NULL),
+(1721, 0, 'controller', 'Return Point', 'Return Point', 'return_point', 1, 'fa-rub', 1, 1721, 0, NULL, NULL, '2014-01-01 12:00:00', NULL),
+(1722, 1721, 'action', 'Return Point', 'Return Point', 'index', 1, 'fa-rub', 1, 1722, 0, NULL, NULL, '2014-01-01 12:00:00', NULL);
 
 -- --------------------------------------------------------
 
@@ -1973,84 +1994,86 @@ INSERT INTO `module_rights` (`module_right_id`, `role_id`, `module_id`, `status`
 (28783, 19, 1673, 1, 1, NULL, NULL),
 (28784, 19, 1675, 1, 1, NULL, NULL),
 (28785, 19, 1676, 1, 1, NULL, NULL),
-(28986, 1, 16, 1, 1, NULL, NULL),
-(28987, 1, 2, 1, 1, NULL, NULL),
-(28988, 1, 17, 1, 1, NULL, NULL),
-(28989, 1, 18, 1, 1, NULL, NULL),
-(28990, 1, 19, 1, 1, NULL, NULL),
-(28991, 1, 20, 1, 1, NULL, NULL),
-(28992, 1, 21, 1, 1, NULL, NULL),
-(28993, 1, 22, 1, 1, NULL, NULL),
-(28994, 1, 23, 1, 1, NULL, NULL),
-(28995, 1, 24, 1, 1, NULL, NULL),
-(28996, 1, 25, 1, 1, NULL, NULL),
-(28997, 1, 26, 1, 1, NULL, NULL),
-(28998, 1, 27, 1, 1, NULL, NULL),
-(28999, 1, 28, 1, 1, NULL, NULL),
-(29000, 1, 29, 1, 1, NULL, NULL),
-(29001, 1, 30, 1, 1, NULL, NULL),
-(29002, 1, 32, 1, 1, NULL, NULL),
-(29003, 1, 31, 1, 1, NULL, NULL),
-(29004, 1, 33, 1, 1, NULL, NULL),
-(29005, 1, 44, 1, 1, NULL, NULL),
-(29006, 1, 45, 1, 1, NULL, NULL),
-(29007, 1, 46, 1, 1, NULL, NULL),
-(29008, 1, 47, 1, 1, NULL, NULL),
-(29009, 1, 48, 1, 1, NULL, NULL),
-(29010, 1, 49, 1, 1, NULL, NULL),
-(29011, 1, 36, 1, 1, NULL, NULL),
-(29012, 1, 35, 1, 1, NULL, NULL),
-(29013, 1, 37, 1, 1, NULL, NULL),
-(29014, 1, 38, 1, 1, NULL, NULL),
-(29015, 1, 39, 1, 1, NULL, NULL),
-(29016, 1, 40, 1, 1, NULL, NULL),
-(29017, 1, 41, 1, 1, NULL, NULL),
-(29018, 1, 42, 1, 1, NULL, NULL),
-(29019, 1, 43, 1, 1, NULL, NULL),
-(29020, 1, 818, 1, 1, NULL, NULL),
-(29021, 1, 817, 1, 1, NULL, NULL),
-(29022, 1, 819, 1, 1, NULL, NULL),
-(29023, 1, 820, 1, 1, NULL, NULL),
-(29024, 1, 821, 1, 1, NULL, NULL),
-(29025, 1, 822, 1, 1, NULL, NULL),
-(29026, 1, 823, 1, 1, NULL, NULL),
-(29027, 1, 824, 1, 1, NULL, NULL),
-(29028, 1, 825, 1, 1, NULL, NULL),
-(29029, 1, 826, 1, 1, NULL, NULL),
-(29030, 1, 827, 1, 1, NULL, NULL),
-(29031, 1, 828, 1, 1, NULL, NULL),
-(29032, 1, 829, 1, 1, NULL, NULL),
-(29033, 1, 830, 1, 1, NULL, NULL),
-(29034, 1, 1692, 1, 1, NULL, NULL),
-(29035, 1, 1691, 1, 1, NULL, NULL),
-(29036, 1, 1693, 1, 1, NULL, NULL),
-(29037, 1, 1694, 1, 1, NULL, NULL),
-(29038, 1, 1695, 1, 1, NULL, NULL),
-(29039, 1, 1696, 1, 1, NULL, NULL),
-(29040, 1, 1697, 1, 1, NULL, NULL),
-(29041, 1, 1698, 1, 1, NULL, NULL),
-(29042, 1, 1699, 1, 1, NULL, NULL),
-(29043, 1, 1700, 1, 1, NULL, NULL),
-(29044, 1, 1701, 1, 1, NULL, NULL),
-(29045, 1, 1702, 1, 1, NULL, NULL),
-(29046, 1, 1703, 1, 1, NULL, NULL),
-(29047, 1, 1704, 1, 1, NULL, NULL),
-(29048, 1, 1706, 1, 1, NULL, NULL),
-(29049, 1, 1705, 1, 1, NULL, NULL),
-(29050, 1, 1707, 1, 1, NULL, NULL),
-(29051, 1, 1708, 1, 1, NULL, NULL),
-(29052, 1, 1709, 1, 1, NULL, NULL),
-(29053, 1, 1710, 1, 1, NULL, NULL),
-(29054, 1, 1711, 1, 1, NULL, NULL),
-(29055, 1, 1712, 1, 1, NULL, NULL),
-(29056, 1, 1713, 1, 1, NULL, NULL),
-(29057, 1, 1714, 1, 1, NULL, NULL),
-(29058, 1, 1715, 1, 1, NULL, NULL),
-(29059, 1, 1716, 1, 1, NULL, NULL),
-(29060, 1, 1717, 1, 1, NULL, NULL),
-(29061, 1, 1718, 1, 1, NULL, NULL),
-(29062, 1, 1719, 1, 1, NULL, NULL),
-(29063, 1, 1720, 1, 1, NULL, NULL);
+(29064, 1, 16, 1, 1, NULL, NULL),
+(29065, 1, 2, 1, 1, NULL, NULL),
+(29066, 1, 17, 1, 1, NULL, NULL),
+(29067, 1, 18, 1, 1, NULL, NULL),
+(29068, 1, 19, 1, 1, NULL, NULL),
+(29069, 1, 20, 1, 1, NULL, NULL),
+(29070, 1, 21, 1, 1, NULL, NULL),
+(29071, 1, 22, 1, 1, NULL, NULL),
+(29072, 1, 23, 1, 1, NULL, NULL),
+(29073, 1, 24, 1, 1, NULL, NULL),
+(29074, 1, 25, 1, 1, NULL, NULL),
+(29075, 1, 26, 1, 1, NULL, NULL),
+(29076, 1, 27, 1, 1, NULL, NULL),
+(29077, 1, 28, 1, 1, NULL, NULL),
+(29078, 1, 29, 1, 1, NULL, NULL),
+(29079, 1, 30, 1, 1, NULL, NULL),
+(29080, 1, 32, 1, 1, NULL, NULL),
+(29081, 1, 31, 1, 1, NULL, NULL),
+(29082, 1, 33, 1, 1, NULL, NULL),
+(29083, 1, 44, 1, 1, NULL, NULL),
+(29084, 1, 45, 1, 1, NULL, NULL),
+(29085, 1, 46, 1, 1, NULL, NULL),
+(29086, 1, 47, 1, 1, NULL, NULL),
+(29087, 1, 48, 1, 1, NULL, NULL),
+(29088, 1, 49, 1, 1, NULL, NULL),
+(29089, 1, 36, 1, 1, NULL, NULL),
+(29090, 1, 35, 1, 1, NULL, NULL),
+(29091, 1, 37, 1, 1, NULL, NULL),
+(29092, 1, 38, 1, 1, NULL, NULL),
+(29093, 1, 39, 1, 1, NULL, NULL),
+(29094, 1, 40, 1, 1, NULL, NULL),
+(29095, 1, 41, 1, 1, NULL, NULL),
+(29096, 1, 42, 1, 1, NULL, NULL),
+(29097, 1, 43, 1, 1, NULL, NULL),
+(29098, 1, 818, 1, 1, NULL, NULL),
+(29099, 1, 817, 1, 1, NULL, NULL),
+(29100, 1, 819, 1, 1, NULL, NULL),
+(29101, 1, 820, 1, 1, NULL, NULL),
+(29102, 1, 821, 1, 1, NULL, NULL),
+(29103, 1, 822, 1, 1, NULL, NULL),
+(29104, 1, 823, 1, 1, NULL, NULL),
+(29105, 1, 824, 1, 1, NULL, NULL),
+(29106, 1, 825, 1, 1, NULL, NULL),
+(29107, 1, 826, 1, 1, NULL, NULL),
+(29108, 1, 827, 1, 1, NULL, NULL),
+(29109, 1, 828, 1, 1, NULL, NULL),
+(29110, 1, 829, 1, 1, NULL, NULL),
+(29111, 1, 830, 1, 1, NULL, NULL),
+(29112, 1, 1692, 1, 1, NULL, NULL),
+(29113, 1, 1691, 1, 1, NULL, NULL),
+(29114, 1, 1693, 1, 1, NULL, NULL),
+(29115, 1, 1694, 1, 1, NULL, NULL),
+(29116, 1, 1695, 1, 1, NULL, NULL),
+(29117, 1, 1696, 1, 1, NULL, NULL),
+(29118, 1, 1697, 1, 1, NULL, NULL),
+(29119, 1, 1698, 1, 1, NULL, NULL),
+(29120, 1, 1699, 1, 1, NULL, NULL),
+(29121, 1, 1700, 1, 1, NULL, NULL),
+(29122, 1, 1701, 1, 1, NULL, NULL),
+(29123, 1, 1702, 1, 1, NULL, NULL),
+(29124, 1, 1703, 1, 1, NULL, NULL),
+(29125, 1, 1704, 1, 1, NULL, NULL),
+(29126, 1, 1706, 1, 1, NULL, NULL),
+(29127, 1, 1705, 1, 1, NULL, NULL),
+(29128, 1, 1707, 1, 1, NULL, NULL),
+(29129, 1, 1708, 1, 1, NULL, NULL),
+(29130, 1, 1709, 1, 1, NULL, NULL),
+(29131, 1, 1710, 1, 1, NULL, NULL),
+(29132, 1, 1711, 1, 1, NULL, NULL),
+(29133, 1, 1712, 1, 1, NULL, NULL),
+(29134, 1, 1713, 1, 1, NULL, NULL),
+(29135, 1, 1714, 1, 1, NULL, NULL),
+(29136, 1, 1715, 1, 1, NULL, NULL),
+(29137, 1, 1716, 1, 1, NULL, NULL),
+(29138, 1, 1717, 1, 1, NULL, NULL),
+(29139, 1, 1718, 1, 1, NULL, NULL),
+(29140, 1, 1720, 1, 1, NULL, NULL),
+(29141, 1, 1719, 1, 1, NULL, NULL),
+(29142, 1, 1721, 1, 1, NULL, NULL),
+(29143, 1, 1722, 1, 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -2101,6 +2124,7 @@ CREATE TABLE `sales` (
   `cash_back` float NOT NULL,
   `payment_type` varchar(50) COLLATE utf16_persian_ci NOT NULL,
   `remarks` text COLLATE utf16_persian_ci DEFAULT NULL,
+  `return` tinyint(1) NOT NULL DEFAULT 0,
   `status` int(11) NOT NULL DEFAULT 1,
   `order` int(11) DEFAULT NULL,
   `created_by` int(11) DEFAULT NULL,
@@ -2116,8 +2140,23 @@ CREATE TABLE `sales` (
 -- Dumping data for table `sales`
 --
 
-INSERT INTO `sales` (`sale_id`, `items_price`, `items_discounts`, `items_total_price`, `total_tax_pay_able`, `items_total_price_including_tax`, `discount`, `total_payable`, `cash_amount`, `cash_back`, `payment_type`, `remarks`, `status`, `order`, `created_by`, `created_date`, `last_updated`, `test_token_id`, `customer_mobile_no`, `customer_name`, `test_report_by`) VALUES
-(140, 1200, 200, 1000, 0, 1000, 0, 1000, 1000, 0, 'cash', '', 1, NULL, 1, '2021-07-02 13:54:23', NULL, NULL, '', '', NULL);
+INSERT INTO `sales` (`sale_id`, `items_price`, `items_discounts`, `items_total_price`, `total_tax_pay_able`, `items_total_price_including_tax`, `discount`, `total_payable`, `cash_amount`, `cash_back`, `payment_type`, `remarks`, `return`, `status`, `order`, `created_by`, `created_date`, `last_updated`, `test_token_id`, `customer_mobile_no`, `customer_name`, `test_report_by`) VALUES
+(150, 150, 20, 130, 0, 130, 0, 130, 130, 0, 'cash', '', 0, 1, NULL, 1, '2021-07-09 18:45:56', NULL, NULL, '', '', NULL),
+(151, 150, 20, 130, 0, 130, 0, 130, 130, 0, 'cash', '', 0, 1, NULL, 1, '2021-07-09 18:50:08', NULL, NULL, '', '', NULL),
+(152, 150, 20, 130, 0, 130, 0, 130, 130, 0, 'cash', '', 0, 1, NULL, 1, '2021-07-09 18:52:08', NULL, NULL, '', '', NULL),
+(153, 150, 20, 130, 0, 130, 0, 130, 130, 0, 'cash', '', 0, 1, NULL, 1, '2021-07-09 18:54:20', NULL, NULL, '', '', NULL),
+(154, 150, 20, 130, 0, 130, 0, 130, 130, 0, 'cash', '', 0, 1, NULL, 1, '2021-07-09 18:55:18', NULL, NULL, '', '', NULL),
+(155, 150, 20, 130, 0, 130, 0, 130, 130, 0, 'cash', '', 0, 1, NULL, 1, '2021-07-09 18:56:24', NULL, NULL, '', '', NULL),
+(156, 150, 20, 130, 0, 130, 0, 130, 130, 0, 'cash', '', 0, 1, NULL, 1, '2021-07-09 18:57:40', NULL, NULL, '', '', NULL),
+(157, 150, 20, 130, 0, 130, 0, 130, 130, 0, 'cash', '', 0, 1, NULL, 1, '2021-07-09 18:58:00', NULL, NULL, '', '', NULL),
+(158, 300, 40, 260, 0, 260, 0, 260, 260, 0, 'cash', '', 0, 1, NULL, 1, '2021-07-09 19:09:49', NULL, NULL, '', '', NULL),
+(159, 150, 20, 130, 0, 130, 0, 130, 130, 0, 'cash', '', 0, 1, NULL, 1, '2021-07-09 19:11:02', NULL, NULL, '', '', NULL),
+(160, 150, 20, 130, 0, 130, 0, 130, 130, 0, 'cash', '', 0, 1, NULL, 1, '2021-07-09 19:11:26', NULL, NULL, '', '', NULL),
+(161, 150, 20, 130, 0, 130, 0, 130, 130, 0, 'cash', '', 0, 1, NULL, 1, '2021-07-09 19:11:57', NULL, NULL, '', '', NULL),
+(162, 900, 120, 780, 0, 780, 0, 780, 780, 0, 'cash', '', 0, 1, NULL, 1, '2021-07-09 19:12:45', NULL, NULL, '', '', NULL),
+(163, 150, 20, 130, 0, 130, 0, 130, 130, 0, 'cash', '', 0, 1, NULL, 1, '2021-07-09 19:14:08', NULL, NULL, '', '', NULL),
+(164, 3000, 0, 3000, 0, 3000, 0, 3000, 3000, 0, 'cash', '', 0, 1, NULL, 1, '2021-07-09 19:17:53', NULL, NULL, '', '', NULL),
+(165, 2850, 60, 2790, 0, 2790, 0, 2790, 2790, 0, 'cash', '', 0, 1, NULL, 1, '2021-07-09 19:18:17', NULL, NULL, '', '', NULL);
 
 -- --------------------------------------------------------
 
@@ -2149,7 +2188,23 @@ CREATE TABLE `sales_items` (
 --
 
 INSERT INTO `sales_items` (`sale_item_id`, `sale_id`, `item_id`, `item_name`, `cost_price`, `unit_price`, `item_discount`, `sale_items`, `return_items`, `quantity`, `sale_price`, `total_price`, `returned`, `remarks`, `created_by`, `created_date`) VALUES
-(419, 140, 1, 'surbex tab', 100, 120, 20, 10, 0, 10, 100, 1000, 0, NULL, 1, '2021-07-02 18:54:23');
+(431, 150, 1, 'surbex tab', 100, 150, 20, 1, 0, 1, 130, 130, 0, NULL, 1, '2021-07-09 23:45:56'),
+(432, 151, 1, 'surbex tab', 100, 150, 20, 1, 0, 1, 130, 130, 0, NULL, 1, '2021-07-09 23:50:08'),
+(433, 152, 1, 'surbex tab', 100, 150, 20, 1, 0, 1, 130, 130, 0, NULL, 1, '2021-07-09 23:52:08'),
+(434, 153, 1, 'surbex tab', 100, 150, 20, 1, 0, 1, 130, 130, 0, NULL, 1, '2021-07-09 23:54:20'),
+(435, 154, 1, 'surbex tab', 100, 150, 20, 1, 0, 1, 130, 130, 0, NULL, 1, '2021-07-09 23:55:18'),
+(436, 155, 1, 'surbex tab', 100, 150, 20, 1, 0, 1, 130, 130, 0, NULL, 1, '2021-07-09 23:56:24'),
+(437, 156, 1, 'surbex tab', 100, 150, 20, 1, 0, 1, 130, 130, 0, NULL, 1, '2021-07-09 23:57:40'),
+(438, 157, 1, 'surbex tab', 100, 150, 20, 1, 0, 1, 130, 130, 0, NULL, 1, '2021-07-09 23:58:00'),
+(439, 158, 1, 'surbex tab', 100, 150, 20, 2, 0, 2, 130, 260, 0, NULL, 1, '2021-07-10 00:09:49'),
+(440, 159, 1, 'surbex tab', 100, 150, 20, 1, 0, 1, 130, 130, 0, NULL, 1, '2021-07-10 00:11:02'),
+(441, 160, 1, 'surbex tab', 100, 150, 20, 1, 0, 1, 130, 130, 0, NULL, 1, '2021-07-10 00:11:26'),
+(442, 161, 1, 'surbex tab', 100, 150, 20, 1, 0, 1, 130, 130, 0, NULL, 1, '2021-07-10 00:11:57'),
+(443, 162, 1, 'surbex tab', 100, 150, 20, 6, 0, 6, 130, 780, 0, NULL, 1, '2021-07-10 00:12:45'),
+(444, 163, 1, 'surbex tab', 100, 150, 20, 1, 0, 1, 130, 130, 0, NULL, 1, '2021-07-10 00:14:08'),
+(445, 164, 2, 'a2a 25mg', 500, 600, 0, 5, 0, 5, 600, 3000, 0, NULL, 1, '2021-07-10 00:17:53'),
+(446, 165, 2, 'a2a 25mg', 500, 600, 0, 4, 0, 4, 600, 2400, 0, NULL, 1, '2021-07-10 00:18:17'),
+(447, 165, 1, 'surbex tab', 100, 150, 20, 3, 0, 3, 130, 390, 0, NULL, 1, '2021-07-10 00:18:17');
 
 -- --------------------------------------------------------
 
@@ -2359,6 +2414,15 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- --------------------------------------------------------
 
 --
+-- Structure for view `items_sales`
+--
+DROP TABLE IF EXISTS `items_sales`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `items_sales`  AS  select `items`.`name` AS `name`,`items`.`category` AS `category`,`sales_items`.`cost_price` AS `cost_price`,`sales_items`.`sale_price` AS `sale_price`,sum(`sales_items`.`quantity`) AS `sale`,sum(if(`sales_items`.`quantity` < 0,`sales_items`.`quantity`,0)) AS `return`,sum(`sales_items`.`total_price`) AS `total_price`,sum(`sales_items`.`total_price`) - sum(`sales_items`.`quantity`) * `sales_items`.`cost_price` AS `profit`,cast(`sales_items`.`created_date` as date) AS `created_date` from (`sales_items` join `items`) where `sales_items`.`item_id` = `items`.`item_id` group by `sales_items`.`item_id` ;
+
+-- --------------------------------------------------------
+
+--
 -- Structure for view `user_sale_summary`
 --
 DROP TABLE IF EXISTS `user_sale_summary`;
@@ -2489,7 +2553,7 @@ ALTER TABLE `icons`
 -- AUTO_INCREMENT for table `inventory`
 --
 ALTER TABLE `inventory`
-  MODIFY `inventory_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `inventory_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `items`
@@ -2501,13 +2565,13 @@ ALTER TABLE `items`
 -- AUTO_INCREMENT for table `modules`
 --
 ALTER TABLE `modules`
-  MODIFY `module_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1721;
+  MODIFY `module_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1723;
 
 --
 -- AUTO_INCREMENT for table `module_rights`
 --
 ALTER TABLE `module_rights`
-  MODIFY `module_right_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29064;
+  MODIFY `module_right_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29144;
 
 --
 -- AUTO_INCREMENT for table `roles`
@@ -2519,19 +2583,19 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `sales`
 --
 ALTER TABLE `sales`
-  MODIFY `sale_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=141;
+  MODIFY `sale_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=166;
 
 --
 -- AUTO_INCREMENT for table `sales_items`
 --
 ALTER TABLE `sales_items`
-  MODIFY `sale_item_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=420;
+  MODIFY `sale_item_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=448;
 
 --
 -- AUTO_INCREMENT for table `sales_item_users`
 --
 ALTER TABLE `sales_item_users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=118;
 
 --
 -- AUTO_INCREMENT for table `sale_taxes`

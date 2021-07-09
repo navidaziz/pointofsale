@@ -66,37 +66,25 @@
 					<div class="ui-widget">
 
 						<div id="item_sale_summary">
-							<?php echo $items_sale_summary; ?>
+							<?php echo $items_return_summary; ?>
 						</div>
 
 
+						<br />
 						<table class="table table-bordered">
-							<tr>
-								<th>Payment Type</th>
-								<td> Cash <input onclick="$('#remarks_tr').hide()" checked type="radio" name="payment_type" value="cash" /></td>
-								<td> Check <input onclick="$('#remarks_tr').show()" type="radio" name="payment_type" value="check" /></td>
-								<td> Debit Card <input onclick="$('#remarks_tr').show()" type="radio" name="payment_type" value="debit_card" /></td>
-								<td> Credit Card <input onclick="$('#remarks_tr').show()" type="radio" name="payment_type" value="credit_card" /></td>
 
-							</tr>
-							<tr style="display: none;" id="remarks_tr">
+							<tr>
 								<td>Remarks</td>
-								<td colspan="4"><input type="text" name="remarks" id="remarks" value="" class="form-control" /></td>
+								<td><input type="text" name="remarks" id="remarks" value="" class="form-control" /></td>
 							</tr>
 						</table>
 						<table class="table table-bordered">
-							<tr>
-								<th>Discount <input required="required" onkeyup="add_discount()" type="number" class="form-control" name="discount" id="discount" value="0" /></th>
-								<th>Cash Amount <input required="required" onkeyup="cash_calulator()" type="number" class="form-control" name="cash_amount" id="cash_amount" value="0" /></th>
-								<th style="width: 120px;">Cash Back <h4>Rs: <span id="cash_back">0.00<span></h4>
-								</th>
 
-							</tr>
 
 							<tr>
 								<th>Customer Mobile No <input type="text" class="form-control" name="customer_mobile_no" id="customer_mobile_no" /></th>
 								<th>Customer Name <input type="text" class="form-control" name="customer_name" id="customer_name" /></th>
-								<th><button onclick="save_data()" class="btn btn-success" style="margin-top: 10px; width:100%">Complete <br /> Sale</button>
+								<th><button onclick="save_data()" class="btn btn-success" style="margin-top: 10px; width:100%">Return <br />Items</button>
 								</th>
 
 							</tr>
@@ -107,7 +95,7 @@
 									<button onclick="get_return_item_page()" data-toggle="modal" data-target="#item_return_modal" class="btn btn-warning" style="margin-top: 10px; width:100%">Reprint<br /> Receipt</button>
 
 								</th>
-								<th><button onclick="get_return_item_page()" data-toggle="modal" data-target="#item_return_modal" class="btn btn-danger" style="margin-top: 10px; width:100%">Return <br /> Item</button>
+								<th><a class="btn btn-danger" style="margin-top: 10px; width:100%" href="<?php echo site_url(ADMIN_DIR . "return_point") ?>">Sale <br /> Items</a>
 								</th>
 
 							</tr>
@@ -146,7 +134,7 @@
 	function get_return_item_page() {
 		$.ajax({
 			type: "POST",
-			url: "<?php echo site_url(ADMIN_DIR . "sale_point/get_return_item_page") ?>",
+			url: "<?php echo site_url(ADMIN_DIR . "return_point/get_return_item_page") ?>",
 			data: {}
 		}).done(function(data) {
 			$('#item_return_body').html(data);
@@ -158,14 +146,9 @@
 	function save_data() {
 
 		var tax_ids = $("#tax_ids").val();
-		var payment_type = $("input[name='payment_type']:checked").val();
+		var payment_type = "cash";
 		remarks = $('#remarks').val();
-		discount = parseFloat($('#discount').val());
-		if (!$('#discount').val()) {
-			//alert('Discount Field is empty');
-			$('#discount').val(0);
-			return;
-		}
+		discount = 0;
 		cash_amount = parseFloat($('#cash_amount').val());
 		customer_name = $('#customer_name').val();
 		customer_mobile_no = $('#customer_mobile_no').val();
@@ -182,7 +165,7 @@
 
 		$.ajax({
 			type: "POST",
-			url: "<?php echo site_url(ADMIN_DIR . "sale_point/add_sale_data") ?>",
+			url: "<?php echo site_url(ADMIN_DIR . "return_point/add_return_data") ?>",
 			data: {
 				payment_type: payment_type,
 				remarks: remarks,
@@ -287,11 +270,13 @@
 	function get_user_sale_summary() {
 
 		//$('#item_sale_summary').html('<p style="text-align:center"><strong>Please Wait...... Loading</strong></p>');
+		//return null;
 		$.ajax({
 			type: "POST",
-			url: "<?php echo site_url(ADMIN_DIR . "sale_point/user_items_sale_summary") ?>",
+			url: "<?php echo site_url(ADMIN_DIR . "return_point/user_items_return_summary") ?>",
 			data: {}
 		}).done(function(data) {
+			//alert(data);
 			$('#item_sale_summary').html(data);
 		});
 

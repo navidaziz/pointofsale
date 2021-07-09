@@ -36,30 +36,49 @@ class Sale_point extends Admin_Controller
   public function get_search_item()
   {
     $search_item = $this->db->escape($this->input->post("search_item"));
-    $query = "SELECT `item_id` FROM all_items 
+    $query = "SELECT `item_id`, `total_quantity`, `name` FROM all_items 
                   WHERE (`name` = " . $search_item . " OR `item_code_no` = " . $search_item . ")";
 
     if ($this->db->query($query)->result()) {
-      $item_id = $this->db->query($query)->result()[0]->item_id;
-      $user_id = $this->session->userdata("user_id");
-      $query = "SELECT SUM(`quantity`) as total FROM `sales_item_users` 
+
+      if ($this->db->query($query)->result()[0]->total_quantity > 0) {
+
+        $item_id = $this->db->query($query)->result()[0]->item_id;
+        $user_id = $this->session->userdata("user_id");
+        $query = "SELECT SUM(`quantity`) as total FROM `sales_item_users` 
                       WHERE `item_id`='" . $item_id . "'
                       AND `user_id` = '" . $user_id . "'";
-      $item_count =  $this->db->query($query)->result()[0]->total;
+        $item_count =  $this->db->query($query)->result()[0]->total;
 
-      if ($item_count < 1) {
-        $query = "INSERT INTO `sales_item_users`(`item_id`, `quantity`, `user_id`) 
+        if ($item_count < 1) {
+          $query = "INSERT INTO `sales_item_users`(`item_id`, `quantity`, `user_id`) 
                           VALUES ('" . $item_id . "','1','" . $user_id . "')";
-        $this->db->query($query);
-      } else {
-        $item_count++;
-        $query = "UPDATE `sales_item_users` 
+          $this->db->query($query);
+        } else {
+          $item_count++;
+          $query = "UPDATE `sales_item_users` 
                           SET `quantity`='" . $item_count . "' 
                           WHERE `item_id`='" . $item_id . "'
                           AND `user_id` = '" . $user_id . "'";
-        $this->db->query($query);
+          $this->db->query($query);
+        }
+      } else {
+        echo '
+        <div id="error_message_sale" class="alert alert-danger" role="alert">
+    <strong style="color:white"> <i>' . $search_item . '</i></strong> Out of Stock.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>';
       }
     } else {
+      echo '
+      <div id="error_message_sale" class="alert alert-danger" role="alert">
+  <strong style="color:white"> <i>' . $search_item . '</i> Item Not Found!</strong> Try again with different name.
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>';
     }
 
     echo $this->get_user_items_list();
@@ -198,15 +217,35 @@ class Sale_point extends Admin_Controller
   public function update_user_item_quantity()
   {
     $id = (int) $this->input->post("user_item_id");
-    $quantity = $this->input->post("item_quantity");
+    $quantity = (int) $this->input->post("item_quantity");
     if ($quantity == 0) {
       $query = "DELETE FROM `sales_item_users` 
             WHERE id='" . $id . "'";
       $this->db->query($query);
     } else {
-      $query = "UPDATE `sales_item_users` SET `quantity`='" . $quantity . "'
-            WHERE id='" . $id . "' ";
-      $this->db->query($query);
+      $query = "SELECT
+                `sales_item_users`.`quantity`
+                , `all_items`.`total_quantity`,
+                 `all_items`.`name`, 
+                 `all_items`.`category`
+            FROM `all_items`,
+            `sales_item_users`
+            WHERE `all_items`.`item_id` = `sales_item_users`.`item_id`
+            AND `sales_item_users`.`id` ='" . $id . "'";
+      $item = $this->db->query($query)->result()[0];
+      if ($item->total_quantity >= $quantity) {
+        $query = "UPDATE `sales_item_users` SET `quantity`='" . $quantity . "'
+        WHERE id='" . $id . "' ";
+        $this->db->query($query);
+      } else {
+        echo '
+        <div id="error_message_sale" class="alert alert-danger" role="alert">
+    <strong style="color:white"> <i>" ' . $item->name . ' "</i> only ' . $item->total_quantity . ' left in stock. try with ' . $item->total_quantity . '</strong>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>';
+      }
     }
 
     echo $this->get_user_items_list();
