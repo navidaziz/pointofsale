@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 09, 2021 at 09:20 PM
+-- Generation Time: Jul 12, 2021 at 04:50 AM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.4
 
@@ -2156,7 +2156,11 @@ INSERT INTO `sales` (`sale_id`, `items_price`, `items_discounts`, `items_total_p
 (162, 900, 120, 780, 0, 780, 0, 780, 780, 0, 'cash', '', 0, 1, NULL, 1, '2021-07-09 19:12:45', NULL, NULL, '', '', NULL),
 (163, 150, 20, 130, 0, 130, 0, 130, 130, 0, 'cash', '', 0, 1, NULL, 1, '2021-07-09 19:14:08', NULL, NULL, '', '', NULL),
 (164, 3000, 0, 3000, 0, 3000, 0, 3000, 3000, 0, 'cash', '', 0, 1, NULL, 1, '2021-07-09 19:17:53', NULL, NULL, '', '', NULL),
-(165, 2850, 60, 2790, 0, 2790, 0, 2790, 2790, 0, 'cash', '', 0, 1, NULL, 1, '2021-07-09 19:18:17', NULL, NULL, '', '', NULL);
+(165, 2850, 60, 2790, 0, 2790, 0, 2790, 2790, 0, 'cash', '', 0, 1, NULL, 1, '2021-07-09 19:18:17', NULL, NULL, '', '', NULL),
+(166, 6300, 40, 6260, 0, 6260, 0, 6260, 6260, 0, 'cash', '', 0, 1, NULL, 1, '2021-07-11 11:42:59', NULL, NULL, '', '', NULL),
+(167, 6000, 0, 6000, 0, 6000, 0, 6000, 6000, 0, 'cash', '', 0, 1, NULL, 1, '2021-07-11 11:44:44', NULL, NULL, '', '', NULL),
+(168, 6000, 0, 6000, 0, 6000, 0, 6000, 6000, 0, 'cash', '', 0, 1, NULL, 1, '2021-07-11 12:20:42', NULL, NULL, '', '', NULL),
+(169, -6000, 0, -6000, 0, -6000, 0, -6000, 0, 0, 'cash', '', 1, 1, NULL, 1, '2021-07-11 13:26:13', NULL, NULL, '', '6000', NULL);
 
 -- --------------------------------------------------------
 
@@ -2204,7 +2208,12 @@ INSERT INTO `sales_items` (`sale_item_id`, `sale_id`, `item_id`, `item_name`, `c
 (444, 163, 1, 'surbex tab', 100, 150, 20, 1, 0, 1, 130, 130, 0, NULL, 1, '2021-07-10 00:14:08'),
 (445, 164, 2, 'a2a 25mg', 500, 600, 0, 5, 0, 5, 600, 3000, 0, NULL, 1, '2021-07-10 00:17:53'),
 (446, 165, 2, 'a2a 25mg', 500, 600, 0, 4, 0, 4, 600, 2400, 0, NULL, 1, '2021-07-10 00:18:17'),
-(447, 165, 1, 'surbex tab', 100, 150, 20, 3, 0, 3, 130, 390, 0, NULL, 1, '2021-07-10 00:18:17');
+(447, 165, 1, 'surbex tab', 100, 150, 20, 3, 0, 3, 130, 390, 0, NULL, 1, '2021-07-10 00:18:17'),
+(448, 166, 1, 'surbex tab', 100, 150, 20, 2, 0, 2, 130, 260, 0, NULL, 1, '2021-07-11 16:42:59'),
+(449, 166, 2, 'a2a 25mg', 500, 600, 0, 10, 0, 10, 600, 6000, 0, NULL, 1, '2021-07-11 16:42:59'),
+(450, 167, 2, 'a2a 25mg', 500, 600, 0, 10, 0, 10, 600, 6000, 0, NULL, 1, '2021-07-11 16:44:44'),
+(451, 168, 2, 'a2a 25mg', 500, 600, 0, 10, 0, 10, 600, 6000, 0, NULL, 1, '2021-07-11 17:20:42'),
+(452, 169, 2, 'a2a 25mg', 500, 600, 0, -10, 0, -10, 600, -6000, 1, NULL, 1, '2021-07-11 18:26:13');
 
 -- --------------------------------------------------------
 
@@ -2219,6 +2228,13 @@ CREATE TABLE `sales_item_users` (
   `user_id` int(11) NOT NULL,
   `dated` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `sales_item_users`
+--
+
+INSERT INTO `sales_item_users` (`id`, `item_id`, `quantity`, `user_id`, `dated`) VALUES
+(123, 2, 1, 1, '2021-07-11 22:39:12');
 
 -- --------------------------------------------------------
 
@@ -2289,7 +2305,7 @@ CREATE TABLE `suppliers` (
 --
 
 INSERT INTO `suppliers` (`supplier_id`, `supplier_name`, `supplier_contact_no`, `company_name`, `account_number`, `status`, `order`, `created_by`, `created_date`, `last_updated`) VALUES
-(1, 'Navid Aziz ', '032454424414', 'ATS Chitral', 'abcdefd', 1, 1, NULL, '2021-04-06 22:41:07', NULL);
+(1, 'J and J', '032454424414', 'J and J Chitral', 'some information here', 1, 1, NULL, '2021-04-06 22:41:07', NULL);
 
 -- --------------------------------------------------------
 
@@ -2583,19 +2599,19 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `sales`
 --
 ALTER TABLE `sales`
-  MODIFY `sale_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=166;
+  MODIFY `sale_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=170;
 
 --
 -- AUTO_INCREMENT for table `sales_items`
 --
 ALTER TABLE `sales_items`
-  MODIFY `sale_item_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=448;
+  MODIFY `sale_item_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=453;
 
 --
 -- AUTO_INCREMENT for table `sales_item_users`
 --
 ALTER TABLE `sales_item_users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=118;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=124;
 
 --
 -- AUTO_INCREMENT for table `sale_taxes`

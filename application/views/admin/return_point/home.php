@@ -92,10 +92,10 @@
 							<tr>
 								<th></th>
 								<th>
-									<button onclick="get_return_item_page()" data-toggle="modal" data-target="#item_return_modal" class="btn btn-warning" style="margin-top: 10px; width:100%">Reprint<br /> Receipt</button>
+									<button onclick="get_sale_receipts()" data-toggle="modal" data-target="#item_return_modal" class="btn btn-warning" style="margin-top: 10px; width:100%">Reprint<br /> Receipt</button>
 
 								</th>
-								<th><a class="btn btn-danger" style="margin-top: 10px; width:100%" href="<?php echo site_url(ADMIN_DIR . "return_point") ?>">Sale <br /> Items</a>
+								<th><a class="btn btn-danger" style="margin-top: 10px; width:100%" href="<?php echo site_url(ADMIN_DIR . "sale_point") ?>">Sale <br /> Items</a>
 								</th>
 
 							</tr>
@@ -131,10 +131,10 @@
 
 
 <script>
-	function get_return_item_page() {
+	function get_sale_receipts() {
 		$.ajax({
 			type: "POST",
-			url: "<?php echo site_url(ADMIN_DIR . "return_point/get_return_item_page") ?>",
+			url: "<?php echo site_url(ADMIN_DIR . "return_point/get_sale_receipts") ?>",
 			data: {}
 		}).done(function(data) {
 			$('#item_return_body').html(data);

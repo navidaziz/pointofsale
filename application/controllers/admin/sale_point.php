@@ -33,6 +33,26 @@ class Sale_point extends Admin_Controller
     $this->load->view(ADMIN_DIR . "layout", $this->data);
   }
 
+  public function receipt_list()
+  {
+
+    $search = $this->db->escape($this->input->post("search"));
+
+    $query = "SELECT * FROM `sales` WHERE `sales`.sale_id = " . $search . "";
+    if ($this->db->query($query)->result()) {
+      echo "<h4>Search Result</h4>";
+      $this->data['sales'] = $this->db->query($query)->result();
+      $this->load->view(ADMIN_DIR . "sale_point/receipt_lists", $this->data);
+    } else {
+      echo '<div id="error_message_sale" class="alert alert-danger" role="alert">
+      <strong style="color:white">Search not found. try again</strong>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>';
+    }
+  }
+
   public function get_search_item()
   {
     $search_item = $this->db->escape($this->input->post("search_item"));
@@ -378,10 +398,13 @@ class Sale_point extends Admin_Controller
     $this->load->view(ADMIN_DIR . "sale_point/print_recepit", $this->data);
   }
 
-  public function get_return_item_page()
+  public function get_sale_receipts()
   {
     $this->data['tital'] = 'Return Item Form';
-    $this->load->view(ADMIN_DIR . "sale_point/return_item_form", $this->data);
+    $query = "SELECT * FROM `sales` WHERE DATE(created_date) = DATE(NOW()) ORDER BY sale_id DESC";
+    $this->data['sales'] = $this->db->query($query)->result();
+
+    $this->load->view(ADMIN_DIR . "sale_point/get_sale_receipts", $this->data);
   }
 
   public function search_by_receipt_no()

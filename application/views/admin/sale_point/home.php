@@ -104,7 +104,7 @@
 							<tr>
 								<th></th>
 								<th>
-									<button onclick="get_return_item_page()" data-toggle="modal" data-target="#item_return_modal" class="btn btn-warning" style="margin-top: 10px; width:100%">Reprint<br /> Receipt</button>
+									<button onclick="get_sale_receipts()" data-toggle="modal" data-target="#item_return_modal" class="btn btn-warning" style="margin-top: 10px; width:100%">Reprint<br /> Receipt</button>
 
 								</th>
 								<th><a class="btn btn-danger" style="margin-top: 10px; width:100%" href="<?php echo site_url(ADMIN_DIR . "return_point") ?>">Return <br /> Items</a></th>
@@ -124,12 +124,12 @@
 	<div class="modal-dialog" role="document" style="width: 90%;">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="exampleModalLabel" style="display: inline;">Item Return</h5>
+				<h5 class="modal-title" id="exampleModalLabel" style="display: inline;">Sale / Return Receipts</h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
-			<div class="modal-body" id="item_return_body">
+			<div class="modal-body" id="sale_return_receipt_body">
 
 			</div>
 			<div class="modal-footer">
@@ -142,13 +142,13 @@
 
 
 <script>
-	function get_return_item_page() {
+	function get_sale_receipts() {
 		$.ajax({
 			type: "POST",
-			url: "<?php echo site_url(ADMIN_DIR . "sale_point/get_return_item_page") ?>",
+			url: "<?php echo site_url(ADMIN_DIR . "sale_point/get_sale_receipts") ?>",
 			data: {}
 		}).done(function(data) {
-			$('#item_return_body').html(data);
+			$('#sale_return_receipt_body').html(data);
 
 		});
 
