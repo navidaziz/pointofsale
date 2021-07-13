@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 12, 2021 at 04:50 AM
+-- Generation Time: Jul 13, 2021 at 04:43 AM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.4
 
@@ -2310,6 +2310,31 @@ INSERT INTO `suppliers` (`supplier_id`, `supplier_name`, `supplier_contact_no`, 
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `suppliers_invoices`
+--
+
+CREATE TABLE `suppliers_invoices` (
+  `supplier_invoice_id` int(11) NOT NULL,
+  `supplier_invoice_number` text NOT NULL,
+  `supplier_id` int(11) NOT NULL,
+  `invoice_date` date NOT NULL,
+  `status` int(11) NOT NULL DEFAULT 1,
+  `order` int(11) DEFAULT NULL,
+  `created_by` int(11) DEFAULT NULL,
+  `created_date` datetime NOT NULL DEFAULT current_timestamp(),
+  `last_updated` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `suppliers_invoices`
+--
+
+INSERT INTO `suppliers_invoices` (`supplier_invoice_id`, `supplier_invoice_number`, `supplier_id`, `invoice_date`, `status`, `order`, `created_by`, `created_date`, `last_updated`) VALUES
+(2, '742', 1, '2021-07-09', 1, NULL, 1, '2021-07-12 23:24:12', NULL);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `system_global_settings`
 --
 
@@ -2537,6 +2562,13 @@ ALTER TABLE `suppliers`
   ADD KEY `person_id` (`supplier_id`);
 
 --
+-- Indexes for table `suppliers_invoices`
+--
+ALTER TABLE `suppliers_invoices`
+  ADD PRIMARY KEY (`supplier_invoice_id`),
+  ADD KEY `person_id` (`supplier_invoice_id`);
+
+--
 -- Indexes for table `system_global_settings`
 --
 ALTER TABLE `system_global_settings`
@@ -2630,6 +2662,12 @@ ALTER TABLE `social_media_icons`
 --
 ALTER TABLE `suppliers`
   MODIFY `supplier_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `suppliers_invoices`
+--
+ALTER TABLE `suppliers_invoices`
+  MODIFY `supplier_invoice_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `system_global_settings`
