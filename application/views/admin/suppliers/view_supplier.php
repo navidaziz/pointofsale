@@ -86,7 +86,7 @@
 									<td><?php echo $count++; ?></td>
 									<td><?php echo $suppliers_invoice->supplier_invoice_number; ?> </td>
 									<td><?php echo $suppliers_invoice->invoice_date; ?> </td>
-									<td><a href="">View Invoice Detail</a></td>
+									<td><a href="<?php echo site_url(ADMIN_DIR . "suppliers/supplier_invoice_view/" . $suppliers_invoice->supplier_id . "/" . $suppliers_invoice->supplier_invoice_id);  ?>">View Invoice Detail</a></td>
 								</tr>
 
 

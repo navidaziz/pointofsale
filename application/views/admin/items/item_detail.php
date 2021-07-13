@@ -135,7 +135,8 @@
                                     <strong>Stock Suppliers</strong>
                                     <?php
                                     echo form_dropdown("supplier_id", $suppliers, "", "class=\"form-control\" required style=\"width:150px\"");
-                                    ?></d>
+                                    ?>
+                                </td>
                                 <td>
                                     <strong>Cost Price</strong>
                                     <input type="number" name="cost_price" value="" id="cost_price" class="form-control" required="required" title="Cost Price" placeholder="Cost Price">
