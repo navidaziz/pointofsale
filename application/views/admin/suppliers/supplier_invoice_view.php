@@ -74,7 +74,41 @@
 						}
 
 						function get_item_prices(id) {
-							alert($('#' + id + ' option:selected').val());
+							item_id = $('#' + id + ' option:selected').val();
+							$.ajax({
+								type: "POST",
+								url: "<?php echo site_url(ADMIN_DIR . "suppliers/get_item_prices") ?>",
+								data: {
+									item_id: item_id,
+								}
+							}).done(function(data) {
+
+								var data = jQuery.parseJSON(data);
+
+								$('#cost_price1').val(data.cost_price);
+								$('#unit_price1').val(data.sale_price);
+								//get_user_sale_summary();
+
+							});
+						}
+
+						function get_item_prices2(id) {
+							item_id = $('#' + id + ' option:selected').val();
+							$.ajax({
+								type: "POST",
+								url: "<?php echo site_url(ADMIN_DIR . "suppliers/get_item_prices") ?>",
+								data: {
+									item_id: item_id,
+								}
+							}).done(function(data) {
+
+								var data = jQuery.parseJSON(data);
+
+								$('#cost_price2').val(data.cost_price);
+								$('#unit_price2').val(data.sale_price);
+								//get_user_sale_summary();
+
+							});
 						}
 					</script>
 					<form method="post" action="<?php echo  site_url(ADMIN_DIR . "suppliers/add_item_stocks") ?>">
@@ -83,12 +117,12 @@
 						<table class="table table-bordered table2" style="line-height: 0.5px; display:no ne" id="stock_in">
 							<input type="hidden" value="<?php echo  $suppliers[0]->supplier_id; ?>" name="supplier_id" />
 							<input type="hidden" value="<?php echo  $suppliers_invoices->supplier_invoice_id; ?>" name="supplier_invoice_id" />
-
+							<input type="hidden" name="unit_price" value="0" />
 							<tr>
 								<td>
 									<strong>Items</strong>
 									<?php
-									echo form_dropdown("item_id1", $items, "", "id = \"item_id1\" class=\"form - control\" onchange=\"get_item_prices('item_id1')\" required style=\"width:150px\"");
+									echo form_dropdown("item_id", $items, "", "id = \"item_id1\" class=\"form - control\" onchange=\"get_item_prices('item_id1')\" required style=\"width:150px\"");
 									?>
 								</td>
 								<td>
@@ -97,12 +131,9 @@
 								</td>
 								<td>
 									<strong>Cost Price</strong>
-									<input style="width: 80px;" type="number" step="any" name="cost_price" value="" id="cost_price" class="form - control" required="required" title="Cost Price" placeholder="Cost Price">
+									<input style="width: 80px;" type="number" step="any" id="cost_price1" name="cost_price" value="" id="cost_price" class="form - control" required="required" title="Cost Price" placeholder="Cost Price">
 								</td>
-								<td>
-									<strong>Unit Price</strong>
-									<input style="width: 80px;" type="number" step="any" name="unit_price" value="" id="unit_price" class="form - control" title="Unit Price" placeholder="Unit Price">
-								</td>
+
 								<td>
 									<strong>Total New Stock</strong>
 									<input style="width: 80px;" type="number" name="transaction" value="" id="transaction" class="form - control" title="Unit" placeholder="Transaction">
@@ -123,18 +154,23 @@
 						<table class="table table-bordered table2" style="line-height: 0.5px; display:none" id="stock_return">
 							<input type="hidden" value="<?php echo  $suppliers[0]->supplier_id; ?>" name="supplier_id" />
 							<input type="hidden" value="<?php echo  $suppliers_invoices->supplier_invoice_id; ?>" name="supplier_invoice_id" />
-
+							<input type="hidden" name="unit_price" value="0" />
 							<tr>
 								<td>
 									<strong>Items</strong>
 									<?php
-									echo form_dropdown("item_id", $items, "", "class=\"form - control\" required style=\"width:150px\"");
+									echo form_dropdown("item_id", $items, "", "id = \"item_id2\" class=\"form - control\" onchange=\"get_item_prices2('item_id2')\" required style=\"width:150px\"");
 									?>
 								</td>
 								<td>
 									<strong>Total Stock Return</strong>
 									<input type="number" name="transaction" value="" id="transaction" class="form - control" title="Unit" placeholder="Transaction">
 								</td>
+								<td>
+									<strong>Cost Price</strong>
+									<input style="width: 80px;" type="number" step="any" id="cost_price2" name="cost_price" value="" id="cost_price" class="form - control" required="required" title="Cost Price" placeholder="Cost Price">
+								</td>
+
 								<td>
 									<strong>Date</strong>
 									<input type="date" name="date" value="" id="date" class="form - control" title="date" placeholder="date" />
@@ -154,6 +190,31 @@
 					</form>
 
 
+					<?php if ($this->session->flashdata("msg") || $this->session->flashdata("msg_error") || $this->session->flashdata("msg_success")) {
+
+						$type = "";
+						if ($this->session->flashdata("msg_success")) {
+							$type = "success";
+							$msg = $this->session->flashdata("msg_success");
+						} elseif ($this->session->flashdata("msg_error")) {
+							$type = "danger";
+							$msg = $this->session->flashdata("msg_error");
+						} else {
+							$type = "info";
+							$msg = $this->session->flashdata("msg");
+						}
+					?>
+						<div class="alert alert-<?php echo $type; ?> " role="alert">
+							<strong>Note!</strong>
+							<?php echo $msg; ?>
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+
+					<?php } ?>
+
+
 					<table class="table table-bordered table2">
 						<thead>
 							<th>#</th>
@@ -163,10 +224,11 @@
 							<th>Quantity</th>
 							<th>Trade Price</th>
 							<th>Net Amount</th>
-							<th>Unit Price</th>
+							<!-- <th>Unit Price</th> -->
 							<th>Transaction Type</th>
 							<th>Remarks</th>
 							<th>Created By</th>
+							<th>Action</th>
 						</thead>
 						<tbody>
 							<?php
@@ -176,14 +238,23 @@
 									<td><?php echo $count++; ?></td>
 									<td><?php echo $inventory->name; ?></td>
 									<td><?php echo $inventory->batch_number; ?></td>
-									<td><?php echo date('d M, Y', strtotime($inventory->expiry_date)); ?></td>
+									<td>
+										<?php if ($inventory->expiry_date) { ?>
+											<?php echo date('d M, Y', strtotime($inventory->expiry_date)); ?>
+										<?php } ?>
+									</td>
 									<td><?php echo $inventory->inventory_transaction; ?></td>
 									<td><?php echo $inventory->item_cost_price; ?></td>
 									<td><?php echo $inventory->item_cost_price * $inventory->inventory_transaction; ?></td>
-									<td><?php echo $inventory->item_unit_price; ?></td>
-									<td><strong><?php echo $inventory->transaction_type; ?></strong></td>
+									<!-- <td><?php echo $inventory->item_unit_price; ?></td> -->
+									<td><strong><?php echo $inventory->transaction_type; ?></strong>
+										<?php if ($inventory->return_date) { ?>
+											<small><?php echo date('d M, Y', strtotime($inventory->return_date)); ?></small>
+										<?php } ?>
+									</td>
 									<td><?php echo $inventory->remarks; ?></td>
 									<td><?php echo $inventory->user_title; ?></td>
+									<td><a href="<?php echo site_url(ADMIN_DIR . "suppliers/remove_supplier_item/" . $inventory->supplier_id . "/" . $inventory->supplier_invoice_id . "/" . $inventory->inventory_id) ?>">Remove</a></td>
 								</tr>
 
 							<?php endforeach; ?>
