@@ -54,7 +54,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Quantity ?></th>
+                                    <th>Quantity </th>
                                     <td>
                                         <?php echo $item->total_quantity; ?>
                                     </td>
@@ -131,26 +131,21 @@
                         <table class="table table-bordered table2" style="line-height: 0.5px; display:none" id="stock_in">
 
                             <tr>
-                                <td>
-                                    <strong>Stock Suppliers</strong>
-                                    <?php
-                                    echo form_dropdown("supplier_id", $suppliers, "", "class=\"form-control\" required style=\"width:150px\"");
-                                    ?>
-                                </td>
+
                                 <td>
                                     <strong>Cost Price</strong>
-                                    <input type="number" name="cost_price" value="" id="cost_price" class="form-control" required="required" title="Cost Price" placeholder="Cost Price">
+                                    <input step="any" type="number" name="cost_price" value="" id="cost_price" class="form-control" required="required" title="Cost Price" placeholder="Cost Price">
                                 </td>
                                 <td>
                                     <strong>Unit Price</strong>
-                                    <input type="number" name="unit_price" value="" id="unit_price" class="form-control" title="Unit Price" placeholder="Unit Price">
+                                    <input step="any" type="number" name="unit_price" value="" id="unit_price" class="form-control" title="Unit Price" placeholder="Unit Price">
                                 </td>
                                 <td>
                                     <strong>Total New Stock</strong>
                                     <input type="number" name="transaction" value="" id="transaction" class="form-control" title="Unit" placeholder="Transaction">
                                 </td>
                                 <td>
-                                    <strong>Date</strong>
+                                    <strong>Expiry Date</strong>
                                     <input type="date" name="date" value="" id="date" class="form-control" title="date" placeholder="date" />
                                 </td>
 
@@ -174,7 +169,7 @@
 
                                 <td>
                                     <strong>Total Stock Return</strong>
-                                    <input type="number" name="transaction" value="" id="transaction" class="form-control" title="Unit" placeholder="Transaction">
+                                    <input step="any" type="number" name="transaction" value="" id="transaction" class="form-control" title="Unit" placeholder="Transaction">
                                 </td>
                                 <td>
                                     <strong>Date</strong>
@@ -194,17 +189,21 @@
                         </table>
                     </form>
 
+
                     <table class="table table-bordered table2">
                         <thead>
                             <th>#</th>
-                            <th>Dated</th>
-                            <th>Supplier</th>
-                            <th>Cost Price</th>
-                            <th>Unit Price</th>
+                            <th>Supplier Name</th>
+                            <th>Batch Number</th>
+                            <th>Expiry Date</th>
+                            <th>Quantity</th>
+                            <th>Trade Price</th>
+                            <!-- <th>Net Amount</th> -->
+                            <!-- <th>Unit Price</th> -->
                             <th>Transaction Type</th>
-                            <th>Transaction</th>
                             <th>Remarks</th>
                             <th>Created By</th>
+                            <!-- <th>Action</th> -->
                         </thead>
                         <tbody>
                             <?php
@@ -212,17 +211,28 @@
                             foreach ($inventories as $inventory) : ?>
                                 <tr>
                                     <td><?php echo $count++; ?></td>
-                                    <td><?php echo date('d M, Y', strtotime($inventory->date)); ?></td>
                                     <td><?php echo @$suppliers[$inventory->supplier_id]; ?></td>
-                                    <td><?php echo $inventory->item_cost_price; ?></td>
-                                    <td><?php echo $inventory->item_unit_price; ?></td>
-                                    <td><strong><?php echo $inventory->transaction_type; ?></strong></td>
+                                    <td><?php echo $inventory->batch_number; ?></td>
+                                    <td>
+                                        <?php if ($inventory->expiry_date) { ?>
+                                            <?php echo date('d M, Y', strtotime($inventory->expiry_date)); ?>
+                                        <?php } ?>
+                                    </td>
                                     <td><?php echo $inventory->inventory_transaction; ?></td>
+                                    <td><?php echo $inventory->item_cost_price; ?></td>
+                                    <!-- <td><?php echo $inventory->item_cost_price * $inventory->inventory_transaction; ?></td> -->
+                                    <!-- <td><?php echo $inventory->item_unit_price; ?></td> -->
+                                    <td><strong><?php echo $inventory->transaction_type; ?></strong>
+                                        <?php if ($inventory->return_date) { ?>
+                                            <small><?php echo date('d M, Y', strtotime($inventory->return_date)); ?></small>
+                                        <?php } ?>
+                                    </td>
                                     <td><?php echo $inventory->remarks; ?></td>
-                                    <td><?php echo $inventory->remarks; ?></td>
-                                </tr>
+                                    <td><?php echo $inventory->user_title; ?></td>
+                                    <!-- <td><a href="<?php echo site_url(ADMIN_DIR . "suppliers/remove_supplier_item/" . $inventory->supplier_id . "/" . $inventory->supplier_invoice_id . "/" . $inventory->inventory_id) ?>">Remove</a></td>
+                                </tr> -->
 
-                            <?php endforeach; ?>
+                                <?php endforeach; ?>
                         </tbody>
                     </table>
 

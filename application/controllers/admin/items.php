@@ -243,7 +243,11 @@ class Items extends Admin_Controller
         $query = "SELECT * FROM all_items WHERE item_id = '" . $item_id . "'";
         $this->data["items"] = $this->db->query($query)->result();
         $this->data["suppliers"] = $this->item_model->getList("suppliers", "supplier_id", "supplier_name", "`suppliers`.`status` IN (1)");
-        $query = "SELECT * FROM inventory WHERE item_id ='" . $item_id . "'";
+
+        $query = "SELECT inventory.*, items.name, users.user_title FROM inventory, items, users 
+                  WHERE inventory.item_id = items.item_id
+                  AND inventory.created_by = users.user_id
+                  AND inventory.item_id = '" . $item_id . "'";
         $this->data['inventories'] = $this->db->query($query)->result();
         $this->data["title"] = $this->lang->line('Item Details');
         $this->load->view(ADMIN_DIR . "items/item_detail", $this->data);
@@ -261,7 +265,7 @@ class Items extends Admin_Controller
         $created_by = $this->session->userdata("user_id");
 
         //update item enventory after first time add 
-        $query = "INSERT INTO `inventory`(`item_id`, `supplier_id`, `item_cost_price`, `item_unit_price`, `transaction_type`, `inventory_transaction`,`date`,`created_by`) 
+        $query = "INSERT INTO `inventory`(`item_id`, `supplier_id`, `item_cost_price`, `item_unit_price`, `transaction_type`, `inventory_transaction`,`expiry_date`,`created_by`) 
                             VALUES ('" . $item_id . "', '" . $supplier_id . "', '" . $cost_price . "', '" . $unit_price . "', 'Stock In','" . $transaction . "','" . $date . "','" . $created_by . "')";
         $this->db->query($query);
         $this->session->set_flashdata("msg_success", $this->lang->line("add_msg_success"));
