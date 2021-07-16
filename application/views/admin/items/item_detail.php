@@ -54,9 +54,11 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Quantity </th>
+                                    <th>
+                                        <h4>In Stock </h4>
+                                    </th>
                                     <td>
-                                        <?php echo $item->total_quantity; ?>
+                                        <h4><?php echo $item->total_quantity; ?></h4>
                                     </td>
                                 </tr>
                                 <tr>
@@ -128,25 +130,33 @@
                     <form method="post" action="<?php echo  site_url(ADMIN_DIR . "items/add_item_stocks") ?>">
                         <input type="hidden" name="item_id" id="item_id" value="<?php echo $items[0]->item_id; ?>" />
                         Stock In: <input type="radio" value="stock_in" name="traction_type" onclick="stock_in()" /> Stock Return: <input type="radio" value="stock_return" onclick="stock_return()" name="traction_type" />
-                        <table class="table table-bordered table2" style="line-height: 0.5px; display:none" id="stock_in">
+                        <table class="table table-bordered table2" style="line-height: 0.5px; display:block" id="stock_in">
 
                             <tr>
 
                                 <td>
                                     <strong>Cost Price</strong>
-                                    <input step="any" type="number" name="cost_price" value="" id="cost_price" class="form-control" required="required" title="Cost Price" placeholder="Cost Price">
+                                    <input step="any" type="number" name="cost_price" value="<?php if ($item->cost_price) {
+                                                                                                    echo $item->cost_price;
+                                                                                                } else {
+                                                                                                    echo 0;
+                                                                                                } ?>" id="cost_price" class="form-control" required="required" title="Cost Price" placeholder="Cost Price">
                                 </td>
                                 <td>
                                     <strong>Unit Price</strong>
-                                    <input step="any" type="number" name="unit_price" value="" id="unit_price" class="form-control" title="Unit Price" placeholder="Unit Price">
+                                    <input step="any" type="number" name="unit_price" value="<?php if ($item->unit_price) {
+                                                                                                    echo $item->unit_price;
+                                                                                                } else {
+                                                                                                    echo 0;
+                                                                                                } ?>" id="unit_price" class="form-control" title="Unit Price" placeholder="Unit Price">
                                 </td>
                                 <td>
                                     <strong>Total New Stock</strong>
-                                    <input type="number" name="transaction" value="" id="transaction" class="form-control" title="Unit" placeholder="Transaction">
+                                    <input required="required" type="number" name="transaction" value="" id="transaction" class="form-control" title="Unit" placeholder="Transaction">
                                 </td>
                                 <td>
                                     <strong>Expiry Date</strong>
-                                    <input type="date" name="date" value="" id="date" class="form-control" title="date" placeholder="date" />
+                                    <input required="required" type="date" name="date" value="" id="date" class="form-control" title="date" placeholder="date" />
                                 </td>
 
                                 <td>
@@ -162,18 +172,29 @@
 
                             <tr>
                                 <td>
-                                    <strong>Stock Suppliers</strong>
-                                    <?php
-                                    echo form_dropdown("supplier_id", $suppliers, "", "class=\"form-control\" required style=\"width:150px\"");
-                                    ?></d>
+                                    <strong>Cost Price</strong>
+                                    <input step="any" type="number" name="cost_price" value="<?php if ($item->cost_price) {
+                                                                                                    echo $item->cost_price;
+                                                                                                } else {
+                                                                                                    echo 0;
+                                                                                                } ?>" id="cost_price" class="form-control" required="required" title="Cost Price" placeholder="Cost Price">
+                                </td>
+                                <td>
+                                    <strong>Unit Price</strong>
+                                    <input step="any" type="number" name="unit_price" value="<?php if ($item->unit_price) {
+                                                                                                    echo $item->unit_price;
+                                                                                                } else {
+                                                                                                    echo 0;
+                                                                                                } ?>" id="unit_price" class="form-control" title="Unit Price" placeholder="Unit Price">
+                                </td>
 
                                 <td>
                                     <strong>Total Stock Return</strong>
-                                    <input step="any" type="number" name="transaction" value="" id="transaction" class="form-control" title="Unit" placeholder="Transaction">
+                                    <input required="required" type="number" name="transaction" value="" id="transaction" class="form-control" title="Unit" placeholder="Transaction">
                                 </td>
                                 <td>
                                     <strong>Date</strong>
-                                    <input type="date" name="date" value="" id="date" class="form-control" title="date" placeholder="date" />
+                                    <input required="required" type="date" name="date" value="" id="date" class="form-control" title="date" placeholder="date" />
                                 </td>
 
                                 <td>

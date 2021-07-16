@@ -114,7 +114,7 @@
                                 <th><?php echo $this->lang->line('unit_price'); ?></th>
                                 <th>Discount</th>
                                 <th>Sale Price</th>
-                                <th>Quantity</th>
+                                <th>In Stock</th>
                                 <th><?php echo $this->lang->line('unit'); ?></th>
                                 <th><?php echo $this->lang->line('reorder_level'); ?></th>
                                 <!-- <th><?php echo $this->lang->line('location'); ?></th> -->

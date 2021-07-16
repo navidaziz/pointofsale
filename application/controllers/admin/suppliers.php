@@ -94,6 +94,12 @@ class Suppliers extends Admin_Controller
                                     '" . $created_by . "')";
         $this->db->query($query);
         $this->session->set_flashdata("msg_success", $this->lang->line("add_msg_success"));
+
+        $query = "
+        UPDATE `items` SET `cost_price` = '" . $cost_price . "',  
+        `unit_price` = '" . $unit_price . "'
+        WHERE `items`.`item_id` ='" . $item_id . "'";
+        $this->db->query($query);
         redirect(ADMIN_DIR . "suppliers/supplier_invoice_view/" . $supplier_id . "/" . $supplier_invoice_id);
     }
 
@@ -143,6 +149,11 @@ class Suppliers extends Admin_Controller
                                         '" . $created_by . "',
                                         '" . $remarks . "')";
 
+                $this->db->query($query);
+                $query = "
+                UPDATE `items` SET `cost_price` = '" . $cost_price . "',  
+                `unit_price` = '" . $unit_price . "'
+                WHERE `items`.`item_id` ='" . $item_id . "'";
                 $this->db->query($query);
                 $this->session->set_flashdata("msg_success", "Record Add Successfully");
             } else {
