@@ -54,9 +54,11 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Quantity ?></th>
+                                    <th>
+                                        <h4>In Stock </h4>
+                                    </th>
                                     <td>
-                                        <?php echo $item->total_quantity; ?>
+                                        <h4><?php echo $item->total_quantity; ?></h4>
                                     </td>
                                 </tr>
                                 <tr>
@@ -128,30 +130,33 @@
                     <form method="post" action="<?php echo  site_url(ADMIN_DIR . "items/add_item_stocks") ?>">
                         <input type="hidden" name="item_id" id="item_id" value="<?php echo $items[0]->item_id; ?>" />
                         Stock In: <input type="radio" value="stock_in" name="traction_type" onclick="stock_in()" /> Stock Return: <input type="radio" value="stock_return" onclick="stock_return()" name="traction_type" />
-                        <table class="table table-bordered table2" style="line-height: 0.5px; display:none" id="stock_in">
+                        <table class="table table-bordered table2" style="line-height: 0.5px; display:block" id="stock_in">
 
                             <tr>
-                                <td>
-                                    <strong>Stock Suppliers</strong>
-                                    <?php
-                                    echo form_dropdown("supplier_id", $suppliers, "", "class=\"form-control\" required style=\"width:150px\"");
-                                    ?>
-                                </td>
+
                                 <td>
                                     <strong>Cost Price</strong>
-                                    <input type="number" name="cost_price" value="" id="cost_price" class="form-control" required="required" title="Cost Price" placeholder="Cost Price">
+                                    <input step="any" type="number" name="cost_price" value="<?php if ($item->cost_price) {
+                                                                                                    echo $item->cost_price;
+                                                                                                } else {
+                                                                                                    echo 0;
+                                                                                                } ?>" id="cost_price" class="form-control" required="required" title="Cost Price" placeholder="Cost Price">
                                 </td>
                                 <td>
                                     <strong>Unit Price</strong>
-                                    <input type="number" name="unit_price" value="" id="unit_price" class="form-control" title="Unit Price" placeholder="Unit Price">
+                                    <input step="any" type="number" name="unit_price" value="<?php if ($item->unit_price) {
+                                                                                                    echo $item->unit_price;
+                                                                                                } else {
+                                                                                                    echo 0;
+                                                                                                } ?>" id="unit_price" class="form-control" title="Unit Price" placeholder="Unit Price">
                                 </td>
                                 <td>
                                     <strong>Total New Stock</strong>
-                                    <input type="number" name="transaction" value="" id="transaction" class="form-control" title="Unit" placeholder="Transaction">
+                                    <input required="required" type="number" name="transaction" value="" id="transaction" class="form-control" title="Unit" placeholder="Transaction">
                                 </td>
                                 <td>
-                                    <strong>Date</strong>
-                                    <input type="date" name="date" value="" id="date" class="form-control" title="date" placeholder="date" />
+                                    <strong>Expiry Date</strong>
+                                    <input required="required" type="date" name="date" value="" id="date" class="form-control" title="date" placeholder="date" />
                                 </td>
 
                                 <td>
@@ -167,18 +172,29 @@
 
                             <tr>
                                 <td>
-                                    <strong>Stock Suppliers</strong>
-                                    <?php
-                                    echo form_dropdown("supplier_id", $suppliers, "", "class=\"form-control\" required style=\"width:150px\"");
-                                    ?></d>
+                                    <strong>Cost Price</strong>
+                                    <input step="any" type="number" name="cost_price" value="<?php if ($item->cost_price) {
+                                                                                                    echo $item->cost_price;
+                                                                                                } else {
+                                                                                                    echo 0;
+                                                                                                } ?>" id="cost_price" class="form-control" required="required" title="Cost Price" placeholder="Cost Price">
+                                </td>
+                                <td>
+                                    <strong>Unit Price</strong>
+                                    <input step="any" type="number" name="unit_price" value="<?php if ($item->unit_price) {
+                                                                                                    echo $item->unit_price;
+                                                                                                } else {
+                                                                                                    echo 0;
+                                                                                                } ?>" id="unit_price" class="form-control" title="Unit Price" placeholder="Unit Price">
+                                </td>
 
                                 <td>
                                     <strong>Total Stock Return</strong>
-                                    <input type="number" name="transaction" value="" id="transaction" class="form-control" title="Unit" placeholder="Transaction">
+                                    <input required="required" type="number" name="transaction" value="" id="transaction" class="form-control" title="Unit" placeholder="Transaction">
                                 </td>
                                 <td>
                                     <strong>Date</strong>
-                                    <input type="date" name="date" value="" id="date" class="form-control" title="date" placeholder="date" />
+                                    <input required="required" type="date" name="date" value="" id="date" class="form-control" title="date" placeholder="date" />
                                 </td>
 
                                 <td>
@@ -194,17 +210,21 @@
                         </table>
                     </form>
 
+
                     <table class="table table-bordered table2">
                         <thead>
                             <th>#</th>
-                            <th>Dated</th>
-                            <th>Supplier</th>
-                            <th>Cost Price</th>
-                            <th>Unit Price</th>
+                            <th>Supplier Name</th>
+                            <th>Batch Number</th>
+                            <th>Expiry Date</th>
+                            <th>Quantity</th>
+                            <th>Trade Price</th>
+                            <!-- <th>Net Amount</th> -->
+                            <!-- <th>Unit Price</th> -->
                             <th>Transaction Type</th>
-                            <th>Transaction</th>
                             <th>Remarks</th>
                             <th>Created By</th>
+                            <!-- <th>Action</th> -->
                         </thead>
                         <tbody>
                             <?php
@@ -212,17 +232,28 @@
                             foreach ($inventories as $inventory) : ?>
                                 <tr>
                                     <td><?php echo $count++; ?></td>
-                                    <td><?php echo date('d M, Y', strtotime($inventory->date)); ?></td>
                                     <td><?php echo @$suppliers[$inventory->supplier_id]; ?></td>
-                                    <td><?php echo $inventory->item_cost_price; ?></td>
-                                    <td><?php echo $inventory->item_unit_price; ?></td>
-                                    <td><strong><?php echo $inventory->transaction_type; ?></strong></td>
+                                    <td><?php echo $inventory->batch_number; ?></td>
+                                    <td>
+                                        <?php if ($inventory->expiry_date) { ?>
+                                            <?php echo date('d M, Y', strtotime($inventory->expiry_date)); ?>
+                                        <?php } ?>
+                                    </td>
                                     <td><?php echo $inventory->inventory_transaction; ?></td>
+                                    <td><?php echo $inventory->item_cost_price; ?></td>
+                                    <!-- <td><?php echo $inventory->item_cost_price * $inventory->inventory_transaction; ?></td> -->
+                                    <!-- <td><?php echo $inventory->item_unit_price; ?></td> -->
+                                    <td><strong><?php echo $inventory->transaction_type; ?></strong>
+                                        <?php if ($inventory->return_date) { ?>
+                                            <small><?php echo date('d M, Y', strtotime($inventory->return_date)); ?></small>
+                                        <?php } ?>
+                                    </td>
                                     <td><?php echo $inventory->remarks; ?></td>
-                                    <td><?php echo $inventory->remarks; ?></td>
-                                </tr>
+                                    <td><?php echo $inventory->user_title; ?></td>
+                                    <!-- <td><a href="<?php echo site_url(ADMIN_DIR . "suppliers/remove_supplier_item/" . $inventory->supplier_id . "/" . $inventory->supplier_invoice_id . "/" . $inventory->inventory_id) ?>">Remove</a></td>
+                                </tr> -->
 
-                            <?php endforeach; ?>
+                                <?php endforeach; ?>
                         </tbody>
                     </table>
 

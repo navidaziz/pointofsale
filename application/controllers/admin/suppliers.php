@@ -28,6 +28,35 @@ class Suppliers extends Admin_Controller
     }
     //---------------------------------------------------------------
 
+    function remove_supplier_item($supplier_id, $supplier_invoice_id, $inventory_id)
+    {
+        $inventory_id  = (int) $inventory_id;
+        $query = "DELETE FROM `inventory` WHERE `inventory_id`='" . $inventory_id . "'";
+        if ($this->db->query($query)) {
+            $this->session->set_flashdata("msg_success", "Record Add Successfully");
+        } else {
+            $this->session->set_flashdata("msg_error", "Error Try Again.");
+        }
+
+        redirect(ADMIN_DIR . "suppliers/supplier_invoice_view/" . $supplier_id . "/" . $supplier_invoice_id);
+    }
+
+    function get_item_prices()
+    {
+        $item_id = (int) $this->input->post("item_id");
+        $query = "SELECT `item_cost_price`,`item_unit_price` 
+                  FROM `inventory` WHERE item_id = '" . $item_id . "' 
+                  AND `inventory`.`transaction_type` = 'Stock In'
+                  ORDER BY inventory_id DESC
+                  LIMIT 1";
+        $item_price_detail['cost_price'] = 0;
+        $item_price_detail['sale_price'] = 0;
+        if ($this->db->query($query)->result()) {
+            $item_price_detail['cost_price'] = $this->db->query($query)->result()[0]->item_cost_price;
+            $item_price_detail['sale_price'] = $this->db->query($query)->result()[0]->item_unit_price;
+        }
+        echo json_encode($item_price_detail);
+    }
 
 
     function add_item_stocks()
@@ -65,46 +94,79 @@ class Suppliers extends Admin_Controller
                                     '" . $created_by . "')";
         $this->db->query($query);
         $this->session->set_flashdata("msg_success", $this->lang->line("add_msg_success"));
+
+        $query = "
+        UPDATE `items` SET `cost_price` = '" . $cost_price . "',  
+        `unit_price` = '" . $unit_price . "'
+        WHERE `items`.`item_id` ='" . $item_id . "'";
+        $this->db->query($query);
         redirect(ADMIN_DIR . "suppliers/supplier_invoice_view/" . $supplier_id . "/" . $supplier_invoice_id);
     }
 
     function return_item_stocks()
     {
 
-        $item_id = (int) $this->input->post("item_id");
 
+        $item_id = (int) $this->input->post("item_id");
+        $transaction = $this->input->post("transaction");
         $supplier_invoice_id = $this->input->post("supplier_invoice_id");
         $batch_number = $this->input->post("batch_number");
         $cost_price = $this->input->post("cost_price");
         $unit_price = $this->input->post("unit_price");
         $supplier_id = $this->input->post("supplier_id");
-        $transaction = $this->input->post("transaction");
+
         $date = $this->input->post("date");
         $created_by = $this->session->userdata("user_id");
         $remarks = $this->input->post("remarks");
 
-        //update item enventory after first time add 
-        $query = "INSERT INTO `inventory`(`item_id`, 
-                                          `supplier_id`,
-                                          `supplier_invoice_id`, 
-                                          `batch_number`, 
-                                          `item_cost_price`, 
-                                          `item_unit_price`, 
-                                          `transaction_type`, 
-                                          `inventory_transaction`,
-                                          `return_date`,`created_by`) 
-                            VALUES ('" . $item_id . "', 
-                                    '" . $supplier_id . "', 
-                                    '" . $supplier_invoice_id . "', 
-                                    '" . $batch_number . "', 
-                                    '" . $cost_price . "', 
-                                    '" . $unit_price . "', 
-                                    'Stock Return',
-                                    '-" . $transaction . "',
-                                    '" . $date . "',
-                                    '" . $created_by . "')";
-        $this->db->query($query);
-        $this->session->set_flashdata("msg_success", $this->lang->line("add_msg_success"));
+        $query = "SELECT `total_quantity`, `name` FROM `all_items` WHERE `item_id`='" . $item_id . "'";
+        $query_result = $this->db->query($query)->result();
+        if ($query_result) {
+            if ($query_result[0]->total_quantity >= $transaction) {
+
+
+                //update item enventory after first time add 
+                $query = "INSERT INTO `inventory`(`item_id`, 
+                                              `supplier_id`,
+                                              `supplier_invoice_id`, 
+                                              `batch_number`, 
+                                              `item_cost_price`, 
+                                              `item_unit_price`, 
+                                              `transaction_type`, 
+                                              `inventory_transaction`,
+                                              `return_date`,
+                                              `created_by`,
+                                              `remarks`) 
+                                VALUES ('" . $item_id . "', 
+                                        '" . $supplier_id . "', 
+                                        '" . $supplier_invoice_id . "', 
+                                        '" . $batch_number . "', 
+                                        '" . $cost_price . "', 
+                                        '" . $unit_price . "', 
+                                        'Stock Return',
+                                        '-" . $transaction . "',
+                                        '" . $date . "',
+                                        '" . $created_by . "',
+                                        '" . $remarks . "')";
+
+                $this->db->query($query);
+                $query = "
+                UPDATE `items` SET `cost_price` = '" . $cost_price . "',  
+                `unit_price` = '" . $unit_price . "'
+                WHERE `items`.`item_id` ='" . $item_id . "'";
+                $this->db->query($query);
+                $this->session->set_flashdata("msg_success", "Record Add Successfully");
+            } else {
+                if ($query_result[0]->total_quantity) {
+                    $this->session->set_flashdata("msg_error", $query_result[0]->name . " only " . $query_result[0]->total_quantity . " remain in stock. you can't return more then in stock value.");
+                } else {
+                    $this->session->set_flashdata("msg_error", $query_result[0]->name . " is not in stock");
+                }
+            }
+        } else {
+            $this->session->set_flashdata("msg_error", "Item not found");
+        }
+
         redirect(ADMIN_DIR . "suppliers/supplier_invoice_view/" . $supplier_id . "/" . $supplier_invoice_id);
     }
 

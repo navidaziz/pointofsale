@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 13, 2021 at 11:16 AM
+-- Generation Time: Jul 14, 2021 at 12:41 PM
 -- Server version: 10.4.19-MariaDB
 -- PHP Version: 7.3.28
 
@@ -573,14 +573,8 @@ CREATE TABLE `inventory` (
 --
 
 INSERT INTO `inventory` (`inventory_id`, `batch_number`, `supplier_invoice_id`, `item_id`, `supplier_id`, `item_cost_price`, `item_unit_price`, `sale_id`, `receiving_id`, `transaction_type`, `inventory_transaction`, `expiry_date`, `return_date`, `remarks`, `status`, `order`, `created_by`, `created_date`, `last_updated`) VALUES
-(18, '', NULL, 1, 1, 500, 550, NULL, NULL, 'Stock In', 50, '2021-07-02', NULL, NULL, 1, NULL, 1, '2021-07-02 18:05:33', NULL),
-(19, '', NULL, 1, 1, 0, 0, NULL, NULL, 'Stock Return', -25, '2021-07-02', NULL, 'due to expired', 1, NULL, 1, '2021-07-02 18:49:22', NULL),
-(20, '', NULL, 1232, 0, 100, 200, NULL, NULL, 'Item Created', 0, '2021-07-02', NULL, NULL, 1, NULL, 1, '2021-07-02 19:08:10', NULL),
-(21, '', NULL, 2, 1, 500, 600, NULL, NULL, 'Stock In', 50, '2021-07-10', NULL, NULL, 1, NULL, 1, '2021-07-10 00:16:50', NULL),
-(22, '001', 2, 535, 1, 324, 380, NULL, NULL, 'Stock In', 30, '2021-07-30', NULL, NULL, 1, NULL, 1, '2021-07-13 12:07:03', NULL),
-(23, '0001', 2, 75, 1, 145.2, 180, NULL, NULL, 'Stock In', 30, '2021-07-22', NULL, NULL, 1, NULL, 1, '2021-07-13 12:11:06', NULL),
-(24, '10', 2, 98, 1, 304.25, 350, NULL, NULL, 'Stock In', 10, '2021-07-13', NULL, NULL, 1, NULL, 1, '2021-07-13 12:12:41', NULL),
-(25, '', 2, 535, 1, 0, 0, NULL, NULL, 'Stock Return', -30, NULL, '2021-07-13', NULL, 1, NULL, 1, '2021-07-13 13:33:40', NULL);
+(33, '00001', 2, 1, 1, 500, 0, NULL, NULL, 'Stock In', 50, '2021-07-30', NULL, NULL, 1, NULL, 1, '2021-07-14 15:19:13', NULL),
+(34, '00001', 2, 2, 1, 200, 0, NULL, NULL, 'Stock In', 50, '2021-07-29', NULL, NULL, 1, NULL, 1, '2021-07-14 15:19:39', NULL);
 
 -- --------------------------------------------------------
 
@@ -612,7 +606,7 @@ CREATE TABLE `items` (
 --
 
 INSERT INTO `items` (`item_id`, `name`, `category`, `item_code_no`, `description`, `cost_price`, `unit_price`, `discount`, `unit`, `reorder_level`, `location`, `status`, `order`, `created_by`, `created_date`, `last_updated`) VALUES
-(1, 'surbex Tab', 'Tab', '1', '', 100.00, 150.00, 20, '', 0, '', 1, 1227, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(1, 'surbex Tab', 'Tab', '1', '', 100.00, 150.00, 0, '', 0, '', 1, 1227, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
 (2, 'A2a 25mg', 'Tab', '2', '', 500.00, 600.00, 0, '', 0, '', 1, 1001, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
 (3, 'A2a50mg', '', '3', '', 0.00, 0.00, 0, '', 0, '', 1, 1002, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
 (4, 'Acry-gel', '', '4', '', 0.00, 0.00, 0, '', 0, '', 1, 1463, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
@@ -2608,7 +2602,7 @@ ALTER TABLE `icons`
 -- AUTO_INCREMENT for table `inventory`
 --
 ALTER TABLE `inventory`
-  MODIFY `inventory_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `inventory_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT for table `items`
