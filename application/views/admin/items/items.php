@@ -102,12 +102,13 @@
 
                 <div class="table-responsive">
 
-                    <table class="table table-bordered" style="font-size: 11px;">
+                    <table id="item_table" class="table table-bordered" style="font-size: 11px;">
                         <thead>
                             <tr>
 
                                 <th><?php echo $this->lang->line('name'); ?></th>
                                 <th><?php echo $this->lang->line('category'); ?></th>
+                                <th><?php echo $this->lang->line('unit'); ?></th>
                                 <th><?php echo $this->lang->line('item_code_no'); ?></th>
                                 <!-- <th><?php echo $this->lang->line('description'); ?></th> -->
                                 <th><?php echo $this->lang->line('cost_price'); ?></th>
@@ -115,7 +116,7 @@
                                 <th>Discount</th>
                                 <th>Sale Price</th>
                                 <th>In Stock</th>
-                                <th><?php echo $this->lang->line('unit'); ?></th>
+
                                 <th><?php echo $this->lang->line('reorder_level'); ?></th>
                                 <!-- <th><?php echo $this->lang->line('location'); ?></th> -->
                                 <th><?php echo $this->lang->line('Status'); ?></th>
@@ -136,6 +137,9 @@
                                         <?php echo $item->category; ?>
                                     </td>
                                     <td>
+                                        <?php echo $item->unit; ?>
+                                    </td>
+                                    <td>
                                         <?php echo $item->item_code_no; ?>
                                     </td>
                                     <!-- <td>
@@ -154,9 +158,7 @@
                                         <?php echo $item->sale_price; ?>
                                     </td>
                                     <td><?php echo $item->total_quantity ?></td>
-                                    <td>
-                                        <?php echo $item->unit; ?>
-                                    </td>
+
                                     <td>
                                         <?php echo $item->reorder_level; ?>
                                     </td>
@@ -204,3 +206,32 @@
     </div>
     <!-- /MESSENGER -->
 </div>
+
+<link rel="stylesheet" type="text/css" href="<?php echo site_url("assets/" . ADMIN_DIR . "other_files/jquery.dataTables.css") ?>">
+
+<script type="text/javascript" charset="utf8" src="<?php echo site_url("assets/" . ADMIN_DIR . "other_files/jquery.dataTables.js") ?>"></script>
+<script type="text/javascript" language="javascript" src="<?php echo site_url("assets/" . ADMIN_DIR . "other_files/dataTables.buttons.min.js") ?>"></script>
+<script type="text/javascript" language="javascript" src="<?php echo site_url("assets/" . ADMIN_DIR . "other_files/jszip.min.js") ?>"></script>
+<script type="text/javascript" language="javascript" src="<?php echo site_url("assets/" . ADMIN_DIR . "other_files/pdfmake.min.js") ?>"></script>
+<script type="text/javascript" language="javascript" src="<?php echo site_url("assets/" . ADMIN_DIR . "other_files/vfs_fonts.js") ?>"></script>
+<script type="text/javascript" language="javascript" src="<?php echo site_url("assets/" . ADMIN_DIR . "other_files/buttons.html5.min.js") ?>"></script>
+<script type="text/javascript" language="javascript" src="<?php echo site_url("assets/" . ADMIN_DIR . "other_files/buttons.print.min.js") ?>"></script>
+<style>
+    .dataTables_wrapper .dataTables_filter input {
+        border: 1px solid #aaa;
+        border-radius: 3px;
+        padding: 5px;
+        background-color: #fffdfd00;
+        margin-left: 3px;
+        background: white;
+        margin-top: -10px;
+    }
+</style>
+<script>
+    $(document).ready(function() {
+        $('#item_table').DataTable({
+            "paging": false,
+            "lengthChange": false,
+        });
+    });
+</script>
