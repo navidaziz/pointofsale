@@ -86,7 +86,7 @@
 
                 <div class="table-responsive">
 
-                    <table id="item_table" class="table table-bordered" style="font-size: 12px;">
+                    <table id="item_t able" class="table table-bordered" style="font-size: 11px;">
                         <thead>
                             <tr>
 
@@ -100,8 +100,8 @@
                                 <th>Discount</th>
                                 <th>Sale Price</th>
                                 <th>In Stock</th>
-                                <th>Expire After</th>
-                                <!-- <th><?php echo $this->lang->line('reorder_level'); ?></th> -->
+
+                                <th><?php echo $this->lang->line('reorder_level'); ?></th>
                                 <!-- <th><?php echo $this->lang->line('location'); ?></th> -->
                                 <th><?php echo $this->lang->line('Status'); ?></th>
                                 <th><?php echo $this->lang->line('Action'); ?></th>
@@ -110,29 +110,47 @@
                         </thead>
                         <tbody>
                             <?php foreach ($items as $item) : ?>
+
                                 <tr>
-                                    <td> <?php echo $item->name; ?> </td>
-                                    <td> <?php echo $item->category; ?> </td>
-                                    <td> <?php echo $item->unit; ?> </td>
-                                    <td> <?php echo $item->item_code_no; ?> </td>
-                                    <!-- <td> <?php echo $item->description; ?> </td> -->
-                                    <td> <?php echo $item->cost_price; ?> </td>
-                                    <td> <?php echo $item->unit_price; ?> </td>
-                                    <td> <?php echo $item->discount; ?> </td>
-                                    <td> <?php echo $item->sale_price; ?> </td>
+
+
+                                    <td>
+                                        <?php echo $item->name; ?>
+                                    </td>
+                                    <td>
+                                        <?php echo $item->category; ?>
+                                    </td>
+                                    <td>
+                                        <?php echo $item->unit; ?>
+                                    </td>
+                                    <td>
+                                        <?php echo $item->item_code_no; ?>
+                                    </td>
+                                    <!-- <td>
+                                        <?php echo $item->description; ?>
+                                    </td> -->
+                                    <td>
+                                        <?php echo $item->cost_price; ?>
+                                    </td>
+                                    <td>
+                                        <?php echo $item->unit_price; ?>
+                                    </td>
+                                    <td>
+                                        <?php echo $item->discount; ?>
+                                    </td>
+                                    <td>
+                                        <?php echo $item->sale_price; ?>
+                                    </td>
                                     <td><?php echo $item->total_quantity ?></td>
-                                    <td title="<?php echo $item->expiry_date; ?>"> <?php
-                                                                                    if ($item->total_quantity > 0) {
-                                                                                        $current_date = new DateTime('today');  //current date or any date
-                                                                                        $expiry_date = new DateTime($item->expiry_date);   //Future date
-                                                                                        $diff = $expiry_date->diff($current_date)->format("%a");  //find difference
-                                                                                        $days = intval($diff);   //rounding days
-                                                                                        echo $days . " - days";
-                                                                                        // 
-                                                                                    } ?> </td>
-                                    <!-- <td> <?php echo $item->reorder_level; ?> </td> -->
-                                    <!-- <td> <?php echo $item->location; ?> </td> -->
-                                    <td> <?php echo status($item->status,  $this->lang); ?>
+
+                                    <td>
+                                        <?php echo $item->reorder_level; ?>
+                                    </td>
+                                    <!-- <td>
+                                        <?php echo $item->location; ?>
+                                    </td> -->
+                                    <td>
+                                        <?php echo status($item->status,  $this->lang); ?>
                                         <?php
 
                                         //set uri segment
@@ -147,8 +165,10 @@
                                         } elseif ($item->status == 1) {
                                             echo "<a href='" . site_url(ADMIN_DIR . "items/draft/" . $item->item_id . "/" . $page) . "'> &nbsp;" . $this->lang->line('Draft') . "</a>";
                                         }
-                                        ?> </td>
-                                    <td> <a class="llink llink-view" href="<?php echo site_url(ADMIN_DIR . "items/view_item/" . $item->item_id . "/" . $this->uri->segment(4)); ?>"><i class="fa fa-eye"></i> </a>
+                                        ?>
+                                    </td>
+                                    <td>
+                                        <a class="llink llink-view" href="<?php echo site_url(ADMIN_DIR . "items/view_item/" . $item->item_id . "/" . $this->uri->segment(4)); ?>"><i class="fa fa-eye"></i> </a>
                                         <a class="llink llink-edit" href="<?php echo site_url(ADMIN_DIR . "items/edit/" . $item->item_id . "/" . $this->uri->segment(4)); ?>"><i class="fa fa-pencil-square-o"></i></a>
                                         <a class="llink llink-trash" href="<?php echo site_url(ADMIN_DIR . "items/trash/" . $item->item_id . "/" . $this->uri->segment(4)); ?>"><i class="fa fa-trash-o"></i></a>
                                     </td>

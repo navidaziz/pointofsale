@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 13, 2021 at 04:43 AM
+-- Generation Time: Jul 18, 2021 at 07:50 PM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.4
 
@@ -48,6 +48,7 @@ CREATE TABLE `all_items` (
 ,`total_stock` decimal(32,0)
 ,`item_saled` decimal(32,0)
 ,`total_quantity` decimal(34,0)
+,`expiry_date` date
 );
 
 -- --------------------------------------------------------
@@ -548,6 +549,8 @@ INSERT INTO `icons` (`icon_id`, `icon_title`, `icon_category`) VALUES
 
 CREATE TABLE `inventory` (
   `inventory_id` int(11) NOT NULL,
+  `batch_number` text DEFAULT NULL,
+  `supplier_invoice_id` int(11) DEFAULT NULL,
   `item_id` int(11) NOT NULL DEFAULT 0,
   `supplier_id` int(11) DEFAULT NULL,
   `item_cost_price` double DEFAULT NULL,
@@ -556,7 +559,8 @@ CREATE TABLE `inventory` (
   `receiving_id` int(11) DEFAULT NULL,
   `transaction_type` text DEFAULT NULL,
   `inventory_transaction` int(11) NOT NULL DEFAULT 0,
-  `date` date DEFAULT NULL,
+  `expiry_date` date DEFAULT NULL,
+  `return_date` date DEFAULT NULL,
   `remarks` varchar(255) DEFAULT NULL,
   `status` int(11) NOT NULL DEFAULT 1,
   `order` int(11) DEFAULT NULL,
@@ -569,11 +573,16 @@ CREATE TABLE `inventory` (
 -- Dumping data for table `inventory`
 --
 
-INSERT INTO `inventory` (`inventory_id`, `item_id`, `supplier_id`, `item_cost_price`, `item_unit_price`, `sale_id`, `receiving_id`, `transaction_type`, `inventory_transaction`, `date`, `remarks`, `status`, `order`, `created_by`, `created_date`, `last_updated`) VALUES
-(18, 1, 1, 500, 550, NULL, NULL, 'Stock In', 50, '2021-07-02', NULL, 1, NULL, 1, '2021-07-02 18:05:33', NULL),
-(19, 1, 1, 0, 0, NULL, NULL, 'Stock Return', -25, '2021-07-02', 'due to expired', 1, NULL, 1, '2021-07-02 18:49:22', NULL),
-(20, 1232, 0, 100, 200, NULL, NULL, 'Item Created', 0, '2021-07-02', NULL, 1, NULL, 1, '2021-07-02 19:08:10', NULL),
-(21, 2, 1, 500, 600, NULL, NULL, 'Stock In', 50, '2021-07-10', NULL, 1, NULL, 1, '2021-07-10 00:16:50', NULL);
+INSERT INTO `inventory` (`inventory_id`, `batch_number`, `supplier_invoice_id`, `item_id`, `supplier_id`, `item_cost_price`, `item_unit_price`, `sale_id`, `receiving_id`, `transaction_type`, `inventory_transaction`, `expiry_date`, `return_date`, `remarks`, `status`, `order`, `created_by`, `created_date`, `last_updated`) VALUES
+(18, '', NULL, 1, 1, 500, 550, NULL, NULL, 'Stock In', 50, '2021-07-02', NULL, NULL, 1, NULL, 1, '2021-07-02 18:05:33', NULL),
+(19, '', NULL, 1, 1, 0, 0, NULL, NULL, 'Stock Return', -25, '2021-07-02', NULL, 'due to expired', 1, NULL, 1, '2021-07-02 18:49:22', NULL),
+(20, '', NULL, 1232, 0, 100, 200, NULL, NULL, 'Item Created', 0, '2021-07-02', NULL, NULL, 1, NULL, 1, '2021-07-02 19:08:10', NULL),
+(21, '', NULL, 2, 1, 500, 600, NULL, NULL, 'Stock In', 50, '2021-07-10', NULL, NULL, 1, NULL, 1, '2021-07-10 00:16:50', NULL),
+(22, '001', 2, 535, 1, 324, 380, NULL, NULL, 'Stock In', 30, '2021-07-30', NULL, NULL, 1, NULL, 1, '2021-07-13 12:07:03', NULL),
+(23, '0001', 2, 75, 1, 145.2, 180, NULL, NULL, 'Stock In', 30, '2021-07-22', NULL, NULL, 1, NULL, 1, '2021-07-13 12:11:06', NULL),
+(24, '10', 2, 98, 1, 304.25, 350, NULL, NULL, 'Stock In', 10, '2021-07-13', NULL, NULL, 1, NULL, 1, '2021-07-13 12:12:41', NULL),
+(25, '', 2, 535, 1, 0, 0, NULL, NULL, 'Stock Return', -30, NULL, '2021-07-13', NULL, 1, NULL, 1, '2021-07-13 13:33:40', NULL),
+(26, '', 0, 1, 0, 100, 150, NULL, NULL, 'Stock In', 10, '2021-07-24', NULL, NULL, 1, NULL, 1, '2021-07-16 20:55:15', NULL);
 
 -- --------------------------------------------------------
 
@@ -2160,7 +2169,12 @@ INSERT INTO `sales` (`sale_id`, `items_price`, `items_discounts`, `items_total_p
 (166, 6300, 40, 6260, 0, 6260, 0, 6260, 6260, 0, 'cash', '', 0, 1, NULL, 1, '2021-07-11 11:42:59', NULL, NULL, '', '', NULL),
 (167, 6000, 0, 6000, 0, 6000, 0, 6000, 6000, 0, 'cash', '', 0, 1, NULL, 1, '2021-07-11 11:44:44', NULL, NULL, '', '', NULL),
 (168, 6000, 0, 6000, 0, 6000, 0, 6000, 6000, 0, 'cash', '', 0, 1, NULL, 1, '2021-07-11 12:20:42', NULL, NULL, '', '', NULL),
-(169, -6000, 0, -6000, 0, -6000, 0, -6000, 0, 0, 'cash', '', 1, 1, NULL, 1, '2021-07-11 13:26:13', NULL, NULL, '', '6000', NULL);
+(169, -6000, 0, -6000, 0, -6000, 0, -6000, 0, 0, 'cash', '', 1, 1, NULL, 1, '2021-07-11 13:26:13', NULL, NULL, '', '6000', NULL),
+(170, 600, 80, 520, 0, 520, 0, 520, 550, 30, 'cash', '', 0, 1, NULL, 1, '2021-07-18 05:37:53', NULL, NULL, '', '', NULL),
+(171, 300, 40, 260, 0, 260, 0, 260, 260, 0, 'cash', '', 0, 1, NULL, 1, '2021-07-18 05:38:59', NULL, NULL, '', '', NULL),
+(172, 3000, 0, 3000, 0, 3000, 0, 3000, 3000, 0, 'cash', '', 0, 1, NULL, 1, '2021-07-18 05:39:48', NULL, NULL, '', '', NULL),
+(173, 1800, 0, 1800, 0, 1800, 0, 1800, 1800, 0, 'cash', '', 0, 1, NULL, 1, '2021-07-18 05:40:25', NULL, NULL, '', '', NULL),
+(174, -600, -80, -520, 0, -520, 0, -520, 0, 0, 'cash', '', 1, 1, NULL, 1, '2021-07-18 09:52:26', NULL, NULL, '', '', NULL);
 
 -- --------------------------------------------------------
 
@@ -2213,7 +2227,12 @@ INSERT INTO `sales_items` (`sale_item_id`, `sale_id`, `item_id`, `item_name`, `c
 (449, 166, 2, 'a2a 25mg', 500, 600, 0, 10, 0, 10, 600, 6000, 0, NULL, 1, '2021-07-11 16:42:59'),
 (450, 167, 2, 'a2a 25mg', 500, 600, 0, 10, 0, 10, 600, 6000, 0, NULL, 1, '2021-07-11 16:44:44'),
 (451, 168, 2, 'a2a 25mg', 500, 600, 0, 10, 0, 10, 600, 6000, 0, NULL, 1, '2021-07-11 17:20:42'),
-(452, 169, 2, 'a2a 25mg', 500, 600, 0, -10, 0, -10, 600, -6000, 1, NULL, 1, '2021-07-11 18:26:13');
+(452, 169, 2, 'a2a 25mg', 500, 600, 0, -10, 0, -10, 600, -6000, 1, NULL, 1, '2021-07-11 18:26:13'),
+(453, 170, 1, 'surbex tab', 100, 150, 20, 4, 0, 4, 130, 520, 0, NULL, 1, '2021-07-18 10:37:53'),
+(454, 171, 1, 'surbex tab', 100, 150, 20, 2, 0, 2, 130, 260, 0, NULL, 1, '2021-07-18 10:38:59'),
+(455, 172, 2, 'a2a 25mg', 500, 600, 0, 5, 0, 5, 600, 3000, 0, NULL, 1, '2021-07-18 10:39:48'),
+(456, 173, 2, 'a2a 25mg', 500, 600, 0, 3, 0, 3, 600, 1800, 0, NULL, 1, '2021-07-18 10:40:25'),
+(457, 174, 1, 'surbex tab', 100, 150, 20, -4, 0, -4, 130, -520, 1, NULL, 1, '2021-07-18 14:52:26');
 
 -- --------------------------------------------------------
 
@@ -2228,13 +2247,6 @@ CREATE TABLE `sales_item_users` (
   `user_id` int(11) NOT NULL,
   `dated` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `sales_item_users`
---
-
-INSERT INTO `sales_item_users` (`id`, `item_id`, `quantity`, `user_id`, `dated`) VALUES
-(123, 2, 1, 1, '2021-07-11 22:39:12');
 
 -- --------------------------------------------------------
 
@@ -2450,7 +2462,7 @@ CREATE TABLE `user_sale_summary` (
 --
 DROP TABLE IF EXISTS `all_items`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `all_items`  AS  select `items`.`item_id` AS `item_id`,`items`.`name` AS `name`,`items`.`category` AS `category`,`items`.`item_code_no` AS `item_code_no`,`items`.`description` AS `description`,`items`.`cost_price` AS `cost_price`,`items`.`unit_price` AS `unit_price`,`items`.`discount` AS `discount`,`items`.`unit_price` - `items`.`discount` AS `sale_price`,`items`.`unit` AS `unit`,`items`.`reorder_level` AS `reorder_level`,`items`.`location` AS `location`,`items`.`status` AS `status`,`items`.`order` AS `order`,`items`.`created_by` AS `created_by`,`items`.`created_date` AS `created_date`,`items`.`last_updated` AS `last_updated`,(select sum(`i`.`inventory_transaction`) from `inventory` `i` where `i`.`item_id` = `items`.`item_id`) AS `total_stock`,(select if(sum(`si`.`quantity`) is null,0,sum(`si`.`quantity`)) from `sales_items` `si` where `si`.`item_id` = `items`.`item_id`) AS `item_saled`,(select sum(`i`.`inventory_transaction`) from `inventory` `i` where `i`.`item_id` = `items`.`item_id`) - ((select if(sum(`si`.`quantity`) is null,0,sum(`si`.`quantity`)) from `sales_items` `si` where `si`.`item_id` = `items`.`item_id`) + (select if(sum(`siu`.`quantity`) is null,0,sum(`siu`.`quantity`)) from `sales_item_users` `siu` where `siu`.`item_id` = `items`.`item_id`)) AS `total_quantity` from `items` ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `all_items`  AS  select `items`.`item_id` AS `item_id`,`items`.`name` AS `name`,`items`.`category` AS `category`,`items`.`item_code_no` AS `item_code_no`,`items`.`description` AS `description`,`items`.`cost_price` AS `cost_price`,`items`.`unit_price` AS `unit_price`,`items`.`discount` AS `discount`,`items`.`unit_price` - `items`.`discount` AS `sale_price`,`items`.`unit` AS `unit`,`items`.`reorder_level` AS `reorder_level`,`items`.`location` AS `location`,`items`.`status` AS `status`,`items`.`order` AS `order`,`items`.`created_by` AS `created_by`,`items`.`created_date` AS `created_date`,`items`.`last_updated` AS `last_updated`,(select sum(`i`.`inventory_transaction`) from `inventory` `i` where `i`.`item_id` = `items`.`item_id`) AS `total_stock`,(select if(sum(`si`.`quantity`) is null,0,sum(`si`.`quantity`)) from `sales_items` `si` where `si`.`item_id` = `items`.`item_id`) AS `item_saled`,(select sum(`i`.`inventory_transaction`) from `inventory` `i` where `i`.`item_id` = `items`.`item_id`) - ((select if(sum(`si`.`quantity`) is null,0,sum(`si`.`quantity`)) from `sales_items` `si` where `si`.`item_id` = `items`.`item_id`) + (select if(sum(`siu`.`quantity`) is null,0,sum(`siu`.`quantity`)) from `sales_item_users` `siu` where `siu`.`item_id` = `items`.`item_id`)) AS `total_quantity`,(select `i`.`expiry_date` from `inventory` `i` where `i`.`item_id` = `items`.`item_id` order by `i`.`inventory_id` desc limit 1) AS `expiry_date` from `items` ;
 
 -- --------------------------------------------------------
 
@@ -2601,7 +2613,7 @@ ALTER TABLE `icons`
 -- AUTO_INCREMENT for table `inventory`
 --
 ALTER TABLE `inventory`
-  MODIFY `inventory_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `inventory_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `items`
@@ -2631,19 +2643,19 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `sales`
 --
 ALTER TABLE `sales`
-  MODIFY `sale_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=170;
+  MODIFY `sale_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=175;
 
 --
 -- AUTO_INCREMENT for table `sales_items`
 --
 ALTER TABLE `sales_items`
-  MODIFY `sale_item_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=453;
+  MODIFY `sale_item_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=458;
 
 --
 -- AUTO_INCREMENT for table `sales_item_users`
 --
 ALTER TABLE `sales_item_users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=124;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=130;
 
 --
 -- AUTO_INCREMENT for table `sale_taxes`

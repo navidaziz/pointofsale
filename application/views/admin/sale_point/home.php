@@ -86,7 +86,7 @@
 						</table>
 						<table class="table table-bordered">
 							<tr>
-								<th>Discount <input required="required" onkeyup="add_discount()" type="number" class="form-control" name="discount" id="discount" value="0" /></th>
+								<th>Discount <input readonly required="required" onkeyup="add_discount()" type="number" class="form-control" name="discount" id="discount" value="0" /></th>
 								<th>Cash Amount <input required="required" onkeyup="cash_calulator()" type="number" class="form-control" name="cash_amount" id="cash_amount" value="0" /></th>
 								<th style="width: 120px;">Cash Back <h4>Rs: <span id="cash_back">0.00<span></h4>
 								</th>
@@ -102,7 +102,7 @@
 							</tr>
 
 							<tr>
-								<th><button onclick="get_sale_receipts()" data-toggle="modal" data-target="#sale_report_mode" class="btn btn-primary" style="margin-top: 10px; width:100%">Reprint<br /> Receipt</button></th>
+								<th><button onclick="get_sale_reports()" data-toggle="modal" data-target="#sale_report_mode" class="btn btn-primary" style="margin-top: 10px; width:100%">Sale<br /> Reports</button></th>
 								<th>
 									<button onclick="get_sale_receipts()" data-toggle="modal" data-target="#item_return_modal" class="btn btn-warning" style="margin-top: 10px; width:100%">Reprint<br /> Receipt</button>
 
@@ -163,6 +163,17 @@
 
 
 <script>
+	function get_sale_reports() {
+		$.ajax({
+			type: "POST",
+			url: "<?php echo site_url(ADMIN_DIR . "sale_point/get_sale_reports") ?>",
+			data: {}
+		}).done(function(data) {
+			$('#sale_report_mode_body').html(data);
+
+		});
+	}
+
 	function get_sale_receipts() {
 		$.ajax({
 			type: "POST",
