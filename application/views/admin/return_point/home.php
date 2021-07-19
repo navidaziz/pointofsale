@@ -4,8 +4,15 @@
 			<ul class="breadcrumb">
 				<li>
 					<i class="fa fa-home"></i>
+
 					<a href="<?php echo site_url(ADMIN_DIR . $this->session->userdata("role_homepage_uri")); ?>"><?php echo $this->lang->line('Home'); ?></a>
 				</li>
+				<li>
+					<i class="fa fa-home"></i>
+
+					<a href="<?php echo site_url(ADMIN_DIR . "sale_point/sale_point"); ?>">Sale Point</a>
+				</li>
+
 
 				<li>Return Point</li>
 			</ul>
@@ -89,16 +96,7 @@
 
 							</tr>
 
-							<tr>
-								<th></th>
-								<th>
-									<button onclick="get_sale_receipts()" data-toggle="modal" data-target="#item_return_modal" class="btn btn-warning" style="margin-top: 10px; width:100%">Reprint<br /> Receipt</button>
 
-								</th>
-								<th><a class="btn btn-danger" style="margin-top: 10px; width:100%" href="<?php echo site_url(ADMIN_DIR . "sale_point") ?>">Sale <br /> Items</a>
-								</th>
-
-							</tr>
 						</table>
 
 					</div>
