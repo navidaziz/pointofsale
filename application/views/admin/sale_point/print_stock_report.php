@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Invoice</title>
+  <title>Stock Detail</title>
   <link rel="stylesheet" href="style.css">
   <link rel="license" href="http://www.opensource.org/licenses/mit-license/">
   <script src="script.js"></script>
@@ -94,86 +94,76 @@
   <page size='A4'>
     <div style="padding: 5px;  padding-left:20px; padding-right:20px; " contenteditable="true">
       <h3 style="text-align: center;"> <?php echo $system_global_settings[0]->system_title ?> </h3>
-      <h4 style="text-align: center;">Daily Sale Report ( Date: <?php echo date("d F, Y ", time()) ?>)</h4>
+      <h4 style="text-align: center;">Over All Stock Report ( Date: <?php echo date("d F, Y ", time()) ?>)</h4>
 
       <h5>Today Item Sale</h5>
 
-      <table class="table table-bordered" id="today_categories_wise_report">
+      <table class="table table-bordered" style="font-size: 12px;">
         <thead>
-
           <tr>
             <th>#</th>
-            <th>Item Name</th>
-            <th>Cost Price</th>
-            <th>Unit Price</th>
-            <th>Discount</th>
+            <th><?php echo $this->lang->line('name'); ?></th>
+            <th>In Stock</th>
+            <th><?php echo $this->lang->line('cost_price'); ?></th>
+            <th>Total</th>
+            <th><?php echo $this->lang->line('unit_price'); ?></th>
+            <th>Profit %</th>
+            <th>Total</th>
+            <th>Dis.</th>
             <th>Sale Price</th>
-            <th>Qyt</th>
-            <th>Net Total</th>
-            <th>Profit</th>
-          </tr>
 
+            <th>Expire After</th>
+            <!-- <th><?php echo $this->lang->line('reorder_level'); ?></th> -->
+            <th>location</th>
+          </tr>
         </thead>
         <tbody>
-
           <?php
           $count = 1;
-          foreach ($today_items_sales as $report) { ?>
-            <tr>
+          $total_items_price_stock = 0;
+          $total_items_price_sale = 0;
+          foreach ($items as $item) : ?>
+
+            <tr <?php if (@round((($item->unit_price - $item->cost_price) * 100 / $item->cost_price), 1) < 12) { ?> style="background-color: #F7D5CA;" <?php } ?> <?php if (@round((($item->unit_price - $item->cost_price) * 100 / $item->cost_price), 1) > 15) { ?> style="background-color: #90EE90;" <?php } ?>>
               <td><?php echo $count++; ?></td>
-              <td><?php echo $report->item_name; ?></td>
-              <td><?php echo $report->cost_price; ?></td>
-              <td><?php echo $report->unit_price; ?></td>
-              <td><?php echo $report->item_discount; ?></td>
-              <td><?php echo $report->sale_price; ?></td>
-              <td><?php echo $report->qty; ?></td>
-              <td><?php echo round($report->net_total, 2); ?></td>
-              <td><?php echo round($report->net_total - ($report->cost_price * $report->qty), 2); ?></td>
+              <td> <?php echo $item->name; ?> </td>
+              <td><?php echo $item->total_quantity ?></td>
+              <td> <?php echo $item->cost_price; ?></td>
+              <td> <?php $total_items_price_stock += $item->cost_price * $item->total_quantity;
+                    echo $item->cost_price * $item->total_quantity;
+                    ?></td>
+              <td> <?php echo $item->unit_price; ?>
+              </td>
+              <td> <?php echo @round((($item->unit_price - $item->cost_price) * 100 / $item->cost_price), 1) . " %"; ?> </td>
+              <td> <?php $total_items_price_sale += $item->unit_price * $item->total_quantity;
+                    echo $item->unit_price * $item->total_quantity;
+                    ?></td>
+              <td> <?php echo $item->discount; ?> </td>
+              <td> <?php echo $item->sale_price; ?> </td>
+
+              <td title="<?php echo $item->expiry_date; ?>"> <?php
+                                                              if ($item->total_quantity > 0) {
+                                                                $current_date = new DateTime('today');  //current date or any date
+                                                                $expiry_date = new DateTime($item->expiry_date);   //Future date
+                                                                $diff = $expiry_date->diff($current_date)->format("%a");  //find difference
+                                                                $days = intval($diff);   //rounding days
+                                                                echo $days . "";
+                                                                // 
+                                                              } ?> </td>
+              <!-- <td> <?php echo $item->reorder_level; ?> </td> -->
+              <td> <?php echo $item->location; ?> </td>
+
             </tr>
-          <?php } ?>
-
-
+          <?php endforeach; ?>
           <tr>
-            <?php
-            $query = "SELECT  
-                      SUM(si.total_price) as net_total,
-                      SUM(si.cost_price*si.sale_items) as cost_items_total 
-                      FROM `sales_items` as si 
-                      WHERE DATE(`created_date`) = DATE(NOW())";
-            $today_items_sale = $this->db->query($query);
-
-            ?>
-            <td colspan="7">Total</td>
-            <td><?php
-
-                if ($today_items_sale) {
-                  echo round($today_items_sale->result()[0]->net_total, 2) . " Rs";
-                }
-                ?></td>
-
-            <td><?php
-
-                if ($today_items_sale) {
-                  echo round($today_items_sale->result()[0]->net_total - $today_items_sale->result()[0]->cost_items_total, 2) . " Rs";
-                }
-                ?></td>
-          </tr>
-          <tr>
-
-            <td colspan="9" style="text-align: right;">
-              <small>
-                <!-- Total Items Sale Amount: <?php echo round($today_sale_summary->items_price, 2); ?><br /> -->
-                Total Taxes: <?php echo $today_sale_summary->total_tax; ?><br />
-                Total Discounts: <?php echo $today_sale_summary->discount; ?></br />
-                Total Sale: <?php echo round($today_sale_summary->total_sale, 2); ?>
-              </small>
-            </td>
+            <th colspan="4"></th>
+            <th><?php echo $total_items_price_stock; ?></th>
+            <th colspan="2"></th>
+            <th><?php echo $total_items_price_sale - $total_items_price_stock; ?></th>
 
           </tr>
-
         </tbody>
       </table>
-
 
 
 

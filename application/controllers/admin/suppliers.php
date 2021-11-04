@@ -28,7 +28,19 @@ class Suppliers extends Admin_Controller
     }
     //---------------------------------------------------------------
 
-    function remove_supplier_item($supplier_id, $supplier_invoice_id, $inventory_id)
+    function update_supplier_item_stock()
+    {
+        $inventory_id = (int) $this->input->post("inventory_id");
+        $stock =  (int) $this->input->post("stock");
+        $query = "UPDATE inventory SET inventory_transaction ='" . $stock . "'
+        WHERE inventory_id = '" . $inventory_id . "'";
+        if ($this->db->query($query)) {
+
+            echo $stock;
+        }
+    }
+
+    function remove_supplier_item($supplier_id, $supplier_invoice_id, $inventory_id, $return = false)
     {
         $inventory_id  = (int) $inventory_id;
         $query = "DELETE FROM `inventory` WHERE `inventory_id`='" . $inventory_id . "'";
@@ -38,22 +50,23 @@ class Suppliers extends Admin_Controller
             $this->session->set_flashdata("msg_error", "Error Try Again.");
         }
 
-        redirect(ADMIN_DIR . "suppliers/supplier_invoice_view/" . $supplier_id . "/" . $supplier_invoice_id);
+        if ($return) {
+            redirect(ADMIN_DIR . "suppliers/supplier_return_view/" . $supplier_id . "/" . $supplier_invoice_id);
+        } else {
+            redirect(ADMIN_DIR . "suppliers/supplier_invoice_view/" . $supplier_id . "/" . $supplier_invoice_id);
+        }
     }
 
     function get_item_prices()
     {
         $item_id = (int) $this->input->post("item_id");
-        $query = "SELECT `item_cost_price`,`item_unit_price` 
-                  FROM `inventory` WHERE item_id = '" . $item_id . "' 
-                  AND `inventory`.`transaction_type` = 'Stock In'
-                  ORDER BY inventory_id DESC
-                  LIMIT 1";
+        $query = "SELECT `cost_price`,`unit_price` 
+                  FROM `items` WHERE item_id = '" . $item_id . "'";
         $item_price_detail['cost_price'] = 0;
-        $item_price_detail['sale_price'] = 0;
+        $item_price_detail['unit_price'] = 0;
         if ($this->db->query($query)->result()) {
-            $item_price_detail['cost_price'] = $this->db->query($query)->result()[0]->item_cost_price;
-            $item_price_detail['sale_price'] = $this->db->query($query)->result()[0]->item_unit_price;
+            $item_price_detail['cost_price'] = $this->db->query($query)->result()[0]->cost_price;
+            $item_price_detail['sale_price'] = $this->db->query($query)->result()[0]->unit_price;
         }
         echo json_encode($item_price_detail);
     }
@@ -150,11 +163,11 @@ class Suppliers extends Admin_Controller
                                         '" . $remarks . "')";
 
                 $this->db->query($query);
-                $query = "
-                UPDATE `items` SET `cost_price` = '" . $cost_price . "',  
-                `unit_price` = '" . $unit_price . "'
-                WHERE `items`.`item_id` ='" . $item_id . "'";
-                $this->db->query($query);
+                // $query = "
+                // UPDATE `items` SET `cost_price` = '" . $cost_price . "',  
+                // `unit_price` = '" . $unit_price . "'
+                // WHERE `items`.`item_id` ='" . $item_id . "'";
+                // $this->db->query($query);
                 $this->session->set_flashdata("msg_success", "Record Add Successfully");
             } else {
                 if ($query_result[0]->total_quantity) {
@@ -167,7 +180,7 @@ class Suppliers extends Admin_Controller
             $this->session->set_flashdata("msg_error", "Item not found");
         }
 
-        redirect(ADMIN_DIR . "suppliers/supplier_invoice_view/" . $supplier_id . "/" . $supplier_invoice_id);
+        redirect(ADMIN_DIR . "suppliers/supplier_return_view/" . $supplier_id . "/" . $supplier_invoice_id);
     }
 
 
@@ -193,6 +206,49 @@ class Suppliers extends Admin_Controller
         $this->load->view(ADMIN_DIR . "layout", $this->data);
     }
 
+    public function supplier_return_view($supplier_id, $supplier_invoice_id)
+    {
+        $this->data['supplier_id'] =  $supplier_id = (int) $supplier_id;
+        $this->data['supplier_invoice_id'] = $supplier_invoice_id = (int) $supplier_invoice_id;
+        $query = "SELECT * FROM `suppliers_invoices` 
+                  WHERE `supplier_invoice_id` = '" . $supplier_invoice_id . "'";
+        $this->data["suppliers_invoices"] = $this->db->query($query)->result()[0];
+
+        $this->data["items"] = $this->supplier_model->getList("items", "item_id", "name", "`items`.`status` IN (1)");
+
+        $this->data["suppliers"] = $this->supplier_model->get_supplier($supplier_id);
+        $this->data["title"] = $this->data["suppliers"][0]->supplier_name;
+        $this->data["detail"] = "Mobile No: " . $this->data["suppliers"][0]->supplier_contact_no . " - Account No:" . $this->data["suppliers"][0]->account_number;
+        $query = "SELECT inventory.*, items.name, users.user_title FROM inventory, items, users 
+                  WHERE inventory.item_id = items.item_id
+                  AND inventory.created_by = users.user_id
+                  AND `supplier_invoice_id` = '" . $supplier_invoice_id . "'";
+        $this->data['inventories'] = $this->db->query($query)->result();
+        $this->data["view"] = ADMIN_DIR . "suppliers/supplier_return_view";
+        $this->load->view(ADMIN_DIR . "layout", $this->data);
+    }
+
+    public function print_supplier_return_item_lists($supplier_id, $supplier_invoice_id)
+    {
+        $this->data['supplier_id'] =  $supplier_id = (int) $supplier_id;
+        $this->data['supplier_invoice_id'] = $supplier_invoice_id = (int) $supplier_invoice_id;
+        $query = "SELECT * FROM `suppliers_invoices` 
+                  WHERE `supplier_invoice_id` = '" . $supplier_invoice_id . "'";
+        $this->data["suppliers_invoices"] = $this->db->query($query)->result()[0];
+
+        $this->data["items"] = $this->supplier_model->getList("items", "item_id", "name", "`items`.`status` IN (1)");
+
+        $this->data["suppliers"] = $this->supplier_model->get_supplier($supplier_id);
+        $this->data["title"] = $this->data["suppliers"][0]->supplier_name;
+        $this->data["detail"] = "Mobile No: " . $this->data["suppliers"][0]->supplier_contact_no . " - Account No:" . $this->data["suppliers"][0]->account_number;
+        $query = "SELECT inventory.*, items.name, users.user_title FROM inventory, items, users 
+                  WHERE inventory.item_id = items.item_id
+                  AND inventory.created_by = users.user_id
+                  AND `supplier_invoice_id` = '" . $supplier_invoice_id . "'";
+        $this->data['inventories'] = $this->db->query($query)->result();
+        //$this->data["view"] = ADMIN_DIR . "suppliers/print_supplier_return_item_lists";
+        $this->load->view(ADMIN_DIR . "suppliers/print_supplier_return_item_lists", $this->data);
+    }
 
 
     public function add_supplier_invoce()
@@ -233,10 +289,11 @@ class Suppliers extends Admin_Controller
 
             $supplier_invoice_number_count = $this->db->query($query)->result()[0]->total;
             if ($supplier_invoice_number_count == 0) {
+                $return_receipt = $this->input->post('return_receipt');
                 $query = "INSERT INTO `suppliers_invoices` 
-            (`supplier_invoice_number`, `supplier_id`, `invoice_date`, `created_by`) 
+            (`supplier_invoice_number`, `supplier_id`, `invoice_date`, `created_by`, `return_receipt`) 
             VALUES (" . $supplier_invoice_number . ", '" . $supplier_id . "', 
-                    " . $invoice_date . ", '" . $user_id . "')";
+                    " . $invoice_date . ", '" . $user_id . "', '" . $return_receipt . "')";
                 if ($this->db->query($query)) {
                     $this->session->set_flashdata("msg_success", "Supplier Invoice Add Successfully");
                     redirect(ADMIN_DIR . "suppliers/view_supplier/" . $supplier_id);
@@ -278,9 +335,22 @@ class Suppliers extends Admin_Controller
     {
 
         $supplier_id = (int) $supplier_id;
-        $query = "SELECT * FROM `suppliers_invoices` WHERE `supplier_id` = '" . $supplier_id . "' ORDER BY supplier_invoice_id DESC";
+        $query = "SELECT * FROM `suppliers_invoices` 
+        WHERE `supplier_id` = '" . $supplier_id . "' 
+        AND return_receipt = 0
+        ORDER BY supplier_invoice_id DESC";
 
         $this->data["suppliers_invoices"] = $this->db->query($query)->result();
+
+        $query = "SELECT * FROM `suppliers_invoices` 
+        WHERE `supplier_id` = '" . $supplier_id . "'
+        AND return_receipt = 1 
+        ORDER BY supplier_invoice_id DESC";
+
+        $this->data["suppliers_returns"] = $this->db->query($query)->result();
+
+
+
         $this->data["suppliers"] = $this->supplier_model->get_supplier($supplier_id);
         $this->data["title"] = $this->data["suppliers"][0]->supplier_name;
         $this->data["detail"] = "Mobile No: " . $this->data["suppliers"][0]->supplier_contact_no . " - Account No:" . $this->data["suppliers"][0]->account_number;
