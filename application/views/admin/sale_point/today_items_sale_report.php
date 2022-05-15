@@ -93,8 +93,8 @@
 <body>
   <page size='A4'>
     <div style="padding: 5px;  padding-left:20px; padding-right:20px; " contenteditable="true">
-      <h3 style="text-align: center;"> <?php echo $system_global_settings[0]->system_title ?> </h3>
-      <h4 style="text-align: center;">Daily Sale Report ( Date: <?php echo date("d F, Y ", time()) ?>)</h4>
+      <h3 style="text-align: center;"> Alkhidmat Diagnostic Center Chitral </h3>
+      <h4 style="text-align: center;">Daily Pharmacy Sale Report ( Date: <?php echo date("d F, Y ", time()) ?>)</h4>
 
       <h5>Today Item Sale</h5>
 
@@ -128,7 +128,10 @@
               <td><?php echo $report->sale_price; ?></td>
               <td><?php echo $report->qty; ?></td>
               <td><?php echo round($report->net_total, 2); ?></td>
-              <td><?php echo round($report->net_total - ($report->cost_price * $report->qty), 2); ?></td>
+              <td><?php
+                  if ($report->qty > 0) {
+                    echo round($report->net_total - ($report->cost_price * $report->qty), 2);
+                  } ?></td>
             </tr>
           <?php } ?>
 
@@ -195,7 +198,7 @@
       ?> </p>
 
       <p class="divFooter" style="text-align: right;"><b><?php echo $user_data->user_title; ?> <?php echo $user_data->role_title; ?></b>
-        <br /><?php echo $system_global_settings[0]->system_title ?><br />
+        <br />Alkhidmat Diagnostic Center Chitral City <br />
         <strong>Printed at: <?php echo date("d, F, Y h:i:s A", time()); ?></strong>
       </p>
 
