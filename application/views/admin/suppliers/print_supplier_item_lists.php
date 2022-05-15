@@ -96,8 +96,8 @@
 			<table class="table">
 				<tr>
 					<td>
-						<h3 style="text-align: center;"> Alkhidmat Diagnostic Center Chitral </h3>
-						<h5 style="text-align: center;">Pharmacy</h5>
+						<h3 style="text-align: center;"> Shades & Shadow </h3>
+						<h5 style="text-align: center;"></h5>
 						<h4 style="text-align: center;">Item Stock In</h4>
 					</td>
 					<td>
@@ -186,7 +186,7 @@
 			?> </p>
 
 			<p class="divFooter" style="text-align: right;"><b><?php echo $user_data->user_title; ?> <?php echo $user_data->role_title; ?></b>
-				<br />Alkhidmat Diagnostic Center Chitral City <br />
+				<br />Shades & Shadow City <br />
 				<strong>Printed at: <?php echo date("d, F, Y h:i:s A", time()); ?></strong>
 			</p>
 

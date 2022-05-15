@@ -93,10 +93,8 @@
 <body>
   <page size='A4'>
     <div style="padding: 5px;  padding-left:20px; padding-right:20px; " contenteditable="true">
-      <h3 style="text-align: center;"> Alkhidmat Diagnostic Center Chitral </h3>
+      <h3 style="text-align: center;"> Shades & Shadow </h3>
       <h4 style="text-align: center;">Items Wise Sale Report From <?php echo date('d M, Y', strtotime($startdate)) . " - " . date('d M, Y', strtotime($enddate)); ?></h4>
-
-      <h5>Item Sale list</h5>
 
       <table class="table table-bordered" id="today_categories_wise_report">
         <thead>
@@ -131,9 +129,13 @@
               <td><?php echo $report->qty; ?></td>
               <td><?php echo round($report->net_total, 2); ?></td>
               <td><?php
-                  if ($report->qty > 0) {
-                    echo round($report->net_total - ($report->cost_price * $report->qty), 2);
-                  } ?></td>
+                  if ($report->qty > 0) { ?>
+                  <?php echo round($report->net_total - ($report->cost_price * $report->qty), 2); ?>
+                <?php } else { ?>
+                  <span style="color:red">
+                    <?php echo round($report->net_total - ($report->cost_price * $report->qty), 2); ?> R
+                  </span>
+                <?php } ?>
             </tr>
           <?php } ?>
 
@@ -148,20 +150,20 @@
             $today_items_sale = $this->db->query($query);
 
             ?>
-            <td colspan="8">Total</td>
-            <td><?php
+            <th colspan="8" style="text-align:right">Total (Rs)</th>
+            <th><?php
 
                 if ($today_items_sale) {
-                  echo round($today_items_sale->result()[0]->net_total, 2) . " Rs";
+                  echo round($today_items_sale->result()[0]->net_total, 2);
                 }
-                ?></td>
+                ?></th>
 
-            <td><?php
+            <th><?php
 
                 if ($today_items_sale) {
-                  echo round($today_items_sale->result()[0]->net_total - $today_items_sale->result()[0]->cost_items_total, 2) . " Rs";
+                  echo round($today_items_sale->result()[0]->net_total - $today_items_sale->result()[0]->cost_items_total, 2);
                 }
-                ?></td>
+                ?></th>
           </tr>
           <!-- <tr>
 
@@ -200,7 +202,7 @@
       ?> </p>
 
       <p class="divFooter" style="text-align: right;"><b><?php echo $user_data->user_title; ?> <?php echo $user_data->role_title; ?></b>
-        <br />Alkhidmat Diagnostic Center Chitral City <br />
+        <br />Shades & Shadow City <br />
         <strong>Printed at: <?php echo date("d, F, Y h:i:s A", time()); ?></strong>
       </p>
 

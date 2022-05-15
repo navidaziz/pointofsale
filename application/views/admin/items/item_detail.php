@@ -127,7 +127,7 @@
                 </script>
 
                 <div class="table-responsive">
-                    <form method="post" action="<?php echo  site_url(ADMIN_DIR . "items/add_item_stocks") ?>">
+                    <!-- <form method="post" action="<?php echo  site_url(ADMIN_DIR . "items/add_item_stocks") ?>">
                         <input type="hidden" name="item_id" id="item_id" value="<?php echo $items[0]->item_id; ?>" />
                         Stock In: <input type="radio" value="stock_in" name="traction_type" onclick="stock_in()" /> Stock Return: <input type="radio" value="stock_return" onclick="stock_return()" name="traction_type" />
                         <table class="table table-bordered table2" style="line-height: 0.5px; display:block" id="stock_in">
@@ -208,7 +208,7 @@
                                 </td>
                             </tr>
                         </table>
-                    </form>
+                    </form> -->
 
 
                     <table class="table table-bordered table2">

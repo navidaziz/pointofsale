@@ -93,7 +93,7 @@
 <body>
   <page size='A4'>
     <div style="padding: 5px;  padding-left:20px; padding-right:20px; " contenteditable="true">
-      <h3 style="text-align: center;"> Alkhidmat Diagnostic Center Chitral </h3>
+      <h3 style="text-align: center;"> Shades & Shadow </h3>
       <h4 style="text-align: center;">Day's Wise Sale Report From <?php echo date('d M, Y', strtotime($startdate)) . " - " . date('d M, Y', strtotime($enddate)); ?></h4>
 
 
@@ -104,14 +104,9 @@
           <tr>
             <th>#</th>
             <th>Date</th>
-            <!-- <th>Item Name</th>
-            <th>Cost Price</th>
-            <th>Unit Price</th>
-            <th>Discount</th>
-            <th>Sale Price</th>
-            <th>Qyt</th> -->
-            <th>Net Total</th>
-            <!-- <th>Profit</th> -->
+            <th>Total Sale</th>
+            <th>Profie</th>
+
           </tr>
 
         </thead>
@@ -119,59 +114,32 @@
 
           <?php
           $count = 1;
+          $total_sale = 0.00;
+          $total_profit = 0.00;
           foreach ($today_items_sales as $report) { ?>
             <tr>
               <td><?php echo $count++; ?></td>
               <td><?php echo date('d M, Y', strtotime($report->created_date)); ?></td>
-              <!-- <td><?php echo $report->item_name; ?></td>
-              <td><?php echo $report->cost_price; ?></td>
-              <td><?php echo $report->unit_price; ?></td>
-              <td><?php echo $report->item_discount; ?></td>
-              <td><?php echo $report->sale_price; ?></td>
-              <td><?php echo $report->qty; ?></td> -->
-              <td><?php echo round($report->net_total, 2); ?></td>
-              <!-- <td><?php echo round($report->net_total - ($report->cost_price * $report->qty), 2); ?></td> -->
+              <td><?php echo $report->item_sale_total;
+                  $total_sale += $report->item_sale_total;
+                  ?></td>
+              <td><?php echo $report->item_sale_total - $report->item_cost_total;
+                  $total_profit += ($report->item_sale_total - $report->item_cost_total);
+                  ?></td>
+
             </tr>
           <?php } ?>
 
 
           <tr>
-            <?php
-            $query = "SELECT  
-                      SUM(si.total_price) as net_total,
-                      SUM(si.cost_price*si.sale_items) as cost_items_total 
-                      FROM `sales_items` as si 
-                      WHERE DATE(`created_date`) BETWEEN " . $start_date . " and " . $end_date . "";
-            $today_items_sale = $this->db->query($query);
 
-            ?>
-            <td colspan="2">Total</td>
-            <td><?php
+            <th colspan="2" style="text-align: right;">Total (Rs)</th>
+            <th><?php echo $total_sale; ?></th>
+            <th><?php echo $total_profit; ?></th>
 
-                if ($today_items_sale) {
-                  echo round($today_items_sale->result()[0]->net_total, 2) . " Rs";
-                }
-                ?></td>
-
-            <!-- <td><?php
-
-                      if ($today_items_sale) {
-                        echo round($today_items_sale->result()[0]->net_total - $today_items_sale->result()[0]->cost_items_total, 2) . " Rs";
-                      }
-                      ?></td> -->
           </tr>
-          <!--<tr>
 
-            <td colspan="3" style="text-align: right;">
-              <small>
-                Total Items Sale Amount: <?php echo round($today_sale_summary->items_price, 2); ?><br /> 
-            Total Taxes: <?php echo $today_sale_summary->total_tax; ?><br />
-            Total Discounts: <?php echo $today_sale_summary->discount; ?></br />
-            Total Sale: <?php echo round($today_sale_summary->total_sale, 2); ?>
-            </small>
-            </td> 
 
-          </tr>-->
 
         </tbody>
       </table>
@@ -197,7 +165,7 @@
       ?> </p>
 
       <p class="divFooter" style="text-align: right;"><b><?php echo $user_data->user_title; ?> <?php echo $user_data->role_title; ?></b>
-        <br />Alkhidmat Diagnostic Center Chitral City <br />
+        <br />Shades & Shadow City <br />
         <strong>Printed at: <?php echo date("d, F, Y h:i:s A", time()); ?></strong>
       </p>
 
