@@ -41,9 +41,9 @@
     <thead>
         <tr>
             <th colspan="5">
-                <h4 style="text-align: center;">Al-Khidmat Diagnostic Center</h4>
-                <h6 style="text-align: center; font-size: 11px;">Chinar Inn Market Shahi Bazar Near Ataliq Bridge, Chitral
-                    <br /> PHONE 0943-412814
+                <h4 style="text-align: center;">Shades & Shadow</h4>
+                <h6 style="text-align: center; font-size: 11px;">DC Office Road, Near Alfalah Bank Chitral
+                    <br /> Sadam Hussain: 0345-9028847
                 </h6>
                 <div id="sale_id">
                     <?php if ($sale->return) { ?> <span style="color: black;">Return</span> <?php } else { ?> <span style="color: black;">Sale</span> <?php } ?> -
