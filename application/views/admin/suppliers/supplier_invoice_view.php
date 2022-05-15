@@ -167,7 +167,7 @@
 										<strong>Date</strong>
 										<input style="width: 130px;" type="date" name="date" value="" id="date" class="form - control" title="date" placeholder="date" />
 									</td> -->
-									<input type="hidden" name="expiry_date" value="" />
+									<input type="hidden" name="expiry_date" value="<?php echo date("Y-m-d") ?>" />
 
 									<td>
 
