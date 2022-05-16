@@ -127,8 +127,8 @@
 
                                 <th><?php echo $this->lang->line('name'); ?></th>
                                 <th><?php echo $this->lang->line('category'); ?></th>
-                                <!-- <th><?php echo $this->lang->line('unit'); ?></th>
-                                <th><?php echo $this->lang->line('item_code_no'); ?></th> -->
+                                <!-- <th><?php echo $this->lang->line('unit'); ?></th>-->
+                                <th>Bar Code</th>
                                 <!-- <th><?php echo $this->lang->line('description'); ?></th> -->
                                 <th><?php echo $this->lang->line('cost_price'); ?></th>
                                 <th><?php echo $this->lang->line('unit_price'); ?></th>
@@ -140,7 +140,7 @@
                                 <th>Discount</th>
                                 <th>Sale Price</th>
                                 <th>In Stock</th>
-                                <th>Expire After</th>
+                                <!-- <th>Expire After</th> -->
                                 <!-- <th><?php echo $this->lang->line('reorder_level'); ?></th> -->
                                 <!-- <th><?php echo $this->lang->line('location'); ?></th> -->
                                 <th><?php echo $this->lang->line('Status'); ?></th>
@@ -150,11 +150,11 @@
                         </thead>
                         <tbody>
                             <?php foreach ($items as $item) : ?>
-                                <tr <?php if (@round((($item->unit_price - $item->cost_price) * 100 / $item->cost_price), 1) < 12) { ?> style="background-color: #F7D5CA;" <?php } ?>>
+                                <tr>
                                     <td> <?php echo $item->name; ?> </td>
                                     <td> <?php echo $item->category; ?> </td>
-                                    <!-- <td> <?php echo $item->unit; ?> </td>
-                                    <td> <?php echo $item->item_code_no; ?> </td> -->
+                                    <!-- <td> <?php echo $item->unit; ?> </td> -->
+                                    <td> <?php echo $item->item_code_no; ?> </td>
                                     <!-- <td> <?php echo $item->description; ?> </td> -->
                                     <td> <span id="costPrice_<?php echo $item->item_id; ?>"><?php echo $item->cost_price; ?></span>
                                         <!-- <br />
@@ -173,15 +173,15 @@
                                     <td> <?php echo $item->discount; ?> </td>
                                     <td> <?php echo $item->sale_price; ?> </td>
                                     <td><?php echo $item->total_quantity ?></td>
-                                    <td title="<?php echo $item->expiry_date; ?>"> <?php
-                                                                                    if ($item->total_quantity > 0) {
-                                                                                        $current_date = new DateTime('today');  //current date or any date
-                                                                                        $expiry_date = new DateTime($item->expiry_date);   //Future date
-                                                                                        $diff = $expiry_date->diff($current_date)->format("%a");  //find difference
-                                                                                        $days = intval($diff);   //rounding days
-                                                                                        echo $days . " - days";
-                                                                                        // 
-                                                                                    } ?> </td>
+                                    <!-- <td title="<?php echo $item->expiry_date; ?>"> <?php
+                                                                                        if ($item->total_quantity > 0) {
+                                                                                            $current_date = new DateTime('today');  //current date or any date
+                                                                                            $expiry_date = new DateTime($item->expiry_date);   //Future date
+                                                                                            $diff = $expiry_date->diff($current_date)->format("%a");  //find difference
+                                                                                            $days = intval($diff);   //rounding days
+                                                                                            echo $days . " - days";
+                                                                                            // 
+                                                                                        } ?> </td> -->
                                     <!-- <td> <?php echo $item->reorder_level; ?> </td> -->
                                     <!-- <td> <?php echo $item->location; ?> </td> -->
                                     <td> <?php echo status($item->status,  $this->lang); ?>

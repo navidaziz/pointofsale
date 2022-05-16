@@ -208,13 +208,17 @@ class Items extends Admin_Controller
                 $unit_price = $this->input->post("unit_price");
                 $supplier_id = $this->input->post("supplier_id");
                 $created_by = $this->session->userdata("user_id");
+                $stock = $this->input->post("stock");
                 $date = date('Y-m-d', time());
 
 
                 //update item enventory after first time add 
-                $query = "INSERT INTO `inventory`(`item_id`, `supplier_id`, `item_cost_price`, `item_unit_price`, `transaction_type`, `inventory_transaction`,`created_by`, `expiry_date`) 
-                            VALUES ('" . $item_id . "', '" . $supplier_id . "', '" . $cost_price . "', '" . $unit_price . "', 'Item Created','0','" . $created_by . "', '" . $date . "')";
+                $query = "INSERT INTO `inventory`(`item_id`, `supplier_id`, `supplier_invoice_id`, `item_cost_price`, `item_unit_price`, `transaction_type`, `inventory_transaction`,`created_by`, `expiry_date`) 
+                            VALUES ('" . $item_id . "', '2', '2', '" . $cost_price . "', '" . $unit_price . "', 'Item Created','" . $stock . "','" . $created_by . "', '" . $date . "')";
                 $this->db->query($query);
+
+
+
                 $this->session->set_flashdata("msg_success", $this->lang->line("add_msg_success"));
                 redirect(ADMIN_DIR . "items/edit/$item_id");
             } else {
