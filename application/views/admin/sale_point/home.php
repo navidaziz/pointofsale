@@ -45,6 +45,7 @@
 								vertical-align: top;
 								border-top: 1px solid #ddd;
 								font-size: 14px !important;
+							}
 						</style>
 
 						<div id="item_list">
@@ -187,7 +188,7 @@
 	}
 
 	function save_data() {
-		
+
 		var tax_ids = $("#tax_ids").val();
 		var payment_type = $("input[name='payment_type']:checked").val();
 		remarks = $('#remarks').val();
@@ -309,6 +310,27 @@
 				data: {
 					user_item_id: user_item_id,
 					item_quantity: item_quantity,
+				}
+			}).done(function(data) {
+				$('#item_list').html(data);
+				get_user_sale_summary();
+
+			});
+		}
+
+	}
+
+	function update_user_item_discount(user_item_id) {
+		//item_quantity: item_quantity.replace(/[^a-zA-Z0-9]/g, ''),
+		if (event.key === 'Enter') {
+			var item_discount = $('#user_item_discount_' + user_item_id).val();
+			$('#item_list').html('<p style="text-align:center"><strong>Please Wait...... Loading</strong></p>');
+			$.ajax({
+				type: "POST",
+				url: "<?php echo site_url(ADMIN_DIR . "sale_point/update_user_item_discount") ?>",
+				data: {
+					user_item_id: user_item_id,
+					item_discount: item_discount,
 				}
 			}).done(function(data) {
 				$('#item_list').html(data);

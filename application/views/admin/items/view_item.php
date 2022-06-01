@@ -95,6 +95,9 @@
                                     <th><?php echo $this->lang->line('item_code_no'); ?></th>
                                     <td>
                                         <?php echo $item->item_code_no; ?>
+                                        <div style="padding: 10px; margin:10px; ">
+                                            <img src="<?php echo $barcode; ?>">
+                                        </div>
                                     </td>
                                 </tr>
                                 <tr>

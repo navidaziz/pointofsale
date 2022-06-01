@@ -375,7 +375,8 @@
                             "value"         => set_value("stock"),
                             "placeholder"   =>  "Stock",
                             "type" => "number",
-                            "min" => "0"
+                            "min" => "0",
+                            "required" => "required"
                         );
                         echo form_input($textarea);
                         ?>

@@ -124,7 +124,7 @@
                     <table id="item_table" class="table table-bordered" style="font-size: 12px;">
                         <thead>
                             <tr>
-
+                                <th>S/No</th>
                                 <th><?php echo $this->lang->line('name'); ?></th>
                                 <th><?php echo $this->lang->line('category'); ?></th>
                                 <!-- <th><?php echo $this->lang->line('unit'); ?></th>-->
@@ -149,8 +149,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($items as $item) : ?>
+                            <?php
+                            $count = 1;
+                            foreach ($items as $item) : ?>
                                 <tr>
+                                    <td><?php echo $count++; ?></td>
                                     <td> <?php echo $item->name; ?> </td>
                                     <td> <?php echo $item->category; ?> </td>
                                     <!-- <td> <?php echo $item->unit; ?> </td> -->

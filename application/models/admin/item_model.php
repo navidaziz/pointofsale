@@ -13,68 +13,9 @@ class Item_model extends MY_Model
         $this->order = "order";
     }
 
-    public function validate_form_data($operation = false)
-    {
-        $validation_config = array(
-
-            array(
-                "field"  =>  "name",
-                "label"  =>  "Name",
-                "rules"  =>  "required"
-            ),
-
-            array(
-                "field"  =>  "category",
-                "label"  =>  "Category",
-                "rules"  =>  "required"
-            ),
-
-            array(
-                "field"  =>  "cost_price",
-                "label"  =>  "Cost Price",
-                "rules"  =>  "required"
-            ),
-
-            array(
-                "field"  =>  "unit_price",
-                "label"  =>  "Unit Price",
-                "rules"  =>  "required"
-            ),
-
-            array(
-                "field"  =>  "reorder_level",
-                "label"  =>  "Reorder Level",
-                "rules"  =>  "required"
-            ),
-            array(
-                "field"  =>  "description",
-                "label"  =>  "Discription",
-                "rules"  =>  ""
-            ),
-            array(
-                "field"  =>  "unit",
-                "label"  =>  "Unit",
-                "rules"  =>  ""
-            ),
-            array(
-                "field"  =>  "location",
-                "label"  =>  "Location",
-                "rules"  =>  ""
-            ),
 
 
-        );
-        if ($operation) {
-            $validation_config[] = array(
-                "field"  =>  "item_code_no",
-                "label"  =>  "Reorder Level",
-                "rules"  =>  "is_unique[items.item_code_no]"
-            );
-        }
-        //set and run the validation
-        $this->form_validation->set_rules($validation_config);
-        return $this->form_validation->run();
-    }
+
 
     public function save_data($image_field = NULL)
     {
@@ -109,7 +50,7 @@ class Item_model extends MY_Model
 
         $inputs["category"]  =  $this->input->post("category");
 
-        //$inputs["item_code_no"]  =  $this->input->post("item_code_no");
+        $inputs["item_code_no"]  =  $this->input->post("item_code_no");
 
         $inputs["description"]  =  $this->input->post("description");
 
@@ -123,6 +64,7 @@ class Item_model extends MY_Model
 
         $inputs["location"]  =  $this->input->post("location");
         $inputs["discount"]  =  $this->input->post("discount");
+
 
         return $this->item_model->save($inputs, $item_id);
     }

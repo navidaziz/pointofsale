@@ -68,7 +68,12 @@ class Items extends Admin_Controller
         //$this->data["items"] = $data->items;
         //$this->data["pagination"] = $data->pagination;
         $query = "SELECT * FROM all_items WHERE `status` IN (0, 1)";
+
+
+
         $this->data["items"] = $this->db->query($query)->result();
+
+
         $this->data["title"] = $this->lang->line('Items');
         $this->data["view"] = ADMIN_DIR . "items/items";
         $this->load->view(ADMIN_DIR . "layout", $this->data);
@@ -84,6 +89,23 @@ class Items extends Admin_Controller
         $item_id = (int) $item_id;
 
         $this->data["items"] = $this->item_model->get_item($item_id);
+
+
+        //I'm just using rand() function for data example
+        //$data = [];
+        $code = rand(10000, 99999);
+
+        //load library
+        $this->load->library('zend');
+        //load in folder Zend
+        $this->zend->load('Zend/Barcode');
+        //generate barcode
+        $imageResource = Zend_Barcode::factory('code128', 'image', array('text' => $this->data["items"][0]->item_code_no), array())->draw();
+        imagepng($imageResource, 'barcodes/' . $code . '.png');
+
+        $this->data['barcode'] = site_url('barcodes/' . $code . '.png');
+
+
         $this->data["title"] = $this->lang->line('Item Details');
         $this->data["view"] = ADMIN_DIR . "items/view_item";
         $this->load->view(ADMIN_DIR . "layout", $this->data);
@@ -200,7 +222,7 @@ class Items extends Admin_Controller
     public function save_data()
     {
 
-        if ($this->item_model->validate_form_data(true) === TRUE) {
+        if ($this->validate_form_data() === TRUE) {
 
             $item_id = $this->item_model->save_data();
             if ($item_id) {
@@ -208,7 +230,11 @@ class Items extends Admin_Controller
                 $unit_price = $this->input->post("unit_price");
                 $supplier_id = $this->input->post("supplier_id");
                 $created_by = $this->session->userdata("user_id");
-                $stock = $this->input->post("stock");
+                if ($this->input->post("stock")) {
+                    $stock = $this->input->post("stock");
+                } else {
+                    $stock = 0;
+                }
                 $date = date('Y-m-d', time());
 
 
@@ -251,7 +277,7 @@ class Items extends Admin_Controller
 
         $item_id = (int) $item_id;
 
-        if ($this->item_model->validate_form_data() === TRUE) {
+        if ($this->validate_form_data(true) === TRUE) {
 
             $item_id = $this->item_model->update_data($item_id);
             if ($item_id) {
@@ -282,6 +308,11 @@ class Items extends Admin_Controller
                   ORDER BY inventory.inventory_id DESC";
         $this->data['inventories'] = $this->db->query($query)->result();
         $this->data["title"] = $this->lang->line('Item Details');
+
+
+
+
+
         $this->load->view(ADMIN_DIR . "items/item_detail", $this->data);
     }
 
@@ -391,5 +422,100 @@ class Items extends Admin_Controller
         }
 
         redirect(ADMIN_DIR . "items/view/");
+    }
+
+
+    public function unique_bar_code()
+    {
+
+        $item_code_no = $this->input->post('item_code_no');
+        if ($item_code_no != "") {
+            if ($this->input->post("item_id")) {
+                $item_id = (int) $this->input->post("item_id");
+                $query = "select count(*)  as total from items where item_code_no='" . $item_code_no . "'
+            and item_id!='" . $item_id . "'";
+            } else {
+                $query = "select count(*) as total from items where item_code_no='" . $item_code_no . "'";
+            }
+
+            $check = $this->db->query($query)->result();
+
+            // var_dump($check);
+
+            if ($check[0]->total > 0) {
+
+                $this->form_validation->set_message('unique_bar_code', 'The Barcode  " ' . $item_code_no . ' " is already assigned to another item.');
+                return FALSE;
+            }
+            return TRUE;
+        } else {
+            return TRUE;
+        }
+    }
+
+
+    public function validate_form_data($operation = false)
+    {
+
+
+        $validation_config = array(
+
+            array(
+                "field"  =>  "name",
+                "label"  =>  "Name",
+                "rules"  =>  "required"
+            ),
+
+            array(
+                "field"  =>  "category",
+                "label"  =>  "Category",
+                "rules"  =>  "required"
+            ),
+
+            array(
+                "field"  =>  "cost_price",
+                "label"  =>  "Cost Price",
+                "rules"  =>  "required"
+            ),
+
+            array(
+                "field"  =>  "unit_price",
+                "label"  =>  "Unit Price",
+                "rules"  =>  "required"
+            ),
+
+            array(
+                "field"  =>  "reorder_level",
+                "label"  =>  "Reorder Level",
+                "rules"  =>  "required"
+            ),
+            array(
+                "field"  =>  "description",
+                "label"  =>  "Discription",
+                "rules"  =>  ""
+            ),
+            array(
+                "field"  =>  "unit",
+                "label"  =>  "Unit",
+                "rules"  =>  ""
+            ),
+            array(
+                "field"  =>  "location",
+                "label"  =>  "Location",
+                "rules"  =>  ""
+            ),
+
+
+        );
+        //if ($operation) {
+        $validation_config[] = array(
+            "field"  =>  "item_code_no",
+            "label"  =>  "Item Code No",
+            "rules"  =>  "callback_unique_bar_code"
+        );
+        // }
+        //set and run the validation
+        $this->form_validation->set_rules($validation_config);
+        return $this->form_validation->run();
     }
 }

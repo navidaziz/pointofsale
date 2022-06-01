@@ -174,7 +174,7 @@ class Sale_point extends Admin_Controller
   public function get_search_item()
   {
     $search_item = $this->db->escape($this->input->post("search_item"));
-    $query = "SELECT `item_id`, `total_quantity`, `name` FROM all_items 
+    $query = "SELECT `item_id`, `total_quantity`, `name`, `cost_price`, `unit_price`, `discount`, `sale_price`  FROM all_items 
                   WHERE (`name` = " . $search_item . " OR `item_code_no` = " . $search_item . ")";
 
     if ($this->db->query($query)->result()) {
@@ -182,6 +182,7 @@ class Sale_point extends Admin_Controller
       if ($this->db->query($query)->result()[0]->total_quantity > 0) {
 
         $item_id = $this->db->query($query)->result()[0]->item_id;
+        $item_detail = $this->db->query($query)->result()[0];
         $user_id = $this->session->userdata("user_id");
         $query = "SELECT SUM(`quantity`) as total FROM `sales_item_users` 
                       WHERE `item_id`='" . $item_id . "'
@@ -189,8 +190,9 @@ class Sale_point extends Admin_Controller
         $item_count =  $this->db->query($query)->result()[0]->total;
 
         if ($item_count < 1) {
-          $query = "INSERT INTO `sales_item_users`(`item_id`, `quantity`, `user_id`) 
-                          VALUES ('" . $item_id . "','1','" . $user_id . "')";
+          $query = "INSERT INTO `sales_item_users`(`item_id`, `cost_price`, `unit_price`, `discount`, `sale_price`, `quantity`, `user_id`) 
+                          VALUES ('" . $item_id . "', '" . $item_detail->cost_price . "', '" . $item_detail->unit_price . "', 
+                                  '" . $item_detail->discount . "', '" . ($item_detail->sale_price) . "', '1','" . $user_id . "')";
           $this->db->query($query);
         } else {
           $item_count++;
@@ -228,15 +230,15 @@ class Sale_point extends Admin_Controller
     $query = "SELECT `id`,
             LOWER(`all_items`.`name`) AS `name`,
             LOWER(`all_items`.`category`) AS `category`,
-            `all_items`.`unit_price`,
-            `all_items`.`cost_price`,
-            `all_items`.`discount`,
-            `all_items`.`sale_price`,
+            `sales_item_users`.`unit_price`,
+            `sales_item_users`.`cost_price`,
+            `sales_item_users`.`discount`,
+            `sales_item_users`.`sale_price`,
             `all_items`.`total_quantity`,
             `sales_item_users`.`quantity`, 
             `sales_item_users`.`item_id`,
             `sales_item_users`.`user_id`,
-            (`all_items`.`sale_price`*`sales_item_users`.`quantity`) as `total_price`  
+            (`sales_item_users`.`sale_price`*`sales_item_users`.`quantity`) as `total_price`  
           FROM
             `all_items`,
             `sales_item_users` 
@@ -247,6 +249,7 @@ class Sale_point extends Admin_Controller
   function get_user_items_list()
   {
     $sales_items_user_lists = $this->get_user_items();
+
     $user_item_list = '<table class="table table2 table-bordered">';
     $user_item_list .= '<tr>
                 <th>#</th>
@@ -271,7 +274,9 @@ class Sale_point extends Admin_Controller
       $user_item_list .= '<td>' . ucwords($sales_items_user_list->name) . '</td>
                     <td>' . ucwords($sales_items_user_list->category) . '</td>
                     <td>' . $sales_items_user_list->unit_price . '</td>
-                    <td>' . $sales_items_user_list->discount . '</td>
+                    <td>
+                    <input id="user_item_discount_' . $sales_items_user_list->id . '" onkeydown="update_user_item_discount(\'' . $sales_items_user_list->id . '\')" type="number" name="discount" value="' . $sales_items_user_list->discount . '" style="width:50px" /></td>
+                   
                     <td>' . $sales_items_user_list->sale_price . '</td>
                     <td><input id="user_item_' . $sales_items_user_list->id . '" onkeydown="update_user_item_quantity(\'' . $sales_items_user_list->id . '\')" type="number" name="quantity" value="' . $sales_items_user_list->quantity . '" style="width:50px" /></td>
                     <td>' . $sales_items_user_list->total_price . '</td>
@@ -335,8 +340,8 @@ class Sale_point extends Admin_Controller
         <td style="wid th:60%; margin:5px !important; padding:1px !important">
         <div class="font-400 font-14">
         <div style="border:1px dashed gray; padding:5px; border-radius:5px;">
-            <h3 class="amount" style="color:green" >Total: Rs <span id="pay_able">' . $sales_items_summary->pay_able . '</span></h3>
-            <h3 class="amount" style="color:#70AFC4">Discount: Rs <span id="payment_discount"> 0.00</span></h3>
+            <h3 class="amount" style="color:green" >Total: Rs <span id="pay_able">' . $sales_items_summary->items_total . '</span></h3>
+            <h3 class="amount" style="color:#70AFC4">Discount: Rs <span id="payment_discount"> ' . $sales_items_summary->total_discount . '</span></h3>
             <h3 class="amount">Payable: Rs <span id="pay_able_total">' . $sales_items_summary->pay_able . '</span></h3>
         </div>    
             </div>
@@ -384,13 +389,32 @@ class Sale_point extends Admin_Controller
       } else {
         echo '
         <div id="error_message_sale" class="alert alert-danger" role="alert">
-    <strong style="color:white"> <i>" ' . $item->name . ' "</i> only ' . $item->total_quantity . ' left in stock. try with ' . $item->total_quantity . '</strong>
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>';
+          <strong style="color:white"> <i>" ' . $item->name . ' "</i> only ' . $item->total_quantity . ' left in stock. try with ' . $item->total_quantity . '</strong>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>';
       }
     }
+
+    echo $this->get_user_items_list();
+  }
+
+  public function update_user_item_discount()
+  {
+    $id = (int) $this->input->post("user_item_id");
+    $query = "select item_id from sales_item_users where id='" . $id . "'";
+    $item_id = $this->db->query($query)->result()[0]->item_id;
+    $query = "select sale_price from all_items where item_id='" . $item_id . "'";
+    $sale_price = $this->db->query($query)->result()[0]->sale_price;
+    $discount = (float) $this->input->post("item_discount");
+
+
+    $query = "UPDATE `sales_item_users` SET `discount`='" . $discount . "',
+    `sale_price`='" . ($sale_price - $discount) . "'
+        WHERE id='" . $id . "' ";
+    $this->db->query($query);
+
 
     echo $this->get_user_items_list();
   }
