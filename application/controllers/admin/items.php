@@ -90,21 +90,23 @@ class Items extends Admin_Controller
 
         $this->data["items"] = $this->item_model->get_item($item_id);
 
+        if ($this->data["items"][0]->item_code_no) {
+            //I'm just using rand() function for data example
+            //$data = [];
+            $code = rand(10000, 99999);
 
-        //I'm just using rand() function for data example
-        //$data = [];
-        $code = rand(10000, 99999);
+            //load library
+            $this->load->library('zend');
+            //load in folder Zend
+            $this->zend->load('Zend/Barcode');
+            //generate barcode
+            $imageResource = Zend_Barcode::factory('code128', 'image', array('text' => $this->data["items"][0]->item_code_no), array())->draw();
+            imagepng($imageResource, 'barcodes/' . $this->data["items"][0]->item_code_no . '.png');
 
-        //load library
-        $this->load->library('zend');
-        //load in folder Zend
-        $this->zend->load('Zend/Barcode');
-        //generate barcode
-        $imageResource = Zend_Barcode::factory('code128', 'image', array('text' => $this->data["items"][0]->item_code_no), array())->draw();
-        imagepng($imageResource, 'barcodes/' . $code . '.png');
-
-        $this->data['barcode'] = site_url('barcodes/' . $code . '.png');
-
+            $this->data['barcode'] = site_url('barcodes/' . $this->data["items"][0]->item_code_no . '.png');
+        } else {
+            $this->data['barcode'] = NULL;
+        }
 
         $this->data["title"] = $this->lang->line('Item Details');
         $this->data["view"] = ADMIN_DIR . "items/view_item";
